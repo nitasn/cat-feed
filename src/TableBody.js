@@ -51,7 +51,7 @@ function Row({ dayName, dayData }) {
   return (
     <>
       <View style={styles.row}>
-        <DayColumn dayName={dayName} />
+        <DayColumn dayName={dayName} dayData={dayData} />
       </View>
 
       {dayName !== "saturday" && <Hr />}
@@ -60,9 +60,9 @@ function Row({ dayName, dayData }) {
 }
 
 /**
- * @param {{ dayName: string }} props
+ * @param {{ dayName: string, dayData: DailyData }} props
  */
-function DayColumn({ dayName }) {
+function DayColumn({ dayName, dayData }) {
   const [dateWeekStarts] = useAtom(weekDisplayed);
   const date = advanceDateByDays(dateWeekStarts, dayOffset[dayName]);
 
@@ -84,8 +84,8 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   row: {
-    padding: 12,
-    paddingHorizontal: 8,
+    padding: 8,
+    // paddingHorizontal: 8,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
