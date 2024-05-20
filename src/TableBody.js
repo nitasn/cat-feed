@@ -138,13 +138,17 @@ export const styles = StyleSheet.create({
   },
   positiveBackground: {
     flex: 1,
-    opacity: .275,
-    backgroundColor: "green",
+    opacity: .9,
+    borderRadius: Number.MAX_SAFE_INTEGER,
+    borderWidth: 2,
+    borderColor: "green",
   },
   negativeBackground: {
     flex: 1,
-    opacity: .275,
-    backgroundColor: "red",
+    opacity: .9,
+    borderRadius: Number.MAX_SAFE_INTEGER,
+    borderWidth: 2,
+    borderColor: "red",
   },
   peopleBubblesArea: {
     flexDirection: "row",
