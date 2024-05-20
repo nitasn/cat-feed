@@ -87,10 +87,11 @@ const styles = StyleSheet.create({
   },
   header: {
     width: "100%",
-    justifyContent: "space-evenly",
+    justifyContent: "space-between",
     flexDirection: "row",
     alignItems: "center",
     paddingTop: 20,
+    paddingHorizontal: 35,
   },
   title: {
     fontSize: 30,
