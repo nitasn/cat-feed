@@ -15,24 +15,25 @@ export default function TableOfWeek() {
   return (
     <View style={styles.container}>
       <Header />
-      <SunAndMoon />
-      <BlurView intensity={80} tint="light" style={styles.blurContainer}>
-        <Table />
-      </BlurView>
+      <View style={styles.blurWrapper}>
+        {/* <SunAndMoon /> */}
+        <BlurView intensity={80} tint="light" style={styles.blurContainer}>
+          <Table />
+        </BlurView>
+      </View>
     </View>
   );
 }
 
 function SunAndMoon() {
   return (
-    <View style={{ flexDirection: "row" }}>
-      <View style={{ flex: 1, justifyContent: "center", backgroundColor: "black" }}>
+    <View style={{ flexDirection: "row", marginBottom: 8 }}>
+      <View style={{ flex: 1 }}>{/* <Ionicons style={{ margin: "auto" }} name="today-outline" size={24} /> */}</View>
+      <View style={{ flex: 1 }}>
+        <Ionicons style={{ margin: "auto", transform: [{ scale: 1.1 }] }} name="sunny-outline" size={24} />
       </View>
-      <View style={{ flex: 1, justifyContent: "center", backgroundColor: "gray" }}>
-        <Ionicons style={{margin: "auto"}} name="sunny-outline" size={24} />
-      </View>
-      <View style={{ flex: 1, justifyContent: "center", backgroundColor: "white" }}>
-        <Ionicons style={{margin: "auto"}} name="moon-outline" size={24} />
+      <View style={{ flex: 1 }}>
+        <Ionicons style={{ margin: "auto" }} name="moon-outline" size={24} />
       </View>
     </View>
   );
@@ -43,7 +44,7 @@ function SunAndMoon() {
  */
 export function IconButton({ glyph, onPress }) {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} style={styles.iconButton}>
       <Ionicons name={glyph} size={24} />
     </TouchableOpacity>
   );
@@ -108,17 +109,24 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: 20,
-    paddingHorizontal: 35,
+    // backgroundColor: "gray",
   },
   title: {
     fontSize: 30,
   },
+  iconButton: {
+    // backgroundColor: "white",
+    paddingVertical: 16,
+    paddingHorizontal: 35,
+  },
+  blurWrapper: {
+    flex: 1,
+    margin: 20,
+    alignSelf: "stretch",
+  },
   blurContainer: {
     flex: 1,
-    alignSelf: "stretch",
     padding: 20,
-    margin: 20,
     overflow: "hidden",
     borderRadius: 20,
   },
