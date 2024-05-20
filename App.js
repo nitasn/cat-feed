@@ -11,14 +11,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 
 // @ts-ignore
-const backgroundImage = require("./assets/glare.jpeg");
+const backgroundImage = require("./assets/street.webp");
 // const backgroundImage = require("./assets/background-blur.webp");
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <StatusBar style="auto" />
-      <ImageBackground source={backgroundImage} style={styles.image}>
+      <ImageBackground source={backgroundImage} style={styles.image} resizeMode="stretch">
         <SafeAreaView style={styles.container}>
           <TableOfWeek />
         </SafeAreaView>
@@ -33,7 +33,5 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    resizeMode: "cover",
-    justifyContent: "center",
   },
 });

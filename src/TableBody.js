@@ -21,15 +21,17 @@ const personToImage = {
   shahar: require("../assets/people/shahar.jpg"),
 };
 
+/** @type {Record<Name, string>} */
 const personToColor = {
-  imma: "#FFE5E5",
+  imma: "#ef9696",
   nitsan: "#E0AED0",
-  tal: "white",
+  tal: "#76babd",
   ronnie: "#756AB6",
-  shahar: "#AC87C5",
+  shahar: "#c5c587",
 };
 
-const personToIndex = Object.fromEntries(Object.keys(personToColor).map((name, index) => [name, index]));
+/** @type {Name[]} */
+const names = ["imma", "nitsan", "tal", "ronnie", "shahar"];
 
 /**
  * @param {{ weekData: WeeklyData}} props
@@ -125,13 +127,10 @@ function PeopleColumn({ positive }) {
         position: "relative",
       }}
     >
-      {range(5).map((idx) => {
+      {names.map((name, idx) => {
         const angle = 2 * Math.PI * (idx / 5) - Math.PI / 2;
         const translateX = circleRadius * Math.cos(angle);
         const translateY = circleRadius * Math.sin(angle);
-
-        /** @type {Name} */
-        const name = Object.keys(personToColor)[idx];
 
         return (
           <Dot
@@ -148,20 +147,12 @@ function PeopleColumn({ positive }) {
   );
 }
 
+/**
+ *
+ * @param {{ color?: string, style?: RN.StyleProp<RN.ViewStyle> }} props
+ */
 function Dot({ color = undefined, style = {} }) {
-  return (
-    <View
-      style={{
-        width: 10,
-        aspectRatio: 1,
-        borderColor: "#333333cc",
-        borderWidth: 1.5,
-        borderRadius: Number.MAX_SAFE_INTEGER,
-        backgroundColor: color,
-        ...style,
-      }}
-    />
-  );
+  return <View style={[styles.dot, { backgroundColor: color }, style]} />;
 }
 
 /**
@@ -209,11 +200,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textTransform: "capitalize",
     fontWeight: "600",
-    color: "black,"
+    color: "black,",
   },
   date: {
     fontSize: 12,
     // color: "white"
+  },
+  dot: {
+    width: 10,
+    aspectRatio: 1,
+    borderColor: "#333333cc",
+    borderWidth: 1.5,
+    borderRadius: Number.MAX_SAFE_INTEGER,
   },
   personBubble: {
     width: 36,
