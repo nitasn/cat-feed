@@ -15,11 +15,11 @@ export default {
     },
     tuesday: {
       positive: ["nitsan", "shahar", "tal"],
-      negative: ["ronnie"],
+      negative: [],
     },
     wednesday: {
-      positive: ["nitsan", "shahar"],
-      negative: ["ronnie"],
+      positive: ["ronnie"],
+      negative: [],
     },
     thursday: {
       positive: ["nitsan", "shahar"],
@@ -31,7 +31,7 @@ export default {
     },
     saturday: {
       positive: ["nitsan", "shahar"],
-      negative: ["ronnie"],
+      negative: [],
     },
   },
   "May 26, 2024": {
