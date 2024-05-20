@@ -7,6 +7,7 @@ import { weekDisplayed } from "./state";
 import { advanceDateByDays } from "./utils";
 import { format } from "date-fns";
 
+/** @type {Record<Name, number>} */
 const personToImage = {
   // @ts-ignore
   imma: require("../assets/people/imma.jpg"),
@@ -77,12 +78,12 @@ function PeopleColumn({ dayData }) {
 
 /**
  *
- * @param {{ name: string, attendending: boolean }} props
+ * @param {{ name: Name, attendending: boolean }} props
  */
 function PersonBubble({ name, attendending }) {
   return (
     <ImageBackground source={personToImage[name]} style={styles.personBubble}>
-      <View style={attendending ? styles.positiveBackground : styles.negativeBackground} />
+      <View style={[styles.borderOverlay, attendending ? styles.postiveBorderColor : styles.negativeBorderColor]} />
     </ImageBackground>
   );
 }
@@ -109,7 +110,7 @@ function Hr() {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-around",
+    justifyContent: "space-between",
   },
   row: {
     padding: 12,
@@ -131,23 +132,21 @@ export const styles = StyleSheet.create({
     fontSize: 16,
   },
   personBubble: {
-    width: 32,
-    height: 32,
+    width: 34,
+    height: 34,
     borderRadius: Number.MAX_SAFE_INTEGER,
     overflow: "hidden",
   },
-  positiveBackground: {
+  borderOverlay: {
     flex: 1,
-    opacity: .9,
+    opacity: 0.7,
     borderRadius: Number.MAX_SAFE_INTEGER,
     borderWidth: 2,
+  },
+  postiveBorderColor: {
     borderColor: "green",
   },
-  negativeBackground: {
-    flex: 1,
-    opacity: .9,
-    borderRadius: Number.MAX_SAFE_INTEGER,
-    borderWidth: 2,
+  negativeBorderColor: {
     borderColor: "red",
   },
   peopleBubblesArea: {
