@@ -15,9 +15,25 @@ export default function TableOfWeek() {
   return (
     <View style={styles.container}>
       <Header />
+      <SunAndMoon />
       <BlurView intensity={80} tint="light" style={styles.blurContainer}>
         <Table />
       </BlurView>
+    </View>
+  );
+}
+
+function SunAndMoon() {
+  return (
+    <View style={{ flexDirection: "row" }}>
+      <View style={{ flex: 1, justifyContent: "center", backgroundColor: "black" }}>
+      </View>
+      <View style={{ flex: 1, justifyContent: "center", backgroundColor: "gray" }}>
+        <Ionicons style={{margin: "auto"}} name="sunny-outline" size={24} />
+      </View>
+      <View style={{ flex: 1, justifyContent: "center", backgroundColor: "white" }}>
+        <Ionicons style={{margin: "auto"}} name="moon-outline" size={24} />
+      </View>
     </View>
   );
 }
