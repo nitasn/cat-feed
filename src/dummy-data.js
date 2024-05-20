@@ -1,3 +1,8 @@
+// @ts-check
+
+/**
+ * @type {ManyWeeksData}
+ */
 export default {
   "May 19, 2024": {
     sunday: {

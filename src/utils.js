@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * @param {Date | number | string} date Date instance or unix timestamp.
  * @returns {string} First day of the week, e.g. "May 19, 2024".
@@ -14,7 +16,7 @@ export function getFirstDayOfWeek(date = Date.now()) {
  * @param {number} numDaysLater
  * @returns {Date}
  */
-export function getLaterDate(date, { numDaysLater }) {
+export function advanceDateByDays(date, numDaysLater) {
   const result = new Date(date);
   result.setDate(result.getDate() + numDaysLater);
   return result;
@@ -36,7 +38,7 @@ export function relativeWeek(dateInput) {
   startOfInputWeek.setHours(0, 0, 0, 0);
 
   const msPerWeek = 7 * 24 * 60 * 60 * 1000;
-  const weeksDifference = (startOfInputWeek - startOfThisWeek) / msPerWeek;
+  const weeksDifference = (+startOfInputWeek - +startOfThisWeek) / msPerWeek;
 
   if (weeksDifference === 0) {
     return "This Week";
@@ -51,4 +53,8 @@ export function relativeWeek(dateInput) {
   }
 }
 
+/**
+ * @param {number} ms
+ * @returns {Promise<void>}
+ */
 export const sleep = (ms) => new Promise((res) => setTimeout(res, ms));

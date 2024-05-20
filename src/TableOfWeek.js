@@ -1,10 +1,12 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+// @ts-check
+
 import { Ionicons } from "@expo/vector-icons";
-import { useMemo } from "react";
-import { getFirstDayOfWeek, getLaterDate, relativeWeek } from "./utils";
+import React, { useMemo } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import useWeekData from "./fetcher";
 import { useGlobalState } from "./global-state";
 import { weekDisplayed } from "./state";
-import useWeekData from "./fetcher";
+import { advanceDateByDays, getFirstDayOfWeek, relativeWeek } from "./utils";
 
 export default function TableOfWeek() {
   return (
@@ -16,11 +18,11 @@ export default function TableOfWeek() {
 }
 
 /**
- * @param {{ glyph: keyof typeof Ionicons.glyphMap }}
+ * @param {{ glyph: keyof typeof Ionicons.glyphMap, onPress: () => void }} props
  */
 export function IconButton({ glyph, onPress }) {
   return (
-    <TouchableOpacity style={styles.menuItem} onPress={onPress}>
+    <TouchableOpacity onPress={onPress}>
       <Ionicons name={glyph} size={30} />
     </TouchableOpacity>
   );
@@ -34,7 +36,7 @@ function Header() {
   }, [firstDayOfWeek]);
 
   const changeWeekBy = (numWeeks) => () => {
-    const laterDate = getLaterDate(firstDayOfWeek, { numDaysLater: 7 * numWeeks });
+    const laterDate = advanceDateByDays(firstDayOfWeek, 7 * numWeeks);
     setFirstDayOfWeek(getFirstDayOfWeek(laterDate));
   };
 

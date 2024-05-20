@@ -1,3 +1,5 @@
+// @ts-check
+
 import { useQuery } from "@tanstack/react-query";
 import { sleep } from "./utils";
 import { useGlobalState } from "./global-state";

@@ -1,3 +1,5 @@
+// @ts-check
+
 import { createGlobalState } from "./global-state";
 import { getFirstDayOfWeek } from "./utils";
 
