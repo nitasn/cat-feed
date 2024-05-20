@@ -63,7 +63,6 @@ function Row({ dayName, dayData }) {
  * @param {{ dayData: DailyData }} props
  */
 function PeopleColumn({ dayData }) {
-  console.log(dayData);
   return (
     <View style={styles.peopleBubblesArea}>
       {dayData.positive.map((name) => (
