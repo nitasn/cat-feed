@@ -2,13 +2,13 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { sleep } from "./utils";
-import { useGlobalState } from "./global-state";
+import { useAtom } from "jotai";
 import { weekDisplayed } from "./state";
 
 import dummyData from "./dummy-data";
 
 export default function useWeekData() {
-  const [firstDayOfWeek] = useGlobalState(weekDisplayed);
+  const [firstDayOfWeek] = useAtom(weekDisplayed);
 
   const { isPending, error, data } = useQuery({
     queryKey: ["firstDayOfWeek", firstDayOfWeek],

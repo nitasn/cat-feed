@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import React, { useMemo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useWeekData from "./fetcher";
-import { useGlobalState } from "./global-state";
+import { useAtom } from "jotai";
 import { weekDisplayed } from "./state";
 import { advanceDateByDays, getFirstDayOfWeek, relativeWeek } from "./utils";
 
@@ -31,7 +31,7 @@ export function IconButton({ glyph, onPress }) {
 }
 
 function Header() {
-  const [firstDayOfWeek, setFirstDayOfWeek] = useGlobalState(weekDisplayed);
+  const [firstDayOfWeek, setFirstDayOfWeek] = useAtom(weekDisplayed);
 
   const title = useMemo(() => {
     return relativeWeek(firstDayOfWeek);

@@ -1,6 +1,6 @@
 // @ts-check
 
-import { createGlobalState } from "./global-state";
 import { getFirstDayOfWeek } from "./utils";
+import { atom } from "jotai";
 
-export const weekDisplayed = createGlobalState(getFirstDayOfWeek());
+export const weekDisplayed = atom(getFirstDayOfWeek());
