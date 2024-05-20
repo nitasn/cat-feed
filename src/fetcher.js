@@ -1,20 +1,25 @@
 // @ts-check
 
 import { useQuery } from "@tanstack/react-query";
-import { sleep } from "./utils";
+import { dateToShortString, sleep } from "./utils";
 import { useAtom } from "jotai";
 import { weekDisplayed } from "./state";
 
 import dummyData from "./dummy-data";
+import { useMemo } from "react";
 
 export default function useWeekData() {
-  const [firstDayOfWeek] = useAtom(weekDisplayed);
+  const [dateWeekStarts] = useAtom(weekDisplayed);
+
+  const stringWeekStarts = useMemo(() => {
+    return dateToShortString(dateWeekStarts);
+  }, [dateWeekStarts]);
 
   const { isPending, error, data } = useQuery({
-    queryKey: ["firstDayOfWeek", firstDayOfWeek],
+    queryKey: ["firstDayOfWeek", stringWeekStarts],
     queryFn: async () => {
       await sleep(500);
-      const result = dummyData[firstDayOfWeek];
+      const result = dummyData[stringWeekStarts];
       if (!result) throw Error("Network Error");
       return result;
     },

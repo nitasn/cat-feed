@@ -1,6 +1,6 @@
 // @ts-check
 
-import { getFirstDayOfWeek } from "./utils";
+import { dateFirstDayOfWeek } from "./utils";
 import { atom } from "jotai";
 
-export const weekDisplayed = atom(getFirstDayOfWeek());
+export const weekDisplayed = atom(dateFirstDayOfWeek());

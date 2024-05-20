@@ -6,7 +6,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useWeekData from "./fetcher";
 import { useAtom } from "jotai";
 import { weekDisplayed } from "./state";
-import { advanceDateByDays, getFirstDayOfWeek, relativeWeek } from "./utils";
+import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
 
 import { BlurView } from "expo-blur";
 
@@ -39,7 +39,7 @@ function Header() {
 
   const changeWeekBy = (numWeeks) => () => {
     const laterDate = advanceDateByDays(firstDayOfWeek, 7 * numWeeks);
-    setFirstDayOfWeek(getFirstDayOfWeek(laterDate));
+    setFirstDayOfWeek(dateFirstDayOfWeek(laterDate));
   };
 
   return (
