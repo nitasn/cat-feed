@@ -50,3 +50,5 @@ export function relativeWeek(dateInput) {
     return `${-Math.round(weeksDifference)} Weeks Ago`;
   }
 }
+
+export const sleep = (ms) => new Promise((res) => setTimeout(res, ms));

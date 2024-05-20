@@ -3,12 +3,18 @@ import { StyleSheet, SafeAreaView } from "react-native";
 
 import TableOfWeek from "./src/TableOfWeek";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
+
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
+    <QueryClientProvider client={queryClient}>
       <StatusBar style="auto" />
-      <TableOfWeek />
-    </SafeAreaView>
+      <SafeAreaView style={styles.container}>
+        <TableOfWeek />
+      </SafeAreaView>
+    </QueryClientProvider>
   );
 }
 

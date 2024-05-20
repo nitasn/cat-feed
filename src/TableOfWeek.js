@@ -2,12 +2,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useMemo } from "react";
-import { getLaterDate, relativeWeek } from "./utils";
-
-// import dummyData from "./dummyData";
+import { getFirstDayOfWeek, getLaterDate, relativeWeek } from "./utils";
 
 import { useGlobalState } from "./global-state";
 import { weekDisplayed } from "./state";
+import useWeekData from "./fetcher";
 
 /**
  * @param {{ glyph: keyof typeof Ionicons.glyphMap }}
@@ -24,6 +23,7 @@ export default function TableOfWeek() {
   return (
     <View style={styles.container}>
       <Header />
+      <Table />
     </View>
   );
 }
@@ -36,7 +36,8 @@ function Header() {
   }, [firstDayOfWeek]);
 
   const changeWeekBy = (numWeeks) => () => {
-    setFirstDayOfWeek(getLaterDate(firstDayOfWeek, { numDaysLater: 7 * numWeeks }));
+    const laterDate = getLaterDate(firstDayOfWeek, { numDaysLater: 7 * numWeeks });
+    setFirstDayOfWeek(getFirstDayOfWeek(laterDate));
   };
 
   return (
@@ -46,6 +47,16 @@ function Header() {
       <IconButton glyph="arrow-forward" onPress={changeWeekBy(+1)} />
     </View>
   );
+}
+
+function Table() {
+  const { weekPending, weekError, weekData } = useWeekData();
+
+  if (weekPending) return <Text>Week Pending...</Text>;
+
+  if (weekError) return <Text>Week Error: {weekError.message}</Text>;
+
+  return <Text>{JSON.stringify(weekData)}</Text>;
 }
 
 const styles = StyleSheet.create({
