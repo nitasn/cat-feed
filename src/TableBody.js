@@ -67,10 +67,10 @@ function PeopleColumn({ dayData }) {
   return (
     <View style={styles.peopleBubblesArea}>
       {dayData.positive.map((name) => (
-        <PersonBubble key={`positive:${name}`} name={name} attendending={true} />
+        <PersonBubble key={`positive:${name}`} name={name} attending={true} />
       ))}
       {dayData.negative.map((name) => (
-        <PersonBubble key={`negative:${name}`} name={name} attendending={false} />
+        <PersonBubble key={`negative:${name}`} name={name} attending={false} />
       ))}
     </View>
   );
@@ -78,12 +78,12 @@ function PeopleColumn({ dayData }) {
 
 /**
  *
- * @param {{ name: Name, attendending: boolean }} props
+ * @param {{ name: Name, attending: boolean }} props
  */
-function PersonBubble({ name, attendending }) {
+function PersonBubble({ name, attending }) {
   return (
     <ImageBackground source={personToImage[name]} style={styles.personBubble}>
-      <View style={[styles.borderOverlay, attendending ? styles.postiveBorderColor : styles.negativeBorderColor]} />
+      <View style={[styles.borderOverlay, attending ? styles.postiveBorderColor : styles.negativeBorderColor]} />
     </ImageBackground>
   );
 }
@@ -132,10 +132,11 @@ export const styles = StyleSheet.create({
     fontSize: 16,
   },
   personBubble: {
-    width: 34,
-    height: 34,
+    width: 36,
+    height: 36,
     borderRadius: Number.MAX_SAFE_INTEGER,
     overflow: "hidden",
+    marginHorizontal: -5,
   },
   borderOverlay: {
     flex: 1,
@@ -151,6 +152,6 @@ export const styles = StyleSheet.create({
   },
   peopleBubblesArea: {
     flexDirection: "row",
-    gap: 3,
+    // gap: -3,
   },
 });

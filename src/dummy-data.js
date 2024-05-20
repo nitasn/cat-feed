@@ -14,12 +14,12 @@ export default {
       negative: ["shahar"],
     },
     tuesday: {
-      positive: ["nitsan", "shahar", "tal"],
+      positive: ["ronnie"],
       negative: [],
     },
     wednesday: {
-      positive: ["ronnie"],
-      negative: [],
+      positive: ["nitsan", "shahar", "tal"],
+      negative: ["imma", "ronnie"],
     },
     thursday: {
       positive: ["nitsan", "shahar"],
