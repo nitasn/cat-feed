@@ -16,7 +16,7 @@ export default function TableOfWeek() {
     <View style={styles.container}>
       <Header />
       <View style={styles.blurWrapper}>
-        {/* <SunAndMoon /> */}
+        <SunAndMoon />
         <BlurView intensity={80} tint="light" style={styles.blurContainer}>
           <Table />
         </BlurView>
@@ -27,8 +27,11 @@ export default function TableOfWeek() {
 
 function SunAndMoon() {
   return (
-    <View style={{ flexDirection: "row", marginBottom: 8 }}>
-      <View style={{ flex: 1 }}>{/* <Ionicons style={{ margin: "auto" }} name="today-outline" size={24} /> */}</View>
+    <View style={{ flexDirection: "row", marginBottom: 8, marginHorizontal: -20 }}>
+      <View style={{ flex: 1 }}>
+        {/*  */}
+        <Ionicons style={{ margin: "auto" }} name="shirt-outline" size={24} />
+      </View>
       <View style={{ flex: 1 }}>
         <Ionicons style={{ margin: "auto", transform: [{ scale: 1.1 }] }} name="sunny-outline" size={24} />
       </View>

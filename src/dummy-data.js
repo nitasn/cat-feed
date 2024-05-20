@@ -45,7 +45,7 @@ export default {
     },
     tuesday: {
       morning: { positive: ["shahar", "imma"], negative: [] },
-      evening: { positive: ["nitsan", "shahar"], negative: ["imma"] },
+      evening: { positive: [], negative: [] },
     },
     wednesday: {
       morning: { positive: ["shahar", "imma"], negative: [] },
