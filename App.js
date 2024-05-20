@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, SafeAreaView } from "react-native";
+import { StyleSheet, SafeAreaView } from "react-native";
 
-import TableOfWeek from "./TableOfWeek";
+import TableOfWeek from "./src/TableOfWeek";
 
 export default function App() {
   return (
