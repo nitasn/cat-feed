@@ -1,12 +1,19 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
 import { Ionicons } from "@expo/vector-icons";
 import { useMemo } from "react";
 import { getFirstDayOfWeek, getLaterDate, relativeWeek } from "./utils";
-
 import { useGlobalState } from "./global-state";
 import { weekDisplayed } from "./state";
 import useWeekData from "./fetcher";
+
+export default function TableOfWeek() {
+  return (
+    <View style={styles.container}>
+      <Header />
+      <Table />
+    </View>
+  );
+}
 
 /**
  * @param {{ glyph: keyof typeof Ionicons.glyphMap }}
@@ -16,15 +23,6 @@ export function IconButton({ glyph, onPress }) {
     <TouchableOpacity style={styles.menuItem} onPress={onPress}>
       <Ionicons name={glyph} size={30} />
     </TouchableOpacity>
-  );
-}
-
-export default function TableOfWeek() {
-  return (
-    <View style={styles.container}>
-      <Header />
-      <Table />
-    </View>
   );
 }
 
