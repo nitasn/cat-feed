@@ -109,15 +109,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     alignItems: "center",
-    // backgroundColor: "gray",
   },
   title: {
     fontSize: 30,
   },
   iconButton: {
-    // backgroundColor: "white",
-    paddingVertical: 16,
-    paddingHorizontal: 35,
+    paddingVertical: 22,
+    paddingHorizontal: 36,
   },
   blurWrapper: {
     flex: 1,
