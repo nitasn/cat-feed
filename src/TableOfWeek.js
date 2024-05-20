@@ -25,7 +25,7 @@ export default function TableOfWeek() {
 export function IconButton({ glyph, onPress }) {
   return (
     <TouchableOpacity onPress={onPress}>
-      <Ionicons name={glyph} size={30} />
+      <Ionicons name={glyph} size={24} />
     </TouchableOpacity>
   );
 }
@@ -52,35 +52,29 @@ function Header() {
 }
 
 function Table() {
-  const text = "Hi ma nish";
+  const { weekPending, weekError, weekData } = useWeekData();
+
+  const text = weekPending
+    ? "Week Pending..."
+    : weekError
+    ? `Week Error: ${weekError.message}`
+    : JSON.stringify(weekData);
 
   return (
     <BlurView intensity={80} tint="default" style={tableStyles.blurContainer}>
-      <Text style={tableStyles.text}>{text}</Text>
+      <Text>{text}</Text>
     </BlurView>
   );
-
-  // const { weekPending, weekError, weekData } = useWeekData();
-
-  // if (weekPending) return <Text>Week Pending...</Text>;
-
-  // if (weekError) return <Text>Week Error: {weekError.message}</Text>;
-
-  // return <Text>{JSON.stringify(weekData)}</Text>;
 }
 
 const tableStyles = StyleSheet.create({
   blurContainer: {
+    flex: 1,
+    alignSelf: "stretch",
     padding: 20,
-    margin: 16,
-    textAlign: "center",
-    justifyContent: "center",
+    margin: 20,
     overflow: "hidden",
     borderRadius: 20,
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: "600",
   },
 });
 
@@ -96,8 +90,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     flexDirection: "row",
     alignItems: "center",
+    paddingTop: 20,
   },
   title: {
-    fontSize: 40,
+    fontSize: 30,
   },
 });
