@@ -23,11 +23,11 @@ const personToImage = {
 
 /** @type {Record<Name, string>} */
 const personToColor = {
-  imma: "#ef9696",
-  nitsan: "#E0AED0",
-  tal: "#76babd",
+  imma: "#76babd",
+  nitsan: "#ef9696",
+  tal: "#c5c587",
   ronnie: "#756AB6",
-  shahar: "#c5c587",
+  shahar: "#E0AED0",
 };
 
 /** @type {Name[]} */
