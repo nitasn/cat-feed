@@ -5,8 +5,8 @@ export default {
       negative: ["ronnie"],
     },
     monday: {
-      positive: ["nitsan", "shahar"],
-      negative: ["ronnie"],
+      positive: ["nitsan", "ronnie"],
+      negative: ["shahar"],
     },
     tuesday: {
       positive: ["nitsan", "shahar", "tal"],
