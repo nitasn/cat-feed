@@ -2,7 +2,7 @@
 
 import { Ionicons } from "@expo/vector-icons";
 import React, { useMemo } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useWeekData from "./fetcher";
 import { useAtom } from "jotai";
 import { weekDisplayed } from "./state";
@@ -14,7 +14,9 @@ export default function TableOfWeek() {
   return (
     <View style={styles.container}>
       <Header />
-      <Table />
+      <BlurView intensity={80} tint="light" style={tableStyles.blurContainer}>
+        <Table />
+      </BlurView>
     </View>
   );
 }
@@ -52,19 +54,27 @@ function Header() {
 }
 
 function Table() {
-  const { weekPending, weekError, weekData } = useWeekData();
+  const { weekLoading, weekError, weekData } = useWeekData();
 
-  const text = weekPending
-    ? "Week Pending..."
-    : weekError
-    ? `Week Error: ${weekError.message}`
-    : JSON.stringify(weekData);
+  if (weekLoading) {
+    return (
+      <View style={{ flex: 1, flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 4 }}>
+        <Text style={{ color: "#333", fontSize: 16 }}>Loading...</Text>
+        <ActivityIndicator />
+      </View>
+    );
+  }
 
-  return (
-    <BlurView intensity={80} tint="default" style={tableStyles.blurContainer}>
-      <Text>{text}</Text>
-    </BlurView>
-  );
+  if (weekError) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ color: "maroon", fontSize: 16 }}>Can't load data from server :/</Text>
+        <Text style={{ color: "maroon", fontSize: 16 }}>You got internet bro?</Text>
+      </View>
+    );
+  }
+
+  return <Text>{JSON.stringify(weekData)}</Text>;
 }
 
 const tableStyles = StyleSheet.create({

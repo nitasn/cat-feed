@@ -25,5 +25,5 @@ export default function useWeekData() {
     },
   });
 
-  return { weekPending: isPending, weekError: error, weekData: data };
+  return { weekLoading: isPending, weekError: error, weekData: data };
 }
