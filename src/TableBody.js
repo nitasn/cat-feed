@@ -78,7 +78,11 @@ function Hr() {
   return <View style={styles.hr} />;
 }
 
-export const styles = StyleSheet.create({
+function Vr() {
+  return <View style={styles.vr} />;
+}
+
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "space-between",
@@ -94,6 +98,11 @@ export const styles = StyleSheet.create({
     backgroundColor: "#33333322",
     width: "100%",
     height: 1,
+  },
+  vr: {
+    backgroundColor: '#33333322',
+    width: 1,
+    height: '100%',
   },
   dayName: {
     fontSize: 16,
