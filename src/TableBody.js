@@ -2,10 +2,23 @@
 
 import { useAtom } from "jotai";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ImageBackground } from "react-native";
 import { weekDisplayed } from "./state";
-import { advanceDateByDays, dateToShortString } from "./utils";
+import { advanceDateByDays } from "./utils";
 import { format } from "date-fns";
+
+const personToImage = {
+  // @ts-ignore
+  imma: require("../assets/people/imma.jpg"),
+  // @ts-ignore
+  nitsan: require("../assets/people/nitsan.jpg"),
+  // @ts-ignore
+  tal: require("../assets/people/tal.jpg"),
+  // @ts-ignore
+  ronnie: require("../assets/people/ronnie.jpg"),
+  // @ts-ignore
+  shahar: require("../assets/people/shahar.jpg"),
+};
 
 /**
  * @param {{ weekData: WeeklyData}} props
@@ -68,14 +81,10 @@ function PeopleColumn({ dayData }) {
  * @param {{ name: string, attendending: boolean }} props
  */
 function PersonBubble({ name, attendending }) {
-  const char = name[0].toUpperCase();
-
-  const backgroundColor = attendending ? "#32cd3255" : "#ff450055";
-
   return (
-    <View style={[styles.personBubble, { backgroundColor }]}>
-      <Text>{char}</Text>
-    </View>
+    <ImageBackground source={personToImage[name]} style={styles.personBubble}>
+      <View style={attendending ? styles.positiveBackground : styles.negativeBackground} />
+    </ImageBackground>
   );
 }
 
@@ -125,9 +134,18 @@ export const styles = StyleSheet.create({
   personBubble: {
     width: 32,
     height: 32,
-    justifyContent: "center",
-    alignItems: "center",
     borderRadius: Number.MAX_SAFE_INTEGER,
+    overflow: "hidden",
+  },
+  positiveBackground: {
+    flex: 1,
+    opacity: .5,
+    backgroundColor: "#98C9A3",
+  },
+  negativeBackground: {
+    flex: 1,
+    opacity: .3,
+    backgroundColor: "red",
   },
   peopleBubblesArea: {
     flexDirection: "row",
