@@ -31,21 +31,66 @@ const dayNameAbbreviation = {
 const dayOffset = Object.fromEntries(Object.keys(dayNameAbbreviation).map((key, index) => [key, index]));
 
 /**
- * @param {{ dayName: string, dayData: DailyData}} props
+ * @param {{ dayName: string, dayData: DailyData }} props
  */
 function Row({ dayName, dayData }) {
-  const [dateWeekStarts] = useAtom(weekDisplayed);
-  const date = advanceDateByDays(dateWeekStarts, dayOffset[dayName]);
-
   return (
     <>
       <View style={styles.row}>
-        <Text style={styles.dayName}>{dayName}</Text>
-        <Text style={styles.date}>{format(date, "MMMM d")}</Text>
+        <DayColumn dayName={dayName} />
+        <PeopleColumn dayData={dayData} />
       </View>
 
       {dayName !== "saturday" && <Hr />}
     </>
+  );
+}
+
+/**
+ * @param {{ dayData: DailyData }} props
+ */
+function PeopleColumn({ dayData }) {
+  console.log(dayData);
+  return (
+    <View style={styles.peopleBubblesArea}>
+      {dayData.positive.map((name) => (
+        <PersonBubble key={`positive:${name}`} name={name} attendending={true} />
+      ))}
+      {dayData.negative.map((name) => (
+        <PersonBubble key={`negative:${name}`} name={name} attendending={false} />
+      ))}
+    </View>
+  );
+}
+
+/**
+ *
+ * @param {{ name: string, attendending: boolean }} props
+ */
+function PersonBubble({ name, attendending }) {
+  const char = name[0].toUpperCase();
+
+  const backgroundColor = attendending ? "#32cd3255" : "#ff450055";
+
+  return (
+    <View style={[styles.personBubble, { backgroundColor }]}>
+      <Text>{char}</Text>
+    </View>
+  );
+}
+
+/**
+ * @param {{ dayName: string }} props
+ */
+function DayColumn({ dayName }) {
+  const [dateWeekStarts] = useAtom(weekDisplayed);
+  const date = advanceDateByDays(dateWeekStarts, dayOffset[dayName]);
+
+  return (
+    <View>
+      <Text style={styles.dayName}>{dayName}</Text>
+      <Text style={styles.date}>{format(date, "MMMM d")}</Text>
+    </View>
   );
 }
 
@@ -60,6 +105,9 @@ export const styles = StyleSheet.create({
   },
   row: {
     padding: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   hr: {
     backgroundColor: "#33333322",
@@ -73,5 +121,16 @@ export const styles = StyleSheet.create({
   },
   date: {
     fontSize: 16,
+  },
+  personBubble: {
+    width: 32,
+    height: 32,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: Number.MAX_SAFE_INTEGER,
+  },
+  peopleBubblesArea: {
+    flexDirection: "row",
+    gap: 3,
   },
 });
