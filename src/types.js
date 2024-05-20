@@ -4,8 +4,8 @@
 
 /**
  * @typedef {Object} DailyData
- * @property {Name[]} morning
- * @property {Name[]} evening
+ * @property {{ positive: Name[], negative: Name[] }} morning
+ * @property {{ positive: Name[], negative: Name[] }} evening
  */
 
 /**

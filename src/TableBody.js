@@ -51,7 +51,9 @@ function Row({ dayName, dayData }) {
   return (
     <>
       <View style={styles.row}>
-        <DayColumn dayName={dayName} dayData={dayData} />
+        <DayColumn dayName={dayName} />
+        <PeopleColumn people={dayData.morning} />
+        <PeopleColumn people={dayData.evening} />
       </View>
 
       {dayName !== "saturday" && <Hr />}
@@ -60,9 +62,9 @@ function Row({ dayName, dayData }) {
 }
 
 /**
- * @param {{ dayName: string, dayData: DailyData }} props
+ * @param {{ dayName: string }} props
  */
-function DayColumn({ dayName, dayData }) {
+function DayColumn({ dayName }) {
   const [dateWeekStarts] = useAtom(weekDisplayed);
   const date = advanceDateByDays(dateWeekStarts, dayOffset[dayName]);
 
@@ -71,6 +73,34 @@ function DayColumn({ dayName, dayData }) {
       <Text style={styles.dayName}>{dayNameAbbreviation[dayName]}</Text>
       <Text style={styles.date}>{format(date, "MMM d")}</Text>
     </View>
+  );
+}
+
+/**
+ * @param {{ people: { positive: Name[], negative: Name[] } }} props
+ */
+function PeopleColumn({ people }) {
+  return (
+    <View style={styles.peopleBubblesArea}>
+      {people.positive.map((name) => (
+        <PersonBubble key={`positive:${name}`} name={name} attending={true} />
+      ))}
+      {people.negative.map((name) => (
+        <PersonBubble key={`negative:${name}`} name={name} attending={false} />
+      ))}
+    </View>
+  );
+}
+
+/**
+ *
+ * @param {{ name: Name, attending: boolean }} props
+ */
+function PersonBubble({ name, attending }) {
+  return (
+    <ImageBackground source={personToImage[name]} style={styles.personBubble}>
+      <View style={[styles.borderOverlay, attending ? styles.postiveBorderColor : styles.negativeBorderColor]} />
+    </ImageBackground>
   );
 }
 
@@ -89,7 +119,6 @@ const styles = StyleSheet.create({
   },
   row: {
     padding: 8,
-    // paddingHorizontal: 8,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
