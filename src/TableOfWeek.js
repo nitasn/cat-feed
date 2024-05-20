@@ -17,7 +17,7 @@ export default function TableOfWeek() {
       <Header />
       <View style={styles.blurWrapper}>
         <SunAndMoon />
-        <BlurView intensity={80} tint="light" style={styles.blurContainer}>
+        <BlurView intensity={70} tint="light" style={styles.blurContainer}>
           <Table />
         </BlurView>
       </View>
@@ -33,10 +33,10 @@ function SunAndMoon() {
         {/* <Ionicons style={{ margin: "auto" }} name="shirt-outline" size={24} /> */}
       </View>
       <View style={{ flex: 1 }}>
-        <Ionicons style={{ margin: "auto", transform: [{ scale: 1.1 }] }} name="sunny-outline" size={24} />
+        <Ionicons color="black" style={{ margin: "auto", transform: [{ scale: 1.1 }] }} name="sunny-outline" size={24} />
       </View>
       <View style={{ flex: 1 }}>
-        <Ionicons style={{ margin: "auto" }} name="moon-outline" size={24} />
+        <Ionicons color="black" style={{ margin: "auto" }} name="moon-outline" size={24} />
       </View>
     </View>
   );
@@ -48,7 +48,7 @@ function SunAndMoon() {
 export function IconButton({ glyph, onPress }) {
   return (
     <TouchableOpacity onPress={onPress} style={styles.iconButton}>
-      <Ionicons name={glyph} size={24} />
+      <Ionicons color="black" name={glyph} size={24} />
     </TouchableOpacity>
   );
 }
@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
+    color: "black"
   },
   iconButton: {
     paddingVertical: 22,

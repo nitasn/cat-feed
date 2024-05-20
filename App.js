@@ -11,7 +11,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 
 // @ts-ignore
-const backgroundImage = require("./assets/background-blur.webp");
+const backgroundImage = require("./assets/glare.jpeg");
+// const backgroundImage = require("./assets/background-blur.webp");
 
 export default function App() {
   return (

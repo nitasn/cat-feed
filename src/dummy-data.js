@@ -6,62 +6,62 @@
 export default {
   "May 19, 2024": {
     sunday: {
-      morning: { positive: ["nitsan", "shahar"], negative: ["imma"] },
-      evening: { positive: ["nitsan", "shahar"], negative: ["ronnie"] },
+      morning: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
+      evening: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
     },
     monday: {
-      morning: { positive: ["ronnie"], negative: [] },
-      evening: { positive: ["shahar"], negative: ["nitsan", "ronnie"] },
+      morning: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
+      evening: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
     },
     tuesday: {
-      morning: { positive: ["ronnie"], negative: [] },
-      evening: { positive: ["nitsan", "shahar"], negative: [] },
+      morning: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
+      evening: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
     },
     wednesday: {
-      morning: { positive: ["nitsan", "shahar", "tal"], negative: [] },
-      evening: { positive: ["nitsan", "shahar"], negative: [] },
+      morning: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
+      evening: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
     },
     thursday: {
-      morning: { positive: ["nitsan", "shahar"], negative: [] },
-      evening: { positive: ["nitsan", "shahar"], negative: [] },
+      morning: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
+      evening: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
     },
     friday: {
-      morning: { positive: ["nitsan", "shahar"], negative: [] },
-      evening: { positive: ["nitsan", "shahar"], negative: [] },
+      morning: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
+      evening: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
     },
     saturday: {
-      morning: { positive: ["nitsan", "shahar"], negative: [] },
-      evening: { positive: ["nitsan", "shahar"], negative: ["imma"] },
+      morning: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
+      evening: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
     },
   },
   "May 26, 2024": {
     sunday: {
-      morning: { positive: ["shahar", "imma"], negative: [] },
-      evening: { positive: ["nitsan", "shahar"], negative: ["imma"] },
+      morning: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
+      evening: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
     },
     monday: {
-      morning: { positive: ["shahar", "imma"], negative: [] },
-      evening: { positive: ["nitsan", "shahar"], negative: ["imma"] },
+      morning: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
+      evening: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
     },
     tuesday: {
-      morning: { positive: ["shahar", "imma"], negative: [] },
-      evening: { positive: [], negative: [] },
+      morning: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
+      evening: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
     },
     wednesday: {
-      morning: { positive: ["shahar", "imma"], negative: [] },
-      evening: { positive: ["nitsan", "shahar"], negative: ["imma"] },
+      morning: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
+      evening: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
     },
     thursday: {
-      morning: { positive: ["shahar", "imma"], negative: [] },
-      evening: { positive: ["nitsan", "shahar"], negative: ["imma"] },
+      morning: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
+      evening: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
     },
     friday: {
-      morning: { positive: ["shahar", "imma"], negative: [] },
-      evening: { positive: ["nitsan", "shahar"], negative: ["imma"] },
+      morning: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
+      evening: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
     },
     saturday: {
-      morning: { positive: ["shahar", "imma"], negative: [] },
-      evening: { positive: ["nitsan", "shahar"], negative: ["imma"] },
+      morning: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
+      evening: { positive: ["imma", "nitsan", "tal", "ronnie", "shahar"], negative: [] },
     },
   },
 };

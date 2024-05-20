@@ -21,6 +21,16 @@ const personToImage = {
   shahar: require("../assets/people/shahar.jpg"),
 };
 
+const personToColor = {
+  imma: "#FFE5E5",
+  nitsan: "#E0AED0",
+  tal: "white",
+  ronnie: "#756AB6",
+  shahar: "#AC87C5",
+};
+
+const personToIndex = Object.fromEntries(Object.keys(personToColor).map((name, index) => [name, index]));
+
 /**
  * @param {{ weekData: WeeklyData}} props
  */
@@ -42,7 +52,7 @@ const dayNameAbbreviation = {
   saturday: "Sat",
 };
 
-const dayOffset = Object.fromEntries(Object.keys(dayNameAbbreviation).map((key, index) => [key, index]));
+const dayToIndex = Object.fromEntries(Object.keys(dayNameAbbreviation).map((key, index) => [key, index]));
 
 /**
  * @param {{ dayName: string, dayData: DailyData }} props
@@ -52,8 +62,8 @@ function Row({ dayName, dayData }) {
     <>
       <View style={styles.row}>
         <DayColumn dayName={dayName} />
-        <PeopleColumn people={dayData.morning} />
-        <PeopleColumn people={dayData.evening} />
+        <PeopleColumn positive={dayData.morning.positive} />
+        <PeopleColumn positive={dayData.evening.positive} />
       </View>
 
       {dayName !== "saturday" && <Hr />}
@@ -78,7 +88,7 @@ function range(n, m = undefined) {
  */
 function DayColumn({ dayName }) {
   const [dateWeekStarts] = useAtom(weekDisplayed);
-  const date = advanceDateByDays(dateWeekStarts, dayOffset[dayName]);
+  const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
 
   return (
     <View>
@@ -87,12 +97,6 @@ function DayColumn({ dayName }) {
     </View>
   );
 }
-
-const colors = ["red", "green", "blue", "gold", "purple"];
-let rand = Math.random();
-if (rand < 0.5) {
-}
-// const backgroundColor = adf;
 
 // return (
 //   <View style={styles.peopleBubblesArea}>
@@ -106,73 +110,16 @@ if (rand < 0.5) {
 // );
 
 /**
- * @param {{ people: { positive: Name[], negative: Name[] } }} props
+ * @param {{ positive: Name[] }} props
  */
-function PeopleColumn({ people }) {
-  return <FiveDotsCircle />;
-
-  return <FiveDotsRow />;
-
-  return <FiveDotsPyramid />;
-}
-
-function Dot({ style = {} }) {
-  return (
-    <View
-      style={{
-        width: 8,
-        aspectRatio: 1,
-        borderColor: "#333333cc",
-        borderWidth: 1.5,
-        borderRadius: Number.MAX_SAFE_INTEGER,
-        ...style,
-      }}
-    />
-  );
-}
-
-function FiveDotsRow() {
-  return (
-    <View style={{ flexDirection: "row", gap: 1 }}>
-      {range(5).map((idx) => (
-        <Dot key={idx} />
-      ))}
-    </View>
-  );
-}
-
-function FiveDotsPyramid() {
-  const top = (
-    <View style={{ flexDirection: "row", gap: 1 }}>
-      {range(2).map((idx) => (
-        <Dot key={idx} />
-      ))}
-    </View>
-  );
-  const bottom = (
-    <View style={{ flexDirection: "row", gap: 1 }}>
-      {range(2, 5).map((idx) => (
-        <Dot key={idx} />
-      ))}
-    </View>
-  );
-
-  return (
-    <View style={{ alignItems: "center" }}>
-      {top}
-      {bottom}
-    </View>
-  );
-}
-
-function FiveDotsCircle() {
-  const radius = 10;
+function PeopleColumn({ positive }) {
+  const circleRadius = 11;
 
   return (
     <View
       style={{
-        width: 2 * radius + 8,
-        height: 2 * radius + 8,
+        width: 2 * circleRadius + 8,
+        height: 2 * circleRadius + 8,
         justifyContent: "center",
         alignItems: "center",
         position: "relative",
@@ -180,10 +127,15 @@ function FiveDotsCircle() {
     >
       {range(5).map((idx) => {
         const angle = 2 * Math.PI * (idx / 5) - Math.PI / 2;
-        const translateX = radius * Math.cos(angle);
-        const translateY = radius * Math.sin(angle);
+        const translateX = circleRadius * Math.cos(angle);
+        const translateY = circleRadius * Math.sin(angle);
+
+        /** @type {Name} */
+        const name = Object.keys(personToColor)[idx];
+
         return (
           <Dot
+            color={positive.includes(name) ? personToColor[name] : undefined}
             key={idx}
             style={{
               transform: [{ translateX: translateX }, { translateY: translateY }],
@@ -193,6 +145,22 @@ function FiveDotsCircle() {
         );
       })}
     </View>
+  );
+}
+
+function Dot({ color = undefined, style = {} }) {
+  return (
+    <View
+      style={{
+        width: 10,
+        aspectRatio: 1,
+        borderColor: "#333333cc",
+        borderWidth: 1.5,
+        borderRadius: Number.MAX_SAFE_INTEGER,
+        backgroundColor: color,
+        ...style,
+      }}
+    />
   );
 }
 
@@ -241,9 +209,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textTransform: "capitalize",
     fontWeight: "600",
+    color: "black,"
   },
   date: {
     fontSize: 12,
+    // color: "white"
   },
   personBubble: {
     width: 36,
