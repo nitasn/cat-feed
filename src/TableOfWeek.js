@@ -9,12 +9,13 @@ import { weekDisplayed } from "./state";
 import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
 
 import { BlurView } from "expo-blur";
+import { TableBody } from "./TableBody";
 
 export default function TableOfWeek() {
   return (
     <View style={styles.container}>
       <Header />
-      <BlurView intensity={80} tint="light" style={tableStyles.blurContainer}>
+      <BlurView intensity={80} tint="light" style={styles.blurContainer}>
         <Table />
       </BlurView>
     </View>
@@ -74,19 +75,10 @@ function Table() {
     );
   }
 
-  return <Text>{JSON.stringify(weekData)}</Text>;
+  if (weekData) {
+    return <TableBody weekData={weekData} />;
+  }
 }
-
-const tableStyles = StyleSheet.create({
-  blurContainer: {
-    flex: 1,
-    alignSelf: "stretch",
-    padding: 20,
-    margin: 20,
-    overflow: "hidden",
-    borderRadius: 20,
-  },
-});
 
 const styles = StyleSheet.create({
   container: {
@@ -105,5 +97,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
+  },
+  blurContainer: {
+    flex: 1,
+    alignSelf: "stretch",
+    padding: 20,
+    margin: 20,
+    overflow: "hidden",
+    borderRadius: 20,
   },
 });
