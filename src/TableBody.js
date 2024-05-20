@@ -2,7 +2,7 @@
 
 import { useAtom } from "jotai";
 import React from "react";
-import { StyleSheet, Text, View, ImageBackground } from "react-native";
+import RN, { StyleSheet, Text, View, ImageBackground } from "react-native";
 import { weekDisplayed } from "./state";
 import { advanceDateByDays } from "./utils";
 import { format } from "date-fns";
@@ -62,6 +62,18 @@ function Row({ dayName, dayData }) {
 }
 
 /**
+ * @param {number} n
+ * @param {number} [m]
+ * @returns {number[]}
+ */
+function range(n, m = undefined) {
+  if (m === undefined) {
+    return [...Array(n).keys()];
+  }
+  return range(m - n).map((x) => x + n);
+}
+
+/**
  * @param {{ dayName: string }} props
  */
 function DayColumn({ dayName }) {
@@ -76,18 +88,110 @@ function DayColumn({ dayName }) {
   );
 }
 
+const colors = ["red", "green", "blue", "gold", "purple"];
+let rand = Math.random();
+if (rand < 0.5) {
+}
+// const backgroundColor = adf;
+
+// return (
+//   <View style={styles.peopleBubblesArea}>
+//     {people.positive.map((name) => (
+//       <PersonBubble key={`positive:${name}`} name={name} attending={true} />
+//     ))}
+//     {people.negative.map((name) => (
+//       <PersonBubble key={`negative:${name}`} name={name} attending={false} />
+//     ))}
+//   </View>
+// );
+
 /**
  * @param {{ people: { positive: Name[], negative: Name[] } }} props
  */
 function PeopleColumn({ people }) {
+  return <FiveDotsCircle />;
+
+  return <FiveDotsRow />;
+
+  return <FiveDotsPyramid />;
+}
+
+function Dot({ style = {} }) {
   return (
-    <View style={styles.peopleBubblesArea}>
-      {people.positive.map((name) => (
-        <PersonBubble key={`positive:${name}`} name={name} attending={true} />
+    <View
+      style={{
+        width: 8,
+        aspectRatio: 1,
+        borderColor: "#333333cc",
+        borderWidth: 1.5,
+        borderRadius: Number.MAX_SAFE_INTEGER,
+        ...style,
+      }}
+    />
+  );
+}
+
+function FiveDotsRow() {
+  return (
+    <View style={{ flexDirection: "row", gap: 1 }}>
+      {range(5).map((idx) => (
+        <Dot key={idx} />
       ))}
-      {people.negative.map((name) => (
-        <PersonBubble key={`negative:${name}`} name={name} attending={false} />
+    </View>
+  );
+}
+
+function FiveDotsPyramid() {
+  const top = (
+    <View style={{ flexDirection: "row", gap: 1 }}>
+      {range(2).map((idx) => (
+        <Dot key={idx} />
       ))}
+    </View>
+  );
+  const bottom = (
+    <View style={{ flexDirection: "row", gap: 1 }}>
+      {range(2, 5).map((idx) => (
+        <Dot key={idx} />
+      ))}
+    </View>
+  );
+
+  return (
+    <View style={{ alignItems: "center" }}>
+      {top}
+      {bottom}
+    </View>
+  );
+}
+
+function FiveDotsCircle() {
+  const radius = 10;
+
+  return (
+    <View
+      style={{
+        width: 2 * radius + 8,
+        height: 2 * radius + 8,
+        justifyContent: "center",
+        alignItems: "center",
+        position: "relative",
+      }}
+    >
+      {range(5).map((idx) => {
+        const angle = 2 * Math.PI * (idx / 5) - Math.PI / 2;
+        const translateX = radius * Math.cos(angle);
+        const translateY = radius * Math.sin(angle);
+        return (
+          <Dot
+            key={idx}
+            style={{
+              transform: [{ translateX: translateX }, { translateY: translateY }],
+              position: "absolute",
+            }}
+          />
+        );
+      })}
     </View>
   );
 }
@@ -129,9 +233,9 @@ const styles = StyleSheet.create({
     height: 1,
   },
   vr: {
-    backgroundColor: '#33333322',
+    backgroundColor: "#33333322",
     width: 1,
-    height: '100%',
+    height: "100%",
   },
   dayName: {
     fontSize: 16,

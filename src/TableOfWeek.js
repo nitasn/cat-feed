@@ -27,10 +27,10 @@ export default function TableOfWeek() {
 
 function SunAndMoon() {
   return (
-    <View style={{ flexDirection: "row", marginBottom: 8, marginHorizontal: -20 }}>
+    <View style={{ flexDirection: "row", marginBottom: 8 }}>
       <View style={{ flex: 1 }}>
         {/*  */}
-        <Ionicons style={{ margin: "auto" }} name="shirt-outline" size={24} />
+        {/* <Ionicons style={{ margin: "auto" }} name="shirt-outline" size={24} /> */}
       </View>
       <View style={{ flex: 1 }}>
         <Ionicons style={{ margin: "auto", transform: [{ scale: 1.1 }] }} name="sunny-outline" size={24} />
