@@ -52,39 +52,10 @@ function Row({ dayName, dayData }) {
     <>
       <View style={styles.row}>
         <DayColumn dayName={dayName} />
-        <PeopleColumn dayData={dayData} />
       </View>
 
       {dayName !== "saturday" && <Hr />}
     </>
-  );
-}
-
-/**
- * @param {{ dayData: DailyData }} props
- */
-function PeopleColumn({ dayData }) {
-  return (
-    <View style={styles.peopleBubblesArea}>
-      {dayData.positive.map((name) => (
-        <PersonBubble key={`positive:${name}`} name={name} attending={true} />
-      ))}
-      {dayData.negative.map((name) => (
-        <PersonBubble key={`negative:${name}`} name={name} attending={false} />
-      ))}
-    </View>
-  );
-}
-
-/**
- *
- * @param {{ name: Name, attending: boolean }} props
- */
-function PersonBubble({ name, attending }) {
-  return (
-    <ImageBackground source={personToImage[name]} style={styles.personBubble}>
-      <View style={[styles.borderOverlay, attending ? styles.postiveBorderColor : styles.negativeBorderColor]} />
-    </ImageBackground>
   );
 }
 
