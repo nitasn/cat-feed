@@ -97,8 +97,8 @@ function DayColumn({ dayName }) {
 
   return (
     <View>
-      <Text style={styles.dayName}>{dayName}</Text>
-      <Text style={styles.date}>{format(date, "MMMM d")}</Text>
+      <Text style={styles.dayName}>{dayNameAbbreviation[dayName]}</Text>
+      <Text style={styles.date}>{format(date, "MMM d")}</Text>
     </View>
   );
 }
@@ -114,6 +114,7 @@ export const styles = StyleSheet.create({
   },
   row: {
     padding: 12,
+    paddingHorizontal: 8,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -129,7 +130,7 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
   },
   date: {
-    fontSize: 16,
+    fontSize: 12,
   },
   personBubble: {
     width: 36,
