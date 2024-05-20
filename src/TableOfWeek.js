@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useMemo } from "react";
-import { relativeWeek } from "./utils";
+import { getLaterDate, relativeWeek } from "./utils";
 
 // import dummyData from "./dummyData";
 
@@ -29,17 +29,21 @@ export default function TableOfWeek() {
 }
 
 function Header() {
-  const firstDayOfWeek = useGlobalState(weekDisplayed);
+  const [firstDayOfWeek, setFirstDayOfWeek] = useGlobalState(weekDisplayed);
 
   const title = useMemo(() => {
     return relativeWeek(firstDayOfWeek);
   }, [firstDayOfWeek]);
 
+  const changeWeekBy = (numWeeks) => () => {
+    setFirstDayOfWeek(getLaterDate(firstDayOfWeek, { numDaysLater: 7 * numWeeks }));
+  };
+
   return (
     <View style={styles.header}>
-      <IconButton glyph="arrow-back" />
+      <IconButton glyph="arrow-back" onPress={changeWeekBy(-1)} />
       <Text style={styles.title}>{title}</Text>
-      <IconButton glyph="arrow-forward" />
+      <IconButton glyph="arrow-forward" onPress={changeWeekBy(+1)} />
     </View>
   );
 }

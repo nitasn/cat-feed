@@ -1,4 +1,4 @@
-import { GlobalState } from "./global-state";
+import { createGlobalState } from "./global-state";
 import { getFirstDayOfWeek } from "./utils";
 
-export const weekDisplayed = new GlobalState(getFirstDayOfWeek());
+export const weekDisplayed = createGlobalState(getFirstDayOfWeek());

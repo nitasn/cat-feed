@@ -1,64 +1,51 @@
-//@ts-check
-
-import { useState, useEffect } from "react";
+import React from "react";
 
 /**
- * @param {any} param 
- * @returns {param is Function}
+ * @typedef {() => void} Unsubscribe
  */
-function isFunction(param) {
-  return typeof param === "function";
-}
 
-/** @template T */
-export class GlobalState {
+/**
+ * @template T
+ * @param {T} [initialValue]
+ * @returns {{
+ *   get: () => T,
+ *   set: (nextValue: T | ((prevValue: T) => T)) => void,
+ *   subscribe: (callback: (nextValue: T) => void) => Unsubscribe
+ * }}
+ */
+export function createGlobalState(initialValue = undefined) {
+  let value = initialValue;
+  const subs = new Set();
 
-  /** @type {T} */
-  #value;
-
-  /** @type {Set<(value: T) => void>} */
-  #subs = new Set();
-
-  /**
-   * @param {T} initialValue
-   */
-  constructor(initialValue) {
-    this.#value = initialValue;
+  function get() {
+    return value;
   }
 
-  /**
-   * @returns {T}
-   */
-  get() { return this.#value; }
-
-  /**
-   * @param {T | ((prevValue: T) => T)} param 
-   */
-  set(param) {
-    this.#value = isFunction(param) ? param(this.#value) : param;
-    this.#subs.forEach((callback) => callback(this.#value));
+  function set(param) {
+    value = typeof param === "function" ? param(value) : param;
+    subs.forEach((callback) => callback(value));
   }
 
-  /**
-   * @param {(value: T) => void} callback 
-   * @returns {() => void} an `unsubscribe` function.
-   */
-  subscribe(callback) {
+  function subscribe(callback) {
     if (typeof callback !== "function") {
-      throw Error("param `callback` must be a function");
+      return console.error("param `callback` must be a function");
     }
-    this.#subs.add(callback);
-    return function unsubscribe() { this.subs.delete(callback); };
+    subs.add(callback);
+    return function unsubscribe() {
+      subs.delete(callback);
+    };
   }
+
+  return { get, set, subscribe };
 }
 
 /**
  * @template T
- * @param {GlobalState<T>} globalState
- * @returns {[T, GlobalState<T>['set']]}
+ * @param {ReturnType<typeof createGlobalState<T>>} globalState
+ * @returns {[T, (nextValue: T | ((prevValue: T) => T)) => void]}
  */
 export function useGlobalState(globalState) {
-  const [value, setValue] = useState(globalState.get);
-  useEffect(() => globalState.subscribe(setValue), [globalState]);
+  const [value, setValue] = React.useState(globalState.get);
+  React.useEffect(() => globalState.subscribe(setValue), []);
   return [value, globalState.set];
 }
