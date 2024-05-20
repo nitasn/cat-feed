@@ -124,6 +124,5 @@ export const styles = StyleSheet.create({
   },
   peopleBubblesArea: {
     flexDirection: "row",
-    // gap: -3,
   },
 });
