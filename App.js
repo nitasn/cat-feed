@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, SafeAreaView } from "react-native";
+import { ImageBackground } from "react-native";
 
 import TableOfWeek from "./src/TableOfWeek";
 
@@ -11,9 +12,11 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <StatusBar style="auto" />
-      <SafeAreaView style={styles.container}>
-        <TableOfWeek />
-      </SafeAreaView>
+      <ImageBackground source={require("./assets/background-blur.webp")} style={styles.image}>
+        <SafeAreaView style={styles.container}>
+          <TableOfWeek />
+        </SafeAreaView>
+      </ImageBackground>
     </QueryClientProvider>
   );
 }
@@ -21,6 +24,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+  },
+  image: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center",
   },
 });

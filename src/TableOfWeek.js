@@ -8,6 +8,8 @@ import { useGlobalState } from "./global-state";
 import { weekDisplayed } from "./state";
 import { advanceDateByDays, getFirstDayOfWeek, relativeWeek } from "./utils";
 
+import { BlurView } from "expo-blur";
+
 export default function TableOfWeek() {
   return (
     <View style={styles.container}>
@@ -50,14 +52,37 @@ function Header() {
 }
 
 function Table() {
-  const { weekPending, weekError, weekData } = useWeekData();
+  const text = "Hi ma nish";
 
-  if (weekPending) return <Text>Week Pending...</Text>;
+  return (
+    <BlurView intensity={80} tint="default" style={tableStyles.blurContainer}>
+      <Text style={tableStyles.text}>{text}</Text>
+    </BlurView>
+  );
 
-  if (weekError) return <Text>Week Error: {weekError.message}</Text>;
+  // const { weekPending, weekError, weekData } = useWeekData();
 
-  return <Text>{JSON.stringify(weekData)}</Text>;
+  // if (weekPending) return <Text>Week Pending...</Text>;
+
+  // if (weekError) return <Text>Week Error: {weekError.message}</Text>;
+
+  // return <Text>{JSON.stringify(weekData)}</Text>;
 }
+
+const tableStyles = StyleSheet.create({
+  blurContainer: {
+    padding: 20,
+    margin: 16,
+    textAlign: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    borderRadius: 20,
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: "600",
+  },
+});
 
 const styles = StyleSheet.create({
   container: {
