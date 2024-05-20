@@ -139,12 +139,12 @@ export const styles = StyleSheet.create({
   },
   positiveBackground: {
     flex: 1,
-    opacity: .5,
-    backgroundColor: "#98C9A3",
+    opacity: .275,
+    backgroundColor: "green",
   },
   negativeBackground: {
     flex: 1,
-    opacity: .3,
+    opacity: .275,
     backgroundColor: "red",
   },
   peopleBubblesArea: {
