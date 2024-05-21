@@ -86,6 +86,22 @@ function range(n, m = undefined) {
 }
 
 /**
+ * Returns an array of k elements randomly picked from the input array with possible repetitions.
+ * @template T
+ * @param {T[]} array
+ * @param {number} k
+ * @returns {T[]}
+ */
+function randomChoice(array, k) {
+  const result = [];
+  for (let i = 0; i < k; i++) {
+    const index = Math.floor(Math.random() * array.length);
+    result.push(array[index]);
+  }
+  return result;
+}
+
+/**
  * @param {{ dayName: string }} props
  */
 function DayColumn({ dayName }) {
@@ -117,14 +133,15 @@ function DayColumn({ dayName }) {
 function PeopleColumn({ positive }) {
   const circleRadius = 11;
 
+  positive = randomChoice(names, 3); // DEBUG
+
   return (
     <View
       style={{
-        width: 2 * circleRadius + 8,
-        height: 2 * circleRadius + 8,
+        width: 2 * circleRadius + styles.dot.width,
+        height: 2 * circleRadius + styles.dot.height,
         justifyContent: "center",
         alignItems: "center",
-        position: "relative",
       }}
     >
       {names.map((name, idx) => {
@@ -134,9 +151,9 @@ function PeopleColumn({ positive }) {
 
         return (
           <Dot
-            color={positive.includes(name) ? personToColor[name] : undefined}
             key={idx}
             style={{
+              backgroundColor: positive.includes(name) ? personToColor[name] : undefined,
               transform: [{ translateX: translateX }, { translateY: translateY }],
               position: "absolute",
             }}
@@ -149,10 +166,10 @@ function PeopleColumn({ positive }) {
 
 /**
  *
- * @param {{ color?: string, style?: RN.StyleProp<RN.ViewStyle> }} props
+ * @param {{ style?: RN.StyleProp<RN.ViewStyle> }} props
  */
-function Dot({ color = undefined, style = {} }) {
-  return <View style={[styles.dot, { backgroundColor: color }, style]} />;
+function Dot({ style = {} }) {
+  return <View style={[styles.dot, style]} />;
 }
 
 /**
@@ -208,9 +225,9 @@ const styles = StyleSheet.create({
   },
   dot: {
     width: 10,
-    aspectRatio: 1,
+    height: 10,
     borderColor: "#333333cc",
-    borderWidth: 1.5,
+    borderWidth: 1.25,
     borderRadius: Number.MAX_SAFE_INTEGER,
   },
   personBubble: {

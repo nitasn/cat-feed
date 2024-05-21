@@ -1,7 +1,7 @@
 // @ts-check
 
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, SafeAreaView } from "react-native";
+import { StyleSheet, SafeAreaView, Platform } from "react-native";
 import { ImageBackground } from "react-native";
 import React from "react";
 import TableOfWeek from "./src/TableOfWeek";
@@ -31,7 +31,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  // @ts-ignore
   image: {
     flex: 1,
+    // web full screen
+    ...(Platform.OS === "web" && { position: "absolute", inset: 0, width: "100vw", height: "100vh" }),
   },
 });
