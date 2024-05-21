@@ -31,9 +31,6 @@ const personToColor = {
   shahar: "#E0AED0",
 };
 
-/** @type {Name[]} */
-const names = ["imma", "nitsan", "tal", "ronnie", "shahar"];
-
 /**
  * @param {{ weekData: WeeklyData}} props
  */
@@ -84,22 +81,6 @@ function range(n, m = undefined) {
     return [...Array(n).keys()];
   }
   return range(m - n).map((x) => x + n);
-}
-
-/**
- * Returns an array of k elements randomly picked from the input array with possible repetitions.
- * @template T
- * @param {T[]} array
- * @param {number} k
- * @returns {T[]}
- */
-function randomChoice(array, k) {
-  const result = [];
-  for (let i = 0; i < k; i++) {
-    const index = Math.floor(Math.random() * array.length);
-    result.push(array[index]);
-  }
-  return result;
 }
 
 /**

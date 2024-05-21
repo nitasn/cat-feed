@@ -33,7 +33,12 @@ function SunAndMoon() {
         {/* <Ionicons style={{ margin: "auto" }} name="shirt-outline" size={24} /> */}
       </View>
       <View style={{ flex: 1 }}>
-        <Ionicons color="black" style={{ margin: "auto", transform: [{ scale: 1.1 }] }} name="sunny-outline" size={24} />
+        <Ionicons
+          color="black"
+          style={{ margin: "auto", transform: [{ scale: 1.1 }] }}
+          name="sunny-outline"
+          size={24}
+        />
       </View>
       <View style={{ flex: 1 }}>
         <Ionicons color="black" style={{ margin: "auto" }} name="moon-outline" size={24} />
@@ -115,7 +120,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
-    color: "black"
+    color: "black",
   },
   iconButton: {
     paddingVertical: 22,
