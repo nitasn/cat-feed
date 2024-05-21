@@ -7,6 +7,7 @@ import { weekDisplayedAtom } from "./state";
 import { advanceDateByDays } from "./utils";
 import { format } from "date-fns";
 import FixedColumns from "./FixedColumns";
+import { Ionicons } from "@expo/vector-icons";
 
 /** @type {Record<Name, number>} */
 const personToImage = {
@@ -110,12 +111,20 @@ function DayColumn({ dayData, dayName }) {
 function PeopleColumn({ people }) {
   return (
     <View style={styles.peopleColumn}>
-      {people.positive.map((name) => (
-        <PersonBubble key={name} name={name} />
-      ))}
+      {people.positive.length ? (
+        people.positive.map((name) => <PersonBubble key={name} name={name} />)
+      ) : (
+        <NobodyBubble />
+      )}
     </View>
   );
 }
+
+function NobodyBubble() {
+  // return null;
+  return <Ionicons name="paw" color="maroon" size={22} />;
+}
+
 /**
  *
  * @param {{ name: Name }} props
@@ -168,7 +177,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   colorBad: {
-    color: "hsl(0, 100%, 17.45%)",
+    color: "maroon",
   },
   colorGood: {
     // color: "hsl(180, 100%, 17.45%)",
@@ -176,6 +185,14 @@ const styles = StyleSheet.create({
   peopleColumn: {
     flexDirection: "row",
     justifyContent: "flex-end",
+  },
+  nobodyBubble: {
+    width: 6,
+    height: 6,
+    borderRadius: Number.MAX_SAFE_INTEGER,
+    overflow: "hidden",
+    marginHorizontal: 8,
+    backgroundColor: "maroon",
   },
   personBubble: {
     width: 36,

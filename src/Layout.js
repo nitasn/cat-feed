@@ -2,7 +2,7 @@
 
 import { Ionicons } from "@expo/vector-icons";
 import React, { useMemo } from "react";
-import RN, { ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useWeekData from "./fetcher";
 import { useAtom } from "jotai";
 import { weekDisplayedAtom } from "./state";

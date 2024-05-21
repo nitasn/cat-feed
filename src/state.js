@@ -5,4 +5,4 @@ import { atom } from "jotai";
 
 export const weekDisplayedAtom = atom(dateFirstDayOfWeek());
 
-// export const myName
+export const myName = atom(/** @type {Name} */ ("nitsan"));
