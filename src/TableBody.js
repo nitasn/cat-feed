@@ -61,7 +61,7 @@ function Row({ dayName, dayData }) {
   return (
     <>
       <FixedColumns widths={["20%", "40%", "40%"]} style={styles.row}>
-        <DayColumn dayName={dayName} />
+        <DayColumn dayData={dayData} dayName={dayName} />
         <PeopleColumn people={dayData.morning} />
         <PeopleColumn people={dayData.evening} />
       </FixedColumns>
@@ -84,16 +84,19 @@ function range(n, m = undefined) {
 }
 
 /**
- * @param {{ dayName: string }} props
+ * @param {{ dayName: string, dayData: DailyData }} props
  */
-function DayColumn({ dayName }) {
+function DayColumn({ dayData, dayName }) {
   const [dateWeekStarts] = useAtom(weekDisplayed);
   const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
 
+  const booked = dayData.morning.positive.length && dayData.evening.positive.length;
+  const color = booked ? styles.colorGood : styles.colorBad;
+
   return (
     <View style={styles.dayColumn}>
-      <Text style={styles.dayName}>{dayNameAbbreviation[dayName]}</Text>
-      <Text style={styles.date}>{format(date, "MMM d")}</Text>
+      <Text style={[styles.dayName, color]}>{dayNameAbbreviation[dayName]}</Text>
+      <Text style={[styles.date, color]}>{format(date, "MMM d")}</Text>
     </View>
   );
 }
@@ -154,10 +157,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textTransform: "capitalize",
     fontWeight: "600",
-    color: "black,",
   },
   date: {
     fontSize: 12,
+  },
+  colorBad: {
+    color: "hsl(0, 100%, 17.45%)",
+  },
+  colorGood: {
+    color: "hsl(180, 100%, 17.45%)",
   },
   peopleColumn: {
     flexDirection: "row",
@@ -175,6 +183,6 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     borderRadius: Number.MAX_SAFE_INTEGER,
     borderWidth: 1.5,
-    borderColor: "green",
+    borderColor: "#676767",
   },
 });
