@@ -28,26 +28,15 @@ export default function Layout() {
 
 function SunAndMoon() {
   return (
-    <View style={{ flexDirection: "row", marginBottom: 8 }}>
-      <View style={{ width: "20%", flexDirection: "row", justifyContent: "flex-start", 
-      // backgroundColor: "white"
-       }}>
-        {/* <Ionicons style={{ margin: "auto" }} name="shirt-outline" size={24} /> */}
+    <View style={{ flexDirection: "row", paddingHorizontal: 26 }}>
+      <View style={{ width: "20%", flexDirection: "row", paddingBottom: 8, justifyContent: "flex-start" }}>
+        {/* <Ionicons name="shirt-outline" size={24} /> */}
       </View>
-      <View style={{ width: "40%", flexDirection: "row", justifyContent: "flex-end", 
-      // backgroundColor: "gray"
-       }}>
-        <Ionicons
-          color="black"
-          style={{ margin: "auto", transform: [{ scale: 1.1 }] }}
-          name="sunny-outline"
-          size={24}
-        />
+      <View style={{ width: "40%", flexDirection: "row", paddingBottom: 8, justifyContent: "flex-end" }}>
+        <Ionicons color="black" style={{ transform: [{ scale: 1.1 }] }} name="sunny-outline" size={24} />
       </View>
-      <View style={{ width: "40%", flexDirection: "row", justifyContent: "flex-end", 
-      // backgroundColor: "maroon"
-       }}>
-        <Ionicons color="black" style={{ margin: "auto" }} name="moon-outline" size={24} />
+      <View style={{ width: "40%", flexDirection: "row", paddingBottom: 8, justifyContent: "flex-end" }}>
+        <Ionicons color="black" name="moon-outline" size={24} />
       </View>
     </View>
   );
