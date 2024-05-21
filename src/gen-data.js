@@ -51,6 +51,8 @@ function arrayDifference(A, B) {
  * @returns {{ positive: Name[], negative: Name[] }}
  */
 function randomPosNeg() {
+  // return { positive: names, negative: names }; // for testing
+
   const maxPos = randomChoice([0, 1, 2, 3, 4, 5]);
   const positive = noDups(randomSample(names, maxPos));
 

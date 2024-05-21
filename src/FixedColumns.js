@@ -8,7 +8,7 @@ import { View, StyleSheet } from "react-native";
  * @param {{
  *   children?: React.ReactNode,
  *   style?: RN.StyleProp<RN.ViewStyle>,
- *   widths: `${number}%`[],
+ *   widths: RN.DimensionValue[],
  * }} props
  */
 export default function FixedColumns({ style, children, widths }) {

@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { dateToShortString, sleep } from "./utils";
 import { useAtom } from "jotai";
-import { weekDisplayed } from "./state";
+import { weekDisplayedAtom } from "./state";
 import { useMemo } from "react";
 import { randomWeeklyData } from "./gen-data";
 
@@ -16,7 +16,7 @@ const dummyData = {
 };
 
 export default function useWeekData() {
-  const [dateWeekStarts] = useAtom(weekDisplayed);
+  const [dateWeekStarts] = useAtom(weekDisplayedAtom);
 
   const stringWeekStarts = useMemo(() => {
     return dateToShortString(dateWeekStarts);

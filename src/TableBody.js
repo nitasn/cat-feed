@@ -3,7 +3,7 @@
 import { useAtom } from "jotai";
 import React from "react";
 import RN, { StyleSheet, Text, View, ImageBackground } from "react-native";
-import { weekDisplayed } from "./state";
+import { weekDisplayedAtom } from "./state";
 import { advanceDateByDays } from "./utils";
 import { format } from "date-fns";
 import FixedColumns from "./FixedColumns";
@@ -54,13 +54,16 @@ const dayNameAbbreviation = {
 
 const dayToIndex = Object.fromEntries(Object.keys(dayNameAbbreviation).map((key, index) => [key, index]));
 
+/** @type {RN.DimensionValue[]} */
+export const columnWidths = ["16%", "42%", "42%"];
+
 /**
  * @param {{ dayName: string, dayData: DailyData }} props
  */
 function Row({ dayName, dayData }) {
   return (
     <>
-      <FixedColumns widths={["20%", "40%", "40%"]} style={styles.row}>
+      <FixedColumns widths={columnWidths} style={styles.row}>
         <DayColumn dayData={dayData} dayName={dayName} />
         <PeopleColumn people={dayData.morning} />
         <PeopleColumn people={dayData.evening} />
@@ -87,7 +90,7 @@ function range(n, m = undefined) {
  * @param {{ dayName: string, dayData: DailyData }} props
  */
 function DayColumn({ dayData, dayName }) {
-  const [dateWeekStarts] = useAtom(weekDisplayed);
+  const [dateWeekStarts] = useAtom(weekDisplayedAtom);
   const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
 
   const booked = dayData.morning.positive.length && dayData.evening.positive.length;
@@ -137,6 +140,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "space-between",
+    paddingVertical: 2,
   },
   row: {
     padding: 8, // TODO container padding... prev file
@@ -152,7 +156,9 @@ const styles = StyleSheet.create({
     width: 1,
     height: "100%",
   },
-  dayColumn: {},
+  dayColumn: {
+    // backgroundColor: "white"
+  },
   dayName: {
     fontSize: 16,
     textTransform: "capitalize",
@@ -165,7 +171,7 @@ const styles = StyleSheet.create({
     color: "hsl(0, 100%, 17.45%)",
   },
   colorGood: {
-    color: "hsl(180, 100%, 17.45%)",
+    // color: "hsl(180, 100%, 17.45%)",
   },
   peopleColumn: {
     flexDirection: "row",
