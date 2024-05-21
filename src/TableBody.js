@@ -117,7 +117,7 @@ function PeopleColumn({ people }) {
 function PersonBubble({ name }) {
   return (
     <ImageBackground source={personToImage[name]} style={styles.personBubble}>
-      <View style={[styles.borderOverlay, styles.postiveBorderColor]} />
+      <View style={styles.bubbleBorderOverlay} />
     </ImageBackground>
   );
 }
@@ -170,13 +170,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginHorizontal: -7,
   },
-  borderOverlay: {
+  bubbleBorderOverlay: {
     flex: 1,
     opacity: 0.7,
     borderRadius: Number.MAX_SAFE_INTEGER,
     borderWidth: 1.5,
-  },
-  postiveBorderColor: {
     borderColor: "green",
   },
 });
