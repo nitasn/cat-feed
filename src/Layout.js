@@ -2,7 +2,7 @@
 
 import { Ionicons } from "@expo/vector-icons";
 import React, { useMemo } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useWeekData from "./fetcher";
 import { useAtom } from "jotai";
 import { weekDisplayed } from "./state";
@@ -12,12 +12,20 @@ import { BlurView } from "expo-blur";
 import { TableBody } from "./TableBody";
 
 export default function Layout() {
+  /**
+   * @type {import('expo-blur').BlurViewProps['tint'] | undefined}
+   */
+  const blurTint = Platform.select({
+    ios: "light",
+    android: "prominent",
+  });
+
   return (
     <View style={styles.container}>
       <Header />
       <View style={styles.blurWrapper}>
         <SunAndMoon />
-        <BlurView intensity={70} tint="light" style={styles.blurContainer}>
+        <BlurView intensity={70} tint={blurTint} style={styles.blurContainer}>
           <Table />
         </BlurView>
       </View>
@@ -82,7 +90,7 @@ function Table() {
     return (
       <View style={{ flex: 1, flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 4 }}>
         <Text style={{ color: "#333", fontSize: 16 }}>Loading...</Text>
-        <ActivityIndicator />
+        <ActivityIndicator color="black" />
       </View>
     );
   }
