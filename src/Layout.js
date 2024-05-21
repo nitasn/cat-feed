@@ -11,7 +11,7 @@ import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
 import { BlurView } from "expo-blur";
 import { TableBody } from "./TableBody";
 
-export default function TableOfWeek() {
+export default function Layout() {
   return (
     <View style={styles.container}>
       <Header />
@@ -50,7 +50,7 @@ function SunAndMoon() {
 /**
  * @param {{ glyph: keyof typeof Ionicons.glyphMap, onPress: () => void }} props
  */
-export function IconButton({ glyph, onPress }) {
+function IconButton({ glyph, onPress }) {
   return (
     <TouchableOpacity onPress={onPress} style={styles.iconButton}>
       <Ionicons color="black" name={glyph} size={24} />

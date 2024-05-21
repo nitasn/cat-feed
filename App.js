@@ -4,7 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, SafeAreaView, Platform } from "react-native";
 import { ImageBackground } from "react-native";
 import React from "react";
-import TableOfWeek from "./src/TableOfWeek";
+import Layout from "./src/Layout";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -20,7 +20,7 @@ export default function App() {
       <StatusBar style="auto" />
       <ImageBackground source={backgroundImage} style={styles.image} resizeMode="stretch">
         <SafeAreaView style={styles.container}>
-          <TableOfWeek />
+          <Layout />
         </SafeAreaView>
       </ImageBackground>
     </QueryClientProvider>
