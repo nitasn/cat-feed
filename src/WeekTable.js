@@ -122,7 +122,7 @@ function PeopleColumn({ people }) {
 
 function NobodyBubble() {
   // return null;
-  return <Ionicons name="paw" color="maroon" size={22} />;
+  return <Ionicons name="paw" color="black" size={22} />;
 }
 
 /**
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   colorBad: {
-    color: "maroon",
+    color: "black",
   },
   colorGood: {
     // color: "hsl(180, 100%, 17.45%)",
