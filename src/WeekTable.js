@@ -186,14 +186,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
   },
-  nobodyBubble: {
-    width: 6,
-    height: 6,
-    borderRadius: Number.MAX_SAFE_INTEGER,
-    overflow: "hidden",
-    marginHorizontal: 8,
-    backgroundColor: "maroon",
-  },
   personBubble: {
     width: 36,
     height: 36,
