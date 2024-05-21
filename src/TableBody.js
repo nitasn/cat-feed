@@ -105,22 +105,19 @@ function PeopleColumn({ people }) {
   return (
     <View style={styles.peopleColumn}>
       {people.positive.map((name) => (
-        <PersonBubble key={`positive:${name}`} name={name} attending={true} />
-      ))}
-      {people.negative.map((name) => (
-        <PersonBubble key={`negative:${name}`} name={name} attending={false} />
+        <PersonBubble key={name} name={name} />
       ))}
     </View>
   );
 }
 /**
  *
- * @param {{ name: Name, attending: boolean }} props
+ * @param {{ name: Name }} props
  */
-function PersonBubble({ name, attending }) {
+function PersonBubble({ name }) {
   return (
     <ImageBackground source={personToImage[name]} style={styles.personBubble}>
-      <View style={[styles.borderOverlay, attending ? styles.postiveBorderColor : styles.negativeBorderColor]} />
+      <View style={[styles.borderOverlay, styles.postiveBorderColor]} />
     </ImageBackground>
   );
 }
@@ -171,18 +168,15 @@ const styles = StyleSheet.create({
     height: 36,
     borderRadius: Number.MAX_SAFE_INTEGER,
     overflow: "hidden",
-    marginHorizontal: -8,
+    marginHorizontal: -7,
   },
   borderOverlay: {
     flex: 1,
     opacity: 0.7,
     borderRadius: Number.MAX_SAFE_INTEGER,
-    borderWidth: 2,
+    borderWidth: 1.5,
   },
   postiveBorderColor: {
     borderColor: "green",
-  },
-  negativeBorderColor: {
-    borderColor: "red",
   },
 });
