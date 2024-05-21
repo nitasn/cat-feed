@@ -9,7 +9,7 @@ import { weekDisplayedAtom } from "./state";
 import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
 
 import { BlurView } from "expo-blur";
-import { TableBody, columnWidths } from "./TableBody";
+import { WeekTable, columnWidths } from "./WeekTable";
 
 export default function Layout() {
   /**
@@ -26,7 +26,7 @@ export default function Layout() {
       <View style={styles.blurWrapper}>
         <SunAndMoon />
         <BlurView intensity={70} tint={blurTint} style={styles.blurContainer}>
-          <Table />
+          <BlurContainerContent />
         </BlurView>
       </View>
     </View>
@@ -86,7 +86,7 @@ function Header() {
   );
 }
 
-function Table() {
+function BlurContainerContent() {
   const { weekLoading, weekError, weekData } = useWeekData();
 
   if (weekLoading) {
@@ -108,7 +108,7 @@ function Table() {
   }
 
   if (weekData) {
-    return <TableBody weekData={weekData} />;
+    return <WeekTable weekData={weekData} />;
   }
 }
 

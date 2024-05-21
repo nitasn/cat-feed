@@ -34,7 +34,7 @@ const personToColor = {
 /**
  * @param {{ weekData: WeeklyData}} props
  */
-export function TableBody({ weekData }) {
+export function WeekTable({ weekData }) {
   const rows = Object.entries(weekData).map(([dayName, dayData]) => (
     <Row key={dayName} dayName={dayName} dayData={dayData} />
   ));
