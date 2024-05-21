@@ -34,21 +34,21 @@ export default function Layout() {
 }
 
 function SunAndMoon() {
-  const sunColor = "#d2a345"; // bc8e56
-  const color = "#797979";
+  const sunColor = "#bc8e56";
+  const color = "#808080";
 
   const [W0, W1, W2] = columnWidths;
 
   return (
-    <View style={{ flexDirection: "row", paddingHorizontal: 26 }}>
-      <View style={{ width: W0, flexDirection: "row", paddingBottom: 8, justifyContent: "flex-start" }}>
+    <View style={{ flexDirection: "row", paddingHorizontal: 26, marginBottom: 10, marginTop: -2  }}>
+      <View style={{ width: W0, alignItems: "flex-start" }}>
         {/* <Ionicons color={color} name="paw-outline" size={24} /> */}
       </View>
-      <View style={{ width: W1, flexDirection: "row", paddingBottom: 8, justifyContent: "flex-end" }}>
-        <Ionicons color={color} name="sunny-outline" size={26.2} />
+      <View style={{ width: W1, alignItems: "flex-end" }}>
+        <Ionicons color={sunColor} name="sunny" size={26.2} />
       </View>
-      <View style={{ width: W2, flexDirection: "row", paddingBottom: 8, justifyContent: "flex-end" }}>
-        <Ionicons color={color} name="moon-outline" size={24} />
+      <View style={{ width: W2, alignItems: "flex-end" }}>
+        <Ionicons color={color} name="moon" size={24} />
       </View>
     </View>
   );
@@ -130,17 +130,17 @@ const styles = StyleSheet.create({
     color: "black",
   },
   iconButton: {
-    paddingVertical: 22,
+    paddingVertical: 18,
     paddingHorizontal: 36,
   },
   blurWrapper: {
     flex: 1,
-    margin: 20,
+    margin: 18,
     alignSelf: "stretch",
   },
   blurContainer: {
     flex: 1,
-    padding: 16,
+    padding: 18,
     overflow: "hidden",
     borderRadius: 16,
   },
