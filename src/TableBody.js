@@ -63,7 +63,7 @@ const dayToIndex = Object.fromEntries(Object.keys(dayNameAbbreviation).map((key,
 function Row({ dayName, dayData }) {
   return (
     <>
-      <FixedColumns widths={["32%", "34%", "34%"]} style={styles.row}>
+      <FixedColumns widths={["20%", "40%", "40%"]} style={styles.row}>
         <DayColumn dayName={dayName} />
         <PeopleColumn people={dayData.morning} />
         <PeopleColumn people={dayData.evening} />
@@ -110,7 +110,7 @@ function DayColumn({ dayName }) {
   const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
 
   return (
-    <View>
+    <View style={styles.dayColumn}>
       <Text style={styles.dayName}>{dayNameAbbreviation[dayName]}</Text>
       <Text style={styles.date}>{format(date, "MMM d")}</Text>
     </View>
@@ -132,9 +132,17 @@ function DayColumn({ dayName }) {
  * @param {{ people: DailyData["morning"] | DailyData["evening"] }} props
  */
 function PeopleColumn({ people }) {
-  return <></>;
+  return (
+    <View style={styles.peopleColumn}>
+      {people.positive.map((name) => (
+        <PersonBubble key={`positive:${name}`} name={name} attending={true} />
+      ))}
+      {people.negative.map((name) => (
+        <PersonBubble key={`negative:${name}`} name={name} attending={false} />
+      ))}
+    </View>
+  );
 }
-
 /**
  *
  * @param {{ name: Name, attending: boolean }} props
@@ -161,7 +169,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   row: {
-    padding: 8,
+    padding: 8, // TODO container padding... prev file
     alignItems: "center",
   },
   hr: {
@@ -174,6 +182,7 @@ const styles = StyleSheet.create({
     width: 1,
     height: "100%",
   },
+  dayColumn: {},
   dayName: {
     fontSize: 16,
     textTransform: "capitalize",
@@ -182,21 +191,17 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 12,
-    // color: "white"
   },
-  dot: {
-    width: 10,
-    height: 10,
-    borderColor: "#333333cc",
-    borderWidth: 1.25,
-    borderRadius: Number.MAX_SAFE_INTEGER,
+  peopleColumn: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   personBubble: {
     width: 36,
     height: 36,
     borderRadius: Number.MAX_SAFE_INTEGER,
     overflow: "hidden",
-    marginHorizontal: -5,
+    marginHorizontal: -8,
   },
   borderOverlay: {
     flex: 1,
@@ -209,8 +214,5 @@ const styles = StyleSheet.create({
   },
   negativeBorderColor: {
     borderColor: "red",
-  },
-  peopleBubblesArea: {
-    flexDirection: "row",
   },
 });
