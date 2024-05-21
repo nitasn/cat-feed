@@ -10,6 +10,7 @@ import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
 
 import { BlurView } from "expo-blur";
 import { TableBody } from "./TableBody";
+import FixedColumns from "./FixedColumns";
 
 export default function Layout() {
   return (
@@ -28,11 +29,14 @@ export default function Layout() {
 function SunAndMoon() {
   return (
     <View style={{ flexDirection: "row", marginBottom: 8 }}>
-      <View style={{ flex: 1 }}>
-        {/*  */}
+      <View style={{ width: "20%", flexDirection: "row", justifyContent: "flex-start", 
+      // backgroundColor: "white"
+       }}>
         {/* <Ionicons style={{ margin: "auto" }} name="shirt-outline" size={24} /> */}
       </View>
-      <View style={{ flex: 1 }}>
+      <View style={{ width: "40%", flexDirection: "row", justifyContent: "flex-end", 
+      // backgroundColor: "gray"
+       }}>
         <Ionicons
           color="black"
           style={{ margin: "auto", transform: [{ scale: 1.1 }] }}
@@ -40,7 +44,9 @@ function SunAndMoon() {
           size={24}
         />
       </View>
-      <View style={{ flex: 1 }}>
+      <View style={{ width: "40%", flexDirection: "row", justifyContent: "flex-end", 
+      // backgroundColor: "maroon"
+       }}>
         <Ionicons color="black" style={{ margin: "auto" }} name="moon-outline" size={24} />
       </View>
     </View>

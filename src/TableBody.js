@@ -98,17 +98,6 @@ function DayColumn({ dayName }) {
   );
 }
 
-// return (
-//   <View style={styles.peopleBubblesArea}>
-//     {people.positive.map((name) => (
-//       <PersonBubble key={`positive:${name}`} name={name} attending={true} />
-//     ))}
-//     {people.negative.map((name) => (
-//       <PersonBubble key={`negative:${name}`} name={name} attending={false} />
-//     ))}
-//   </View>
-// );
-
 /**
  * @param {{ people: DailyData["morning"] | DailyData["evening"] }} props
  */
