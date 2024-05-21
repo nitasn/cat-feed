@@ -111,11 +111,9 @@ function DayColumn({ dayData, dayName }) {
 function PeopleColumn({ people }) {
   return (
     <View style={styles.peopleColumn}>
-      {people.positive.length ? (
-        people.positive.map((name) => <PersonBubble key={name} name={name} />)
-      ) : (
-        <NobodyBubble />
-      )}
+      {people.positive.map((name) => (
+        <PersonBubble key={name} name={name} />
+      ))}
     </View>
   );
 }
@@ -177,10 +175,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   colorBad: {
-    color: "black",
+    color: "hsl(0, 100%, 17.45%)",
+    // color: "black",
   },
   colorGood: {
-    // color: "hsl(180, 100%, 17.45%)",
+    color: "hsl(180, 100%, 17.45%)",
   },
   peopleColumn: {
     flexDirection: "row",
