@@ -45,10 +45,10 @@ function SunAndMoon() {
         {/* <Ionicons color={color} name="paw-outline" size={24} /> */}
       </View>
       <View style={{ width: W1, flexDirection: "row", paddingBottom: 8, justifyContent: "flex-end" }}>
-        <Ionicons color={color} style={{ transform: [{ scale: 1.1 }] }} name="sunny-outline" size={24} />
+        <Ionicons color={color} name="sunny-outline" size={26.2} />
       </View>
       <View style={{ width: W2, flexDirection: "row", paddingBottom: 8, justifyContent: "flex-end" }}>
-        <Ionicons color={color} style={{ transform: [{ scale: 0.99 }] }} name="moon-outline" size={24} />
+        <Ionicons color={color} name="moon-outline" size={24} />
       </View>
     </View>
   );
