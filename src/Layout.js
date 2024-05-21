@@ -26,18 +26,18 @@ export default function Layout() {
 }
 
 function SunAndMoon() {
-  const sunnyColor = "#d2a345";
-  const moonColor = "#797979";
+  const sunColor = "#d2a345"; // bc8e56
+  const color = "#797979";
   return (
     <View style={{ flexDirection: "row", paddingHorizontal: 26 }}>
       <View style={{ width: "20%", flexDirection: "row", paddingBottom: 8, justifyContent: "flex-start" }}>
-        {/* <Ionicons name="shirt-outline" size={24} /> */}
+        {/* <Ionicons color={color} name="paw-outline" size={24} /> */}
       </View>
       <View style={{ width: "40%", flexDirection: "row", paddingBottom: 8, justifyContent: "flex-end" }}>
-        <Ionicons color="black" style={{ transform: [{ scale: 1.1 }] }} name="sunny-outline" size={24} />
+        <Ionicons color={color} style={{ transform: [{ scale: 1.1 }] }} name="sunny-outline" size={24} />
       </View>
       <View style={{ width: "40%", flexDirection: "row", paddingBottom: 8, justifyContent: "flex-end" }}>
-        <Ionicons color="#black" style={{ transform: [{ scale: 0.99 }] }} name="moon-outline" size={24} />
+        <Ionicons color={color} style={{ transform: [{ scale: 0.99 }] }} name="moon-outline" size={24} />
       </View>
     </View>
   );
