@@ -6,6 +6,7 @@ import RN, { StyleSheet, Text, View, ImageBackground } from "react-native";
 import { weekDisplayed } from "./state";
 import { advanceDateByDays } from "./utils";
 import { format } from "date-fns";
+import FixedColumns from "./FixedColumns";
 
 /** @type {Record<Name, number>} */
 const personToImage = {
@@ -62,11 +63,11 @@ const dayToIndex = Object.fromEntries(Object.keys(dayNameAbbreviation).map((key,
 function Row({ dayName, dayData }) {
   return (
     <>
-      <View style={styles.row}>
+      <FixedColumns widths={["32%", "34%", "34%"]} style={styles.row}>
         <DayColumn dayName={dayName} />
-        <PeopleColumn positive={dayData.morning.positive} />
-        <PeopleColumn positive={dayData.evening.positive} />
-      </View>
+        <PeopleColumn people={dayData.morning} />
+        <PeopleColumn people={dayData.evening} />
+      </FixedColumns>
 
       {dayName !== "saturday" && <Hr />}
     </>
@@ -128,48 +129,10 @@ function DayColumn({ dayName }) {
 // );
 
 /**
- * @param {{ positive: Name[] }} props
+ * @param {{ people: DailyData["morning"] | DailyData["evening"] }} props
  */
-function PeopleColumn({ positive }) {
-  const circleRadius = 11;
-
-  positive = randomChoice(names, 3); // DEBUG
-
-  return (
-    <View
-      style={{
-        width: 2 * circleRadius + styles.dot.width,
-        height: 2 * circleRadius + styles.dot.height,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      {names.map((name, idx) => {
-        const angle = 2 * Math.PI * (idx / 5) - Math.PI / 2;
-        const translateX = circleRadius * Math.cos(angle);
-        const translateY = circleRadius * Math.sin(angle);
-
-        return (
-          <Dot
-            key={idx}
-            style={{
-              backgroundColor: positive.includes(name) ? personToColor[name] : undefined,
-              transform: [{ translateX: translateX }, { translateY: translateY }],
-              position: "absolute",
-            }}
-          />
-        );
-      })}
-    </View>
-  );
-}
-
-/**
- *
- * @param {{ style?: RN.StyleProp<RN.ViewStyle> }} props
- */
-function Dot({ style = {} }) {
-  return <View style={[styles.dot, style]} />;
+function PeopleColumn({ people }) {
+  return <></>;
 }
 
 /**
@@ -199,8 +162,6 @@ const styles = StyleSheet.create({
   },
   row: {
     padding: 8,
-    flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
   },
   hr: {
