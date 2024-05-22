@@ -8,4 +8,7 @@ Pending doesn't need to be an array, it can be a boolean...
 
 ## Urgent
 
-Tapping a row, then the row below it, and so on, makes weird bugs
+If tapping a row, then the row below it:
+initially they both load;
+when the first settles, it shows completed and the second disappears;
+when the second settles, it shows completed and the first loads forever.
