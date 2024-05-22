@@ -1,8 +1,8 @@
 // @ts-check
 
 import { useAtom } from "jotai";
-import React from "react";
-import RN, { StyleSheet, Text, View, ImageBackground } from "react-native";
+import React, { useRef } from "react";
+import RN, { StyleSheet, Text, View, ImageBackground, Pressable } from "react-native";
 import { weekDisplayedAtom } from "./state";
 import { advanceDateByDays } from "./utils";
 import { format } from "date-fns";
@@ -55,15 +55,41 @@ const dayNameAbbreviation = {
 
 const dayToIndex = Object.fromEntries(Object.keys(dayNameAbbreviation).map((key, index) => [key, index]));
 
-/** @type {RN.DimensionValue[]} */
+/** @type {`${number}%`[]} */
 export const columnWidths = ["16%", "42%", "42%"];
+
+const columnWeights = columnWidths.map((value) => +value.substring(0, value.length - 1) / 100);
 
 /**
  * @param {{ dayName: string, dayData: DailyData }} props
  */
 function Row({ dayName, dayData }) {
+  const [dateWeekStarts] = useAtom(weekDisplayedAtom);
+  const widthRef = useRef(0);
+
+  /**
+   * @param {RN.GestureResponderEvent} event
+   */
+  const onPress = (event) => {
+    const offset = 36; // blur container padding + margin
+    const normalizedX = (event.nativeEvent.pageX - offset) / widthRef.current;
+    const spill = 0.1;
+    if (normalizedX < columnWeights[0] + spill) {
+      console.log(dayName, "date was pressed");
+    } else if (normalizedX < columnWeights[0] + columnWeights[1] + spill) {
+      console.log(dayName, "morning was pressed");
+    } else {
+      console.log(dayName, "evening was pressed");
+    }
+  };
+
   return (
-    <>
+    <Pressable
+      onPress={onPress}
+      onLayout={(event) => {
+        widthRef.current = event.nativeEvent.layout.width;
+      }}
+    >
       <FixedColumns widths={columnWidths} style={styles.row}>
         <DayColumn dayData={dayData} dayName={dayName} />
         <PeopleColumn people={dayData.morning} />
@@ -71,7 +97,7 @@ function Row({ dayName, dayData }) {
       </FixedColumns>
 
       {dayName !== "saturday" && <Hr />}
-    </>
+    </Pressable>
   );
 }
 
