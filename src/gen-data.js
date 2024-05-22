@@ -73,6 +73,9 @@ export function randomWeeklyData() {
   return Object.fromEntries(daysEntries);
 }
 
+/**
+ * @returns {WeeklyData}
+ */
 export function emptyWeeklyData() {
   const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
   const daysEntries = days.map((day) => [day, { 

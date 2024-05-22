@@ -3,9 +3,16 @@
  */
 
 /**
+ * @typedef {Object} MealData
+ * @property {Name[]} positive definitely present
+ * @property {Name[]} negative definitely NOT present
+ * @property {Name[]} [pending] state in optimistic update
+ */
+
+/**
  * @typedef {Object} DailyData
- * @property {{ positive: Name[], negative: Name[] }} morning
- * @property {{ positive: Name[], negative: Name[] }} evening
+ * @property {MealData} morning
+ * @property {MealData} evening
  */
 
 /**

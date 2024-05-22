@@ -5,28 +5,21 @@ import { dateToShortString, removeFromArray, sleep } from "./utils";
 import { useAtom } from "jotai";
 import { nameAtom, weekDisplayedAtom, getAtom } from "./state";
 import queryClient from "./query-client";
-import { emptyWeeklyData } from "./gen-data";
+import { fetchWeek, updateAndFetch } from "./server-mock";
 
-import dummyData from "./dummy-data";
-
-Object.entries(dummyData).forEach(([keyStartWeek, weeklyData]) => {
-  queryClient.setQueryData(["weeklyData", keyStartWeek], weeklyData);
-});
-
-async function queryFn({ queryKey: [_, keyStartWeek] }) {
-  await sleep(500);
-  const existingData = queryClient.getQueryData(["weeklyData", keyStartWeek]);
-  return existingData ?? emptyWeeklyData();
-  // if (!existingData) throw Error("Simulating a Network Error");
-  // return existingData;
-}
+// import dummyData from "./dummy-data";
+// Object.entries(dummyData).forEach(([keyStartWeek, weeklyData]) => {
+//   queryClient.setQueryData(["weeklyData", keyStartWeek], weeklyData);
+// });
 
 export default function useWeekData() {
   const [dateWeekStarts] = useAtom(weekDisplayedAtom);
-
   const keyStartWeek = dateToShortString(dateWeekStarts);
 
-  const { isPending, error, data } = useQuery({ queryKey: ["weeklyData", keyStartWeek], queryFn });
+  const { isPending, error, data } = useQuery({
+    queryKey: ["weeklyData", keyStartWeek],
+    queryFn: () => fetchWeek(keyStartWeek),
+  });
 
   return { weekLoading: isPending, weekError: error, weekData: data };
 }
@@ -36,35 +29,47 @@ export default function useWeekData() {
  * @param {string} dayName
  * @param {"morning" | "evening"} meal
  */
-export function toggleMyself(dateWeekStarts, dayName, meal) {
+export async function toggleMyself(dateWeekStarts, dayName, meal) {
   const keyStartWeek = dateToShortString(dateWeekStarts);
-
-  const weeklyData = queryClient.getQueryData(["weeklyData", keyStartWeek]);
-  const weekClone = JSON.parse(JSON.stringify(weeklyData));
-
-  /** @type {DailyData} */
-  const dailyData = weekClone[dayName];
-  const { positive, negative } = dailyData[meal];
-
+  const queryKey = ["weeklyData", keyStartWeek];
   const name = getAtom(nameAtom);
 
-  if (positive.includes(name)) {
-    // console.log("pos -> neg");
-    removeFromArray(positive, name);
-    negative.unshift(name);
-  } //
-  else if (negative.includes(name)) {
-    // console.log("neg -> pos");
-    removeFromArray(negative, name);
-    positive.unshift(name);
-  } //
+  const weeklyData = queryClient.getQueryData(queryKey);
+  const weekClone = JSON.parse(JSON.stringify(weeklyData));
+
+  /** @type {MealData} */
+  const dailyData = weekClone[dayName][meal];
+
+  // positive -> negeative
+  if (dailyData.positive.includes(name)) {
+    removeFromArray(dailyData.positive, name);
+    dailyData.negative.unshift(name);
+  }
+  // negeative -> positive
+  else if (dailyData.negative.includes(name)) {
+    removeFromArray(dailyData.negative, name);
+    dailyData.positive.unshift(name);
+  }
+  // neutral -> positive
   else {
-    // console.log("neut -> pos");
-    positive.unshift(name);
+    dailyData.positive.unshift(name);
   }
 
-  // Optimistically update to the new value
-  queryClient.setQueryData(["weeklyData", keyStartWeek], weekClone);
+  // Cancel any outgoing refetches, so they don't overwrite our optimistic update
+  await queryClient.cancelQueries({ queryKey });
 
-  queryClient.invalidateQueries({ queryKey: ["weeklyData", keyStartWeek] });
+  dailyData.pending = [...(dailyData.pending ?? []), name];
+
+  // Optimistically update to the new value
+  queryClient.setQueryData(queryKey, weekClone);
+
+  try {
+    const serverWeekData = await updateAndFetch(keyStartWeek, weekClone);
+    queryClient.setQueryData(queryKey, serverWeekData);
+  } catch (e) {
+    console.log("Error fetching weekly data from server:", e.message);
+  } finally {
+    // Always refetch after error or success?
+    queryClient.invalidateQueries({ queryKey });
+  }
 }
