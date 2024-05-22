@@ -84,20 +84,22 @@ function Row({ dayName, dayData }) {
   };
 
   return (
-    <Pressable
-      onPress={onPress}
-      onLayout={(event) => {
-        widthRef.current = event.nativeEvent.layout.width;
-      }}
-    >
-      <FixedColumns widths={columnWidths} style={styles.row}>
-        <DayColumn dayData={dayData} dayName={dayName} />
-        <PeopleColumn people={dayData.morning} />
-        <PeopleColumn people={dayData.evening} />
-      </FixedColumns>
+    <>
+      <Pressable
+        onPress={onPress}
+        onLayout={(event) => {
+          widthRef.current = event.nativeEvent.layout.width;
+        }}
+      >
+        <FixedColumns widths={columnWidths} style={styles.row}>
+          <DayColumn dayData={dayData} dayName={dayName} />
+          <PeopleColumn people={dayData.morning} />
+          <PeopleColumn people={dayData.evening} />
+        </FixedColumns>
+      </Pressable>
 
       {dayName !== "saturday" && <Hr />}
-    </Pressable>
+    </>
   );
 }
 
