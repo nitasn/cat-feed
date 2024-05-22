@@ -2,18 +2,21 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { dateToShortString, removeFromArray, sleep } from "./utils";
-import { useAtom } from "jotai";
+import { useAtom, atom, getDefaultStore } from "jotai";
 import { nameAtom, weekDisplayedAtom, getAtom } from "./state";
-import { useMemo } from "react";
 import queryClient from "./query-client";
 
-import allData from "./dummy-data";
+import dummyData from "./dummy-data";
 
-async function queryFn({ queryKey }) {
-  const [_, keyStartWeek] = queryKey;
+const allDataAtom = atom(/** @type {ManyWeeksData} */ ({}));
+
+getDefaultStore().set(allDataAtom, dummyData);
+
+async function queryFn({ queryKey: [_, keyStartWeek] }) {
   console.log("querying", keyStartWeek);
+
   await sleep(500);
-  const result = allData[keyStartWeek];
+  const result = getAtom(allDataAtom)[keyStartWeek];
   if (!result) throw Error("Simulating a Network Error");
   return result;
 }
@@ -21,14 +24,9 @@ async function queryFn({ queryKey }) {
 export default function useWeekData() {
   const [dateWeekStarts] = useAtom(weekDisplayedAtom);
 
-  const keyStartWeek = useMemo(() => {
-    return dateToShortString(dateWeekStarts);
-  }, [dateWeekStarts]);
+  const keyStartWeek = dateToShortString(dateWeekStarts);
 
-  const { isPending, error, data } = useQuery({
-    queryKey: ["weeklyData", keyStartWeek],
-    queryFn,
-  });
+  const { isPending, error, data } = useQuery({ queryKey: ["weeklyData", keyStartWeek], queryFn });
 
   return { weekLoading: isPending, weekError: error, weekData: data };
 }
@@ -41,23 +39,28 @@ export default function useWeekData() {
 export function toggleMyself(dateWeekStarts, dayName, meal) {
   const keyStartWeek = dateToShortString(dateWeekStarts);
 
+  const allDataClone = JSON.parse(JSON.stringify(getAtom(allDataAtom)));
+
   /** @type {DailyData} */
-  const dailyData = allData[keyStartWeek][dayName];
+  const dailyData = allDataClone[keyStartWeek][dayName];
   const { positive, negative } = dailyData[meal];
+
   const name = getAtom(nameAtom);
 
   if (positive.includes(name)) {
     console.log("pos -> neg");
     removeFromArray(positive, name);
     negative.push(name);
-  } else if (negative.includes(name)) {
+  } //
+  else if (negative.includes(name)) {
     console.log("neg -> pos");
     removeFromArray(negative, name);
     positive.push(name);
-  } else {
+  } //
+  else {
     console.log("neut -> pos");
     positive.push(name);
   }
-
+  getDefaultStore().set(allDataAtom, allDataClone);
   queryClient.invalidateQueries({ queryKey: ["weeklyData", keyStartWeek] });
 }

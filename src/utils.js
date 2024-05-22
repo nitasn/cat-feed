@@ -74,3 +74,12 @@ export const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 export function removeFromArray(array, x) {
   return array.splice(array.indexOf(x), 1);
 }
+
+/**
+ * @template T
+ * @param {T[]} array
+ * @param {T} value
+ */
+export function arrayWithout(array, value) {
+  return array.filter((x) => x !== value);
+}
