@@ -6,9 +6,8 @@ import { ImageBackground } from "react-native";
 import React from "react";
 import Layout from "./src/Layout";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-const queryClient = new QueryClient();
+import { QueryClientProvider } from "@tanstack/react-query";
+import queryClient from "./src/query-client";
 
 // @ts-ignore
 const backgroundImage = require("./assets/street.webp");

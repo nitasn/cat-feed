@@ -65,3 +65,12 @@ export function relativeWeek(dateInput) {
  * @returns {Promise<void>}
  */
 export const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+
+/**
+ * @template T
+ * @param {T[]} array
+ * @param {T} x
+ */
+export function removeFromArray(array, x) {
+  return array.splice(array.indexOf(x), 1);
+}

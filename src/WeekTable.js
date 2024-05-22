@@ -8,6 +8,7 @@ import { advanceDateByDays } from "./utils";
 import { format } from "date-fns";
 import FixedColumns from "./FixedColumns";
 import { Ionicons } from "@expo/vector-icons";
+import { toggleMyself } from "./fetcher";
 
 /** @type {Record<Name, number>} */
 const personToImage = {
@@ -75,11 +76,11 @@ function Row({ dayName, dayData }) {
     const normalizedX = (event.nativeEvent.pageX - offset) / widthRef.current;
     const spill = 0.1;
     if (normalizedX < columnWeights[0] + spill) {
-      console.log(dayName, "date was pressed");
+      // day column was pressed
     } else if (normalizedX < columnWeights[0] + columnWeights[1] + spill) {
-      console.log(dayName, "morning was pressed");
+      toggleMyself(dateWeekStarts, dayName, "morning");
     } else {
-      console.log(dayName, "evening was pressed");
+      toggleMyself(dateWeekStarts, dayName, "evening");
     }
   };
 
@@ -101,18 +102,6 @@ function Row({ dayName, dayData }) {
       {dayName !== "saturday" && <Hr />}
     </>
   );
-}
-
-/**
- * @param {number} n
- * @param {number} [m]
- * @returns {number[]}
- */
-function range(n, m = undefined) {
-  if (m === undefined) {
-    return [...Array(n).keys()];
-  }
-  return range(m - n).map((x) => x + n);
 }
 
 /**
