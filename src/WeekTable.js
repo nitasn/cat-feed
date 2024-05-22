@@ -4,7 +4,7 @@ import { useAtom } from "jotai";
 import React, { useRef } from "react";
 import RN, { StyleSheet, Text, View, ImageBackground, Pressable } from "react-native";
 import { weekDisplayedAtom } from "./state";
-import { advanceDateByDays } from "./utils";
+import { advanceDateByDays, arrayDifference } from "./utils";
 import { format } from "date-fns";
 import FixedColumns from "./FixedColumns";
 import { Ionicons } from "@expo/vector-icons";
@@ -126,28 +126,29 @@ function DayColumn({ dayData, dayName }) {
  * @param {{ people: DailyData["morning"] | DailyData["evening"] }} props
  */
 function PeopleColumn({ people }) {
+  const pending = people.pending ?? [];
+  const pendingDeletion = arrayDifference(pending, people.positive);
+
   return (
     <View style={styles.peopleColumn}>
+      {pendingDeletion.map((name) => (
+        <PersonBubble key={name} name={name} pending={true} />
+      ))}
       {people.positive.map((name) => (
-        <PersonBubble key={name} name={name} />
+        <PersonBubble key={name} name={name} pending={pending.includes(name)} />
       ))}
     </View>
   );
 }
 
-function NobodyBubble() {
-  // return null;
-  return <Ionicons name="paw" color="black" size={22} />;
-}
-
 /**
  *
- * @param {{ name: Name }} props
+ * @param {{ name: Name, pending: boolean }} props
  */
-function PersonBubble({ name }) {
+function PersonBubble({ name, pending }) {
   return (
     <ImageBackground source={personToImage[name]} style={styles.personBubble}>
-      <View style={styles.bubbleBorderOverlay} />
+      <View style={pending ? styles.bubbleOverlayPending : styles.bubbleOverlay} />
     </ImageBackground>
   );
 }
@@ -209,11 +210,19 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginHorizontal: -7,
   },
-  bubbleBorderOverlay: {
+  bubbleOverlay: {
     flex: 1,
     opacity: 0.7,
     borderRadius: Number.MAX_SAFE_INTEGER,
     borderWidth: 1.5,
     borderColor: "#676767",
+  },
+  bubbleOverlayPending: {
+    flex: 1,
+    opacity: 0.7,
+    borderRadius: Number.MAX_SAFE_INTEGER,
+    // borderWidth: 1.5,
+    // borderColor: "#676767",
+    backgroundColor: "gray",
   },
 });

@@ -34,40 +34,59 @@ export async function toggleMyself(dateWeekStarts, dayName, meal) {
   const queryKey = ["weeklyData", keyStartWeek];
   const name = getAtom(nameAtom);
 
-  const weeklyData = queryClient.getQueryData(queryKey);
-  const weekClone = JSON.parse(JSON.stringify(weeklyData));
-
-  /** @type {MealData} */
-  const dailyData = weekClone[dayName][meal];
-
-  // positive -> negeative
-  if (dailyData.positive.includes(name)) {
-    removeFromArray(dailyData.positive, name);
-    dailyData.negative.unshift(name);
-  }
-  // negeative -> positive
-  else if (dailyData.negative.includes(name)) {
-    removeFromArray(dailyData.negative, name);
-    dailyData.positive.unshift(name);
-  }
-  // neutral -> positive
-  else {
-    dailyData.positive.unshift(name);
-  }
+  // todo: this function could be simplified with immer.js
 
   // Cancel any outgoing refetches, so they don't overwrite our optimistic update
   await queryClient.cancelQueries({ queryKey });
 
-  dailyData.pending = [...(dailyData.pending ?? []), name];
+  const cachedWeek = queryClient.getQueryData(queryKey);
 
-  // Optimistically update to the new value
+  // for referential inequality of state
+  const weekClone = JSON.parse(JSON.stringify(cachedWeek));
+
+  /** @type {MealData} */
+  const mealData = weekClone[dayName][meal];
+
+  // to reconstruct state later
+  const mealClone = JSON.parse(JSON.stringify(mealData));
+
+  // Make it pending locally
+  mealData.pending ??= [];
+  if (!mealData.pending.includes(name)) {
+    mealData.pending.push(name);
+  }
+
+  // "Optimistically update" to show pending state
   queryClient.setQueryData(queryKey, weekClone);
 
+  // ------------------------------
+  // | Prepare request for server |
+  // ------------------------------
+
+  // positive -> negeative
+  if (mealClone.positive.includes(name)) {
+    removeFromArray(mealClone.positive, name);
+    mealClone.negative.unshift(name);
+  }
+  // negeative -> positive
+  else if (mealClone.negative.includes(name)) {
+    removeFromArray(mealClone.negative, name);
+    mealClone.positive.unshift(name);
+  }
+  // neutral -> positive
+  else {
+    mealClone.positive.unshift(name);
+  }
+
+  const weekForServer = weekClone;
+  weekForServer[dayName][meal] = mealClone;
+
   try {
-    const serverWeekData = await updateAndFetch(keyStartWeek, weekClone);
-    queryClient.setQueryData(queryKey, serverWeekData);
+    const weekFromServer = await updateAndFetch(keyStartWeek, weekForServer);
+    queryClient.setQueryData(queryKey, weekFromServer);
   } catch (e) {
     console.log("Error fetching weekly data from server:", e.message);
+    // todo some indication
   } finally {
     // Always refetch after error or success?
     queryClient.invalidateQueries({ queryKey });

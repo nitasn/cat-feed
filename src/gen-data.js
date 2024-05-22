@@ -1,5 +1,7 @@
 // @ts-check
 
+import { arrayDifference } from "./utils";
+
 /** @type {Name[]} */
 const names = ["imma", "nitsan", "tal", "ronnie", "shahar"];
 
@@ -35,16 +37,6 @@ function randomChoice(array) {
  */
 function noDups(array) {
   return Array.from(new Set(array));
-}
-
-/**
- * @template T
- * @param {T[]} A
- * @param {T[]} B
- * @returns {T[]}
- */
-function arrayDifference(A, B) {
-  return A.filter((a) => !B.includes(a));
 }
 
 /**

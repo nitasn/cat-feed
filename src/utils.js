@@ -77,9 +77,10 @@ export function removeFromArray(array, x) {
 
 /**
  * @template T
- * @param {T[]} array
- * @param {T} value
+ * @param {T[]} A
+ * @param {T[]} B
+ * @returns {T[]}
  */
-export function arrayWithout(array, value) {
-  return array.filter((x) => x !== value);
+export function arrayDifference(A, B) {
+  return A.filter((a) => !B.includes(a));
 }
