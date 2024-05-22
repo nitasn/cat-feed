@@ -36,10 +36,15 @@ export async function toggleMyself(dateWeekStarts, dayName, meal) {
 
   // todo: this function could be simplified with immer.js
 
+  const cachedWeek = queryClient.getQueryData(queryKey);
+
+  // @ts-ignore
+  if (cachedWeek[dayName][meal].pending?.length) {
+    return; // can't change while pending
+  }
+
   // Cancel any outgoing refetches, so they don't overwrite our optimistic update
   await queryClient.cancelQueries({ queryKey });
-
-  const cachedWeek = queryClient.getQueryData(queryKey);
 
   // for referential inequality of state
   const weekClone = JSON.parse(JSON.stringify(cachedWeek));
