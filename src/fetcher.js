@@ -8,6 +8,7 @@ import queryClient from "./query-client";
 
 import dummyData from "./dummy-data";
 
+// todo: don't need allDataAtom, can use queryClient.getQueryData
 const allDataAtom = atom(/** @type {ManyWeeksData} */ ({}));
 
 getDefaultStore().set(allDataAtom, dummyData);
@@ -39,28 +40,31 @@ export default function useWeekData() {
 export function toggleMyself(dateWeekStarts, dayName, meal) {
   const keyStartWeek = dateToShortString(dateWeekStarts);
 
-  const allDataClone = JSON.parse(JSON.stringify(getAtom(allDataAtom)));
-
+  const weekClone = JSON.parse(JSON.stringify(getAtom(allDataAtom)[keyStartWeek]));
   /** @type {DailyData} */
-  const dailyData = allDataClone[keyStartWeek][dayName];
+  const dailyData = weekClone[dayName];
   const { positive, negative } = dailyData[meal];
 
   const name = getAtom(nameAtom);
 
   if (positive.includes(name)) {
-    console.log("pos -> neg");
+    // console.log("pos -> neg");
     removeFromArray(positive, name);
-    negative.push(name);
+    negative.unshift(name);
   } //
   else if (negative.includes(name)) {
-    console.log("neg -> pos");
+    // console.log("neg -> pos");
     removeFromArray(negative, name);
-    positive.push(name);
+    positive.unshift(name);
   } //
   else {
-    console.log("neut -> pos");
-    positive.push(name);
+    // console.log("neut -> pos");
+    positive.unshift(name);
   }
-  getDefaultStore().set(allDataAtom, allDataClone);
+
+  // Optimistically update to the new value
+  queryClient.setQueryData(["weeklyData", keyStartWeek], weekClone);
+
+  getDefaultStore().set(allDataAtom, { ...getAtom(allDataAtom), [keyStartWeek]: weekClone });
   queryClient.invalidateQueries({ queryKey: ["weeklyData", keyStartWeek] });
 }
