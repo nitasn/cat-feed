@@ -2,7 +2,7 @@
 
 import { useAtom } from "jotai";
 import React, { useRef } from "react";
-import RN, { StyleSheet, Text, View, ImageBackground, Pressable } from "react-native";
+import RN, { StyleSheet, Text, View, ImageBackground, Pressable, ActivityIndicator } from "react-native";
 import { weekDisplayedAtom } from "./state";
 import { advanceDateByDays, arrayDifference } from "./utils";
 import { format } from "date-fns";
@@ -111,8 +111,17 @@ function DayColumn({ dayData, dayName }) {
   const [dateWeekStarts] = useAtom(weekDisplayedAtom);
   const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
 
-  const booked = dayData.morning.positive.length && dayData.evening.positive.length;
-  const color = booked ? styles.colorGood : styles.colorBad;
+  /**
+   * @param {"morning" | "evening"} meal
+   */
+  const isMealTakenCareOf = (meal) => {
+    const staysPositive = arrayDifference(dayData[meal].positive, dayData[meal].pending ?? []);
+    const willBePositive = arrayDifference(dayData[meal].pending ?? [], dayData[meal].positive);
+    return staysPositive.length || willBePositive.length;
+  };
+
+  const dayTakenCareOf = isMealTakenCareOf("morning") && isMealTakenCareOf("evening");
+  const color = dayTakenCareOf ? styles.colorGood : styles.colorBad;
 
   return (
     <View style={styles.dayColumn}>
@@ -127,11 +136,11 @@ function DayColumn({ dayData, dayName }) {
  */
 function PeopleColumn({ people }) {
   const pending = people.pending ?? [];
-  const pendingDeletion = arrayDifference(pending, people.positive);
+  const pendingAppending = arrayDifference(pending, people.positive);
 
   return (
     <View style={styles.peopleColumn}>
-      {pendingDeletion.map((name) => (
+      {pendingAppending.map((name) => (
         <PersonBubble key={name} name={name} pending={true} />
       ))}
       {people.positive.map((name) => (
@@ -148,7 +157,9 @@ function PeopleColumn({ people }) {
 function PersonBubble({ name, pending }) {
   return (
     <ImageBackground source={personToImage[name]} style={styles.personBubble}>
-      <View style={pending ? styles.bubbleOverlayPending : styles.bubbleOverlay} />
+      <View style={[styles.bubbleOverlay, pending && styles.bubbleOverlayPending]}>
+        {pending && <ActivityIndicator color="#ffffff85" size="small" />}
+      </View>
     </ImageBackground>
   );
 }
@@ -212,17 +223,13 @@ const styles = StyleSheet.create({
   },
   bubbleOverlay: {
     flex: 1,
-    opacity: 0.7,
     borderRadius: Number.MAX_SAFE_INTEGER,
     borderWidth: 1.5,
-    borderColor: "#676767",
+    borderColor: "#676767b3",
   },
   bubbleOverlayPending: {
-    flex: 1,
-    opacity: 0.7,
-    borderRadius: Number.MAX_SAFE_INTEGER,
-    // borderWidth: 1.5,
-    // borderColor: "#676767",
-    backgroundColor: "gray",
+    backgroundColor: "#8080806e",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
