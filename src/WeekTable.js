@@ -7,7 +7,6 @@ import { weekDisplayedAtom } from "./state";
 import { advanceDateByDays, arrayDifference } from "./utils";
 import { format } from "date-fns";
 import FixedColumns from "./FixedColumns";
-import { Ionicons } from "@expo/vector-icons";
 import { toggleMyself } from "./fetcher";
 
 /** @type {Record<Name, number>} */
@@ -22,15 +21,6 @@ const personToImage = {
   ronnie: require("../assets/people/ronnie.jpg"),
   // @ts-ignore
   shahar: require("../assets/people/shahar.jpg"),
-};
-
-/** @type {Record<Name, string>} */
-const personToColor = {
-  imma: "#76babd",
-  nitsan: "#ef9696",
-  tal: "#c5c587",
-  ronnie: "#756AB6",
-  shahar: "#E0AED0",
 };
 
 /**
