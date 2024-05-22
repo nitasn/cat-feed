@@ -21,7 +21,7 @@ export async function fetchWeek(keyStartWeek) {
  * @returns {Promise<WeeklyData>}
  */
 export async function updateAndFetch(keyStartWeek, newWeeklyData) {
-  await sleep(1500);
+  await sleep(1000);
 
   // deep clone for referential equality
   allWeeks = JSON.parse(JSON.stringify(allWeeks));
