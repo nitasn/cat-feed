@@ -7,9 +7,8 @@ import useWeekData from "./fetcher";
 import { useAtom } from "jotai";
 import { weekDisplayedAtom } from "./state";
 import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
-
 import { BlurView } from "expo-blur";
-import { WeekTable, columnWidths } from "./WeekTable";
+import { WeekTable, columnWidths, mealsColor } from "./WeekTable";
 
 export default function Layout() {
   /**
@@ -34,21 +33,18 @@ export default function Layout() {
 }
 
 function SunAndMoon() {
-  const sunColor = "#bc8e56";
-  const color = "#808080";
-
   const [W0, W1, W2] = columnWidths;
 
   return (
-    <View style={{ flexDirection: "row", paddingHorizontal: 26, marginBottom: 10, marginTop: -2  }}>
+    <View style={{ flexDirection: "row", paddingHorizontal: 26, marginBottom: 10, marginTop: -2 }}>
       <View style={{ width: W0, alignItems: "flex-start" }}>
         {/* <Ionicons color={color} name="paw-outline" size={24} /> */}
       </View>
       <View style={{ width: W1, alignItems: "flex-end" }}>
-        <Ionicons color={sunColor} name="sunny" size={26.2} />
+        <Ionicons color={mealsColor.morning} name="sunny" size={26.2} />
       </View>
       <View style={{ width: W2, alignItems: "flex-end" }}>
-        <Ionicons color={color} name="moon" size={24} />
+        <Ionicons color={mealsColor.evening} name="moon" size={24} />
       </View>
     </View>
   );

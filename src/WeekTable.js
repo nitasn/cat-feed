@@ -46,6 +46,11 @@ const dayNameAbbreviation = {
 
 const dayToIndex = Object.fromEntries(Object.keys(dayNameAbbreviation).map((key, index) => [key, index]));
 
+export const mealsColor = {
+  morning: "#bc8e56",
+  evening: "#808080",
+};
+
 /** @type {`${number}%`[]} */
 export const columnWidths = ["16%", "42%", "42%"];
 
@@ -83,9 +88,9 @@ function Row({ dayName, dayData }) {
         }}
       >
         <FixedColumns widths={columnWidths} style={styles.row}>
-          <DayColumn dayData={dayData} dayName={dayName} />
-          <PeopleColumn people={dayData.morning} />
-          <PeopleColumn people={dayData.evening} />
+          <DateColumn dayData={dayData} dayName={dayName} />
+          <MealColumn dayData={dayData} mealName="morning" />
+          <MealColumn dayData={dayData} mealName="evening" />
         </FixedColumns>
       </Pressable>
 
@@ -97,7 +102,7 @@ function Row({ dayName, dayData }) {
 /**
  * @param {{ dayName: string, dayData: DailyData }} props
  */
-function DayColumn({ dayData, dayName }) {
+function DateColumn({ dayData, dayName }) {
   const [dateWeekStarts] = useAtom(weekDisplayedAtom);
   const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
 
@@ -122,19 +127,20 @@ function DayColumn({ dayData, dayName }) {
 }
 
 /**
- * @param {{ people: DailyData["morning"] | DailyData["evening"] }} props
+ * @param {{ dayData: DailyData, mealName: "morning" | "evening" }} props
  */
-function PeopleColumn({ people }) {
-  const pending = people.pending ?? [];
-  const pendingAppending = arrayDifference(pending, people.positive);
+function MealColumn({ dayData, mealName }) {
+  const meal = dayData[mealName];
+  const pending = meal.pending ?? [];
+  const pendingAppending = arrayDifference(pending, meal.positive);
 
   return (
     <View style={styles.peopleColumn}>
       {pendingAppending.map((name) => (
-        <PersonBubble key={name} name={name} pending={true} />
+        <PersonBubble key={name} name={name} mealName={mealName} pending={true} />
       ))}
-      {people.positive.map((name) => (
-        <PersonBubble key={name} name={name} pending={pending.includes(name)} />
+      {meal.positive.map((name) => (
+        <PersonBubble key={name} name={name} mealName={mealName} pending={pending.includes(name)} />
       ))}
     </View>
   );
@@ -142,14 +148,18 @@ function PeopleColumn({ people }) {
 
 /**
  *
- * @param {{ name: Name, pending: boolean }} props
+ * @param {{ name: Name, pending: boolean, mealName: "morning" | "evening" }} props
  */
-function PersonBubble({ name, pending }) {
+function PersonBubble({ name, pending, mealName }) {
+  const style = [
+    styles.bubbleOverlay,
+    pending && styles.bubbleOverlayPending,
+    // { borderColor: mealsColor[mealName] }
+  ];
+
   return (
     <ImageBackground source={personToImage[name]} style={styles.personBubble}>
-      <View style={[styles.bubbleOverlay, pending && styles.bubbleOverlayPending]}>
-        {pending && <ActivityIndicator color="#ffffff85" size="small" />}
-      </View>
+      <View style={style}>{pending && <ActivityIndicator color="#ffffff85" size="small" />}</View>
     </ImageBackground>
   );
 }
