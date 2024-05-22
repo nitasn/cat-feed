@@ -2,24 +2,23 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { dateToShortString, removeFromArray, sleep } from "./utils";
-import { useAtom, atom, getDefaultStore } from "jotai";
+import { useAtom } from "jotai";
 import { nameAtom, weekDisplayedAtom, getAtom } from "./state";
 import queryClient from "./query-client";
+import { emptyWeeklyData } from "./gen-data";
 
 import dummyData from "./dummy-data";
 
-// todo: don't need allDataAtom, can use queryClient.getQueryData
-const allDataAtom = atom(/** @type {ManyWeeksData} */ ({}));
-
-getDefaultStore().set(allDataAtom, dummyData);
+Object.entries(dummyData).forEach(([keyStartWeek, weeklyData]) => {
+  queryClient.setQueryData(["weeklyData", keyStartWeek], weeklyData);
+});
 
 async function queryFn({ queryKey: [_, keyStartWeek] }) {
-  console.log("querying", keyStartWeek);
-
   await sleep(500);
-  const result = getAtom(allDataAtom)[keyStartWeek];
-  if (!result) throw Error("Simulating a Network Error");
-  return result;
+  const existingData = queryClient.getQueryData(["weeklyData", keyStartWeek]);
+  return existingData ?? emptyWeeklyData();
+  // if (!existingData) throw Error("Simulating a Network Error");
+  // return existingData;
 }
 
 export default function useWeekData() {
@@ -40,7 +39,9 @@ export default function useWeekData() {
 export function toggleMyself(dateWeekStarts, dayName, meal) {
   const keyStartWeek = dateToShortString(dateWeekStarts);
 
-  const weekClone = JSON.parse(JSON.stringify(getAtom(allDataAtom)[keyStartWeek]));
+  const weeklyData = queryClient.getQueryData(["weeklyData", keyStartWeek]);
+  const weekClone = JSON.parse(JSON.stringify(weeklyData));
+
   /** @type {DailyData} */
   const dailyData = weekClone[dayName];
   const { positive, negative } = dailyData[meal];
@@ -65,6 +66,5 @@ export function toggleMyself(dateWeekStarts, dayName, meal) {
   // Optimistically update to the new value
   queryClient.setQueryData(["weeklyData", keyStartWeek], weekClone);
 
-  getDefaultStore().set(allDataAtom, { ...getAtom(allDataAtom), [keyStartWeek]: weekClone });
   queryClient.invalidateQueries({ queryKey: ["weeklyData", keyStartWeek] });
 }

@@ -72,3 +72,12 @@ export function randomWeeklyData() {
   const daysEntries = days.map((day) => [day, { morning: randomPosNeg(), evening: randomPosNeg() }]);
   return Object.fromEntries(daysEntries);
 }
+
+export function emptyWeeklyData() {
+  const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+  const daysEntries = days.map((day) => [day, { 
+      morning: { positive: [], negative: [] }, 
+      evening: { positive: [], negative: [] } 
+  }]);
+  return Object.fromEntries(daysEntries);
+}
