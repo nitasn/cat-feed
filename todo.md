@@ -5,3 +5,7 @@ If last row is empty, adding a person inflates it
 Make bouncing animation (or any other pending state animation) instead of the activity monitor
 
 Pending doesn't need to be an array, it can be a boolean...
+
+## Urgent
+
+Tapping a row, then the row below it, and so on, makes weird bugs
