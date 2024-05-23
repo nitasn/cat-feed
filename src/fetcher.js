@@ -60,7 +60,6 @@ export async function toggleMyself(dateWeekStarts, dayName, meal) {
   if (!mealData.pending.includes(name)) {
     mealData.pending.push(name);
   }
-
   // "Optimistically update" to show pending state
   queryClient.setQueryData(queryKey, weekClone);
 
