@@ -1,16 +1,17 @@
-// @ts-check
-
-import { useAtom } from "jotai";
-import React, { useRef } from "react";
-import RN, { StyleSheet, Text, View, ImageBackground, Pressable, ActivityIndicator } from "react-native";
-import { weekDisplayedAtom } from "./state";
-import { advanceDateByDays, arrayDifference } from "./utils";
+import { useAtom, useAtomValue } from "jotai";
+import { useRef } from "react";
+import { StyleSheet, Text, View, ImageBackground, Pressable, ActivityIndicator } from "react-native";
+import { nameAtom, weekDisplayedAtom } from "./state";
+import { advanceDateByDays, arrayDifference, arrayWithout, removeIfExists } from "./utils";
 import { format } from "date-fns";
 import FixedColumns from "./FixedColumns";
-import { toggleMyself } from "./fetcher";
+import { toggleMyself } from "./channel";
+import { days } from "./types";
 
-/** @type {Record<Name, number>} */
-const personToImage = {
+import type { GestureResponderEvent } from "react-native";
+import type { WeekData, Name, DayName, DayData, MealName } from "./types";
+
+const personToImage: Record<Name, number> = {
   // @ts-ignore
   imma: require("../assets/people/imma.jpg"),
   // @ts-ignore
@@ -23,18 +24,15 @@ const personToImage = {
   shahar: require("../assets/people/shahar.jpg"),
 };
 
-/**
- * @param {{ weekData: WeeklyData}} props
- */
-export function WeekTable({ weekData }) {
+export function WeekTable({ weekData }: { weekData: WeekData }) {
   const rows = Object.entries(weekData).map(([dayName, dayData]) => (
-    <Row key={dayName} dayName={dayName} dayData={dayData} />
+    <Row key={dayName} dayName={dayName as DayName} dayData={dayData} />
   ));
 
   return <View style={styles.container}>{rows}</View>;
 }
 
-const dayNameAbbreviation = {
+const dayNameAbbreviation: Record<DayName, string> = {
   sunday: "Sun",
   monday: "Mon",
   tuesday: "Tue",
@@ -44,38 +42,31 @@ const dayNameAbbreviation = {
   saturday: "Sat",
 };
 
-const dayToIndex = Object.fromEntries(Object.keys(dayNameAbbreviation).map((key, index) => [key, index]));
+const dayToIndex = Object.fromEntries(days.map((dayName, index) => [dayName, index])) as Record<DayName, number>;
 
 export const mealsColor = {
   morning: "#bc8e56",
   evening: "#808080",
 };
 
-/** @type {`${number}%`[]} */
-export const columnWidths = ["16%", "42%", "42%"];
+export const columnWidths = ["16%", "42%", "42%"] as `${number}%`[];
 
 const columnWeights = columnWidths.map((value) => +value.substring(0, value.length - 1) / 100);
 
-/**
- * @param {{ dayName: string, dayData: DailyData }} props
- */
-function Row({ dayName, dayData }) {
-  const [dateWeekStarts] = useAtom(weekDisplayedAtom);
+function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
+  const dateWeekStarts = useAtomValue(weekDisplayedAtom);
   const widthRef = useRef(0);
 
-  /**
-   * @param {RN.GestureResponderEvent} event
-   */
-  const onPress = (event) => {
+  const onPress = (event: GestureResponderEvent) => {
     const offset = 36; // blur container padding + margin
     const normalizedX = (event.nativeEvent.pageX - offset) / widthRef.current;
     const spill = 0.1;
     if (normalizedX < columnWeights[0] + spill) {
       // day column was pressed
     } else if (normalizedX < columnWeights[0] + columnWeights[1] + spill) {
-      toggleMyself(dateWeekStarts, dayName, "morning");
+      toggleMyself({ dateWeekStarts, dayName, mealName: "morning" });
     } else {
-      toggleMyself(dateWeekStarts, dayName, "evening");
+      toggleMyself({ dateWeekStarts, dayName, mealName: "evening" });
     }
   };
 
@@ -99,20 +90,18 @@ function Row({ dayName, dayData }) {
   );
 }
 
-/**
- * @param {{ dayName: string, dayData: DailyData }} props
- */
-function DateColumn({ dayData, dayName }) {
+function DateColumn({ dayData, dayName }: { dayName: DayName; dayData: DayData }) {
   const [dateWeekStarts] = useAtom(weekDisplayedAtom);
   const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
+  const name = useAtomValue(nameAtom);
 
-  /**
-   * @param {"morning" | "evening"} meal
-   */
-  const isMealTakenCareOf = (meal) => {
-    const staysPositive = arrayDifference(dayData[meal].positive, dayData[meal].pending ?? []);
-    const willBePositive = arrayDifference(dayData[meal].pending ?? [], dayData[meal].positive);
-    return staysPositive.length || willBePositive.length;
+  const isMealTakenCareOf = (meal: MealName) => {
+    const staysPositive =
+      dayData[meal].pendingBecoming === "negative"
+        ? arrayWithout(dayData[meal].positive, name)
+        : dayData[meal].positive;
+
+    return staysPositive.length || dayData[meal].pendingBecoming === "positive";
   };
 
   const dayTakenCareOf = isMealTakenCareOf("morning") && isMealTakenCareOf("evening");
@@ -126,31 +115,24 @@ function DateColumn({ dayData, dayName }) {
   );
 }
 
-/**
- * @param {{ dayData: DailyData, mealName: "morning" | "evening" }} props
- */
-function MealColumn({ dayData, mealName }) {
+function MealColumn({ dayData, mealName }: { dayData: DayData; mealName: MealName }) {
   const meal = dayData[mealName];
-  const pending = meal.pending ?? [];
-  const pendingAppending = arrayDifference(pending, meal.positive);
+  const myName = useAtomValue(nameAtom);
+  const ImPending = !!dayData[mealName].pendingBecoming;
 
   return (
     <View style={styles.peopleColumn}>
-      {pendingAppending.map((name) => (
-        <PersonBubble key={name} name={name} mealName={mealName} pending={true} />
-      ))}
+      {ImPending && !dayData[mealName].positive.includes(myName) && (
+        <PersonBubble key={myName} name={myName} mealName={mealName} pending={true} />
+      )}
       {meal.positive.map((name) => (
-        <PersonBubble key={name} name={name} mealName={mealName} pending={pending.includes(name)} />
+        <PersonBubble key={name} name={name} mealName={mealName} pending={name === myName && ImPending} />
       ))}
     </View>
   );
 }
 
-/**
- *
- * @param {{ name: Name, pending: boolean, mealName: "morning" | "evening" }} props
- */
-function PersonBubble({ name, pending, mealName }) {
+function PersonBubble({ name, pending, mealName }: { name: Name; pending: boolean; mealName: MealName }) {
   const style = [
     styles.bubbleOverlay,
     pending && styles.bubbleOverlayPending,

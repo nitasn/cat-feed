@@ -1,17 +1,14 @@
-// @ts-check
-
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, SafeAreaView, Platform } from "react-native";
 import { ImageBackground } from "react-native";
-import React from "react";
 import Layout from "./src/Layout";
 
 import { QueryClientProvider } from "@tanstack/react-query";
 import queryClient from "./src/query-client";
 
 // @ts-ignore
-const backgroundImage = require("./assets/street.webp");
-// const backgroundImage = require("./assets/background-blur.webp");
+import backgroundImage from "./assets/street.webp";
+// const backgroundImage = require("./assets/street.webp");
 
 export default function App() {
   return (

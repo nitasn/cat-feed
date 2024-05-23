@@ -1,20 +1,17 @@
-// @ts-check
-
 import { Ionicons } from "@expo/vector-icons";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import useWeekData from "./fetcher";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { weekDisplayedAtom } from "./state";
 import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
 import { BlurView } from "expo-blur";
 import { WeekTable, columnWidths, mealsColor } from "./WeekTable";
+import { useWeekData } from "./channel";
+
+import type { BlurViewProps } from "expo-blur";
 
 export default function Layout() {
-  /**
-   * @type {import('expo-blur').BlurViewProps['tint'] | undefined}
-   */
-  const blurTint = Platform.select({
+  const blurTint: BlurViewProps["tint"] | undefined = Platform.select({
     ios: "light",
     android: "prominent",
   });
@@ -50,10 +47,12 @@ function SunAndMoon() {
   );
 }
 
-/**
- * @param {{ glyph: keyof typeof Ionicons.glyphMap, onPress: () => void }} props
- */
-function IconButton({ glyph, onPress }) {
+interface IconButtonProps {
+  glyph: keyof typeof Ionicons.glyphMap;
+  onPress: () => void;
+}
+
+function IconButton({ glyph, onPress }: IconButtonProps) {
   return (
     <TouchableOpacity onPress={onPress} style={styles.iconButton}>
       <Ionicons color="black" name={glyph} size={24} />
@@ -68,7 +67,7 @@ function Header() {
     return relativeWeek(firstDayOfWeek);
   }, [firstDayOfWeek]);
 
-  const changeWeekBy = (numWeeks) => () => {
+  const changeWeekBy = (numWeeks: number) => () => {
     const laterDate = advanceDateByDays(firstDayOfWeek, 7 * numWeeks);
     setFirstDayOfWeek(dateFirstDayOfWeek(laterDate));
   };
@@ -83,7 +82,8 @@ function Header() {
 }
 
 function BlurContainerContent() {
-  const { weekLoading, weekError, weekData } = useWeekData();
+  const dateWeekStarts = useAtomValue(weekDisplayedAtom);
+  const { weekLoading, weekError, weekData } = useWeekData(dateWeekStarts);
 
   if (weekLoading) {
     return (

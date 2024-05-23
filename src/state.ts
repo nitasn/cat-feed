@@ -1,21 +1,16 @@
-// @ts-check
-
 import { dateFirstDayOfWeek } from "./utils";
-import Jotai, { atom, getDefaultStore } from "jotai";
+import { atom, getDefaultStore, Atom } from "jotai";
+
+import type { Name } from "./types";
 
 export const weekDisplayedAtom = atom(dateFirstDayOfWeek());
 
-export const nameAtom = atom(/** @type {Name} */ ("nitsan"));
+export const nameAtom = atom<Name>("nitsan");
 
 ///////////////////////////////////////////////////////////////////////////////
 
 const store = getDefaultStore();
 
-/**
- * @template T
- * @param {Jotai.Atom<T>} atom
- * @returns {T}
- */
-export function getAtom(atom) {
+export function getAtom<T>(atom: Atom<T>): T {
   return store.get(atom);
 }
