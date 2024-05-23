@@ -1,5 +1,3 @@
-// @ts-check
-
 import { produce } from "immer";
 import { atom, getDefaultStore, useAtomValue } from "jotai";
 import { getAtom, nameAtom } from "./state";
@@ -41,6 +39,8 @@ const debouncedSendChanges = debouncify({ ms: 300 }, () => {
 
 export const toggleMyself = ({ dateWeekStarts, dayName, mealName }: CompactChange) => {
   const name = getAtom(nameAtom);
+
+  // todo: what if i'm already pending?
 
   const newCache = produce(getAtom(cacheAtom), (cache) => {
     const mealData = cache[dateToShortString(dateWeekStarts)][dayName][mealName];
