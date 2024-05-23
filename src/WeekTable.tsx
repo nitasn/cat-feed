@@ -1,15 +1,15 @@
+import { format } from "date-fns";
 import { useAtom, useAtomValue } from "jotai";
 import { useRef } from "react";
-import { StyleSheet, Text, View, ImageBackground, Pressable, ActivityIndicator } from "react-native";
-import { nameAtom, weekDisplayedAtom } from "./state";
-import { advanceDateByDays, arrayDifference, arrayWithout, removeIfExists } from "./utils";
-import { format } from "date-fns";
+import { ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View } from "react-native";
 import FixedColumns from "./FixedColumns";
 import { toggleMyself } from "./channel";
+import { nameAtom, weekDisplayedAtom } from "./state";
 import { days } from "./types";
+import { advanceDateByDays, arrayWithout } from "./utils";
 
 import type { GestureResponderEvent } from "react-native";
-import type { WeekData, Name, DayName, DayData, MealName } from "./types";
+import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 
 const personToImage: Record<Name, number> = {
   // @ts-ignore

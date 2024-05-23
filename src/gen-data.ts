@@ -1,6 +1,6 @@
-import { arrayDifference } from "./utils";
-import { days, names } from "./types";
 import type { Name, WeekData } from "./types";
+import { days, names } from "./types";
+import { arrayDifference } from "./utils";
 
 function randomSample<T>(array: readonly T[], k: number): T[] {
   const result: T[] = [];

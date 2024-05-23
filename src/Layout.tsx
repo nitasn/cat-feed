@@ -1,12 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
+import { useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useAtom, useAtomValue } from "jotai";
-import { weekDisplayedAtom } from "./state";
-import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
-import { BlurView } from "expo-blur";
 import { WeekTable, columnWidths, mealsColor } from "./WeekTable";
 import { useWeekData } from "./channel";
+import { weekDisplayedAtom } from "./state";
+import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
 
 import type { BlurViewProps } from "expo-blur";
 

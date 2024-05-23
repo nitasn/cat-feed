@@ -1,5 +1,5 @@
+import { Atom, atom, getDefaultStore } from "jotai";
 import { dateFirstDayOfWeek } from "./utils";
-import { atom, getDefaultStore, Atom } from "jotai";
 
 import type { Name } from "./types";
 

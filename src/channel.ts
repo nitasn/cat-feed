@@ -1,10 +1,10 @@
 // @ts-check
 
-import { atom, getDefaultStore, useAtom, useAtomValue } from "jotai";
-import { dateToShortString } from "./utils";
-import { getAtom, nameAtom } from "./state";
 import { produce } from "immer";
-import type { Change, ManyWeeksData, CompactChange } from "./types";
+import { atom, getDefaultStore, useAtomValue } from "jotai";
+import { getAtom, nameAtom } from "./state";
+import type { Change, CompactChange, ManyWeeksData } from "./types";
+import { dateToShortString } from "./utils";
 
 function debouncify<Args extends any[]>({ ms }: { ms: number }, callback: (...args: Args) => any) {
   let timeoutId: NodeJS.Timeout;

@@ -1,14 +1,11 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, SafeAreaView, Platform } from "react-native";
-import { ImageBackground } from "react-native";
+import { ImageBackground, Platform, SafeAreaView, StyleSheet } from "react-native";
 import Layout from "./src/Layout";
-
 import { QueryClientProvider } from "@tanstack/react-query";
 import queryClient from "./src/query-client";
 
 // @ts-ignore
 import backgroundImage from "./assets/street.webp";
-// const backgroundImage = require("./assets/street.webp");
 
 export default function App() {
   return (

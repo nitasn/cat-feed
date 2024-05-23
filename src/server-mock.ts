@@ -1,6 +1,6 @@
 import { BalancedExample as dummyData } from "./dummy-data";
-import { dateToShortString, removeIfExists, sleep } from "./utils";
 import { emptyWeeklyData } from "./gen-data";
+import { dateToShortString, removeIfExists, sleep } from "./utils";
 
 import type { Change, WeekData } from "./types";
 

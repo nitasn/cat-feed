@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, StyleProp, ViewStyle, DimensionValue } from "react-native";
+import { DimensionValue, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
 interface FixedColumnsProps {
   children?: React.ReactNode;

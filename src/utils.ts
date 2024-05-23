@@ -1,4 +1,4 @@
-import { startOfWeek, format, parse } from "date-fns";
+import { format, parse, startOfWeek } from "date-fns";
 
 export function dateFirstDayOfWeek(inputDate: Date = new Date()): Date {
   return startOfWeek(inputDate, { weekStartsOn: 0 });
