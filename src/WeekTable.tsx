@@ -6,7 +6,7 @@ import FixedColumns from "./FixedColumns";
 import { toggleMyself } from "./channel";
 import { nameAtom, weekDisplayedAtom } from "./state";
 import { days } from "./types";
-import { advanceDateByDays, arrayWithout } from "./utils";
+import { advanceDateByDays, arrayWithout, dateToShortString } from "./utils";
 
 import type { GestureResponderEvent } from "react-native";
 import type { DayData, DayName, MealName, Name, WeekData } from "./types";
@@ -54,19 +54,19 @@ export const columnWidths = ["16%", "42%", "42%"] as `${number}%`[];
 const columnWeights = columnWidths.map((value) => +value.substring(0, value.length - 1) / 100);
 
 function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
-  const dateWeekStarts = useAtomValue(weekDisplayedAtom);
+  const weekKey = dateToShortString(useAtomValue(weekDisplayedAtom));
   const widthRef = useRef(0);
 
   const onPress = (event: GestureResponderEvent) => {
-    const offset = 36; // blur container padding + margin
+    const offset = 36; // blur container padding + margin. TODO get offset dynamically
     const normalizedX = (event.nativeEvent.pageX - offset) / widthRef.current;
     const spill = 0.1;
     if (normalizedX < columnWeights[0] + spill) {
-      // day column was pressed
+      // ignoring day column was pressed
     } else if (normalizedX < columnWeights[0] + columnWeights[1] + spill) {
-      toggleMyself({ dateWeekStarts, dayName, mealName: "morning" });
+      toggleMyself(`${weekKey}.${dayName}.morning`);
     } else {
-      toggleMyself({ dateWeekStarts, dayName, mealName: "evening" });
+      toggleMyself(`${weekKey}.${dayName}.evening`);
     }
   };
 
@@ -97,11 +97,11 @@ function DateColumn({ dayData, dayName }: { dayName: DayName; dayData: DayData }
 
   const isMealTakenCareOf = (meal: MealName) => {
     const staysPositive =
-      dayData[meal].pendingBecoming === "negative"
+      dayData[meal].pendingChangingTo === "negative"
         ? arrayWithout(dayData[meal].positive, name)
         : dayData[meal].positive;
 
-    return staysPositive.length || dayData[meal].pendingBecoming === "positive";
+    return staysPositive.length || dayData[meal].pendingChangingTo === "positive";
   };
 
   const dayTakenCareOf = isMealTakenCareOf("morning") && isMealTakenCareOf("evening");
@@ -118,7 +118,7 @@ function DateColumn({ dayData, dayName }: { dayName: DayName; dayData: DayData }
 function MealColumn({ dayData, mealName }: { dayData: DayData; mealName: MealName }) {
   const meal = dayData[mealName];
   const myName = useAtomValue(nameAtom);
-  const ImPending = !!dayData[mealName].pendingBecoming;
+  const ImPending = !!dayData[mealName].pendingChangingTo;
 
   return (
     <View style={styles.peopleColumn}>

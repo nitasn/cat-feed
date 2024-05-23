@@ -13,7 +13,7 @@ export type MealName = (typeof meals)[number];
 export interface MealData {
   positive: Name[];
   negative: Name[];
-  pendingBecoming?: PosNeg; // internal state for optimistic updates
+  pendingChangingTo?: PosNeg; // internal state for optimistic updates
 }
 
 export type PosNeg = "positive" | "negative";
@@ -35,15 +35,18 @@ export interface WeekData {
 
 export type ManyWeeksData = Record<string, WeekData>;
 
-export interface CompactChange {
-  dateWeekStarts: Date;
-  dayName: DayName;
-  mealName: MealName;
-}
+// export interface CompactChange {
+//   dateWeekStarts: Date;
+//   dayName: DayName;
+//   mealName: MealName;
+// }
 
-export interface Change extends CompactChange {
-  person: Name;
-  becoming: PosNeg;
+export type ChangePath = `${string}.${DayName}.${MealName}`;
+
+export interface Change {
+  mealPath: ChangePath;
+  changeTo: PosNeg;
+  name: Name;
 }
 
 //////////////////

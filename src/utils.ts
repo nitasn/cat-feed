@@ -63,3 +63,8 @@ export function objectWithoutKey<T>(obj: Record<string, T>, keyToRemove: string)
 export function arrayDifference<T>(A: readonly T[], B: readonly T[]): T[] {
   return A.filter((a) => !B.includes(a));
 }
+
+export function makeIdGenerator() {
+  let id = 0;
+  return () => id++;
+}

@@ -1,7 +1,7 @@
 import { produce } from "immer";
 import { atom, getDefaultStore, useAtomValue } from "jotai";
 import { nameAtom } from "./state";
-import { days, meals, type Change, type CompactChange, type ManyWeeksData, type WeekData } from "./types";
+import { days, meals, type Change, type ChangePath, type ManyWeeksData, type WeekData } from "./types";
 import { arrayWith, arrayWithout, dateToShortString, objectWithoutKey, sleep } from "./utils";
 
 const store = getDefaultStore();
@@ -16,6 +16,7 @@ function debouncify<Args extends any[]>({ ms }: { ms: number }, callback: (...ar
 
 import { BalancedExample as dummyData } from "./dummy-data"; // TODO REMOVE
 import { fetchWeek } from "./server-mock";
+import { getProperty } from "dot-prop";
 const cacheAtom = atom<ManyWeeksData>(dummyData);
 
 const weekKeysLoadingAtom = atom<string[]>([]);
@@ -59,7 +60,7 @@ function mergeReceivedWeekWithPendingChanges(weekKey: string, receivedWeek: Week
     [weekKey]: produce(receivedWeek, (recvWeek) => {
       for (const day of days) {
         for (const meal of meals) {
-          recvWeek[day][meal].pendingBecoming = cache[weekKey][day][meal].pendingBecoming;
+          recvWeek[day][meal].pendingChangingTo = cache[weekKey][day][meal].pendingChangingTo;
         }
       }
     }),
@@ -92,16 +93,16 @@ const debouncedSendChanges = debouncify({ ms: 300 }, () => {
   // TODO
 });
 
-export const toggleMyself = ({ dateWeekStarts, dayName, mealName }: CompactChange) => {
+export const toggleMyself = (mealPath: ChangePath) => {
   const name = store.get(nameAtom);
 
   // todo: what if i'm already pending?
 
   const newCache = produce(store.get(cacheAtom), (cache) => {
-    const mealData = cache[dateToShortString(dateWeekStarts)][dayName][mealName];
-    const becoming = mealData.positive.includes(name) ? "negative" : "positive";
-    mealData.pendingBecoming = becoming;
-    stagingChanges.push({ dateWeekStarts, dayName, mealName, person: name, becoming });
+    const mealData = getProperty(cache, mealPath)!;
+    const changeTo = mealData.positive.includes(name) ? "negative" : "positive";
+    mealData.pendingChangingTo = changeTo;
+    stagingChanges.push({ name, mealPath, changeTo });
   });
 
   store.set(cacheAtom, newCache);
