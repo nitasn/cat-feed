@@ -52,6 +52,14 @@ export function arrayWithout<T>(array: readonly T[], x: T): T[] {
   return array.filter((y) => x !== y);
 }
 
+export function arrayWith<T>(array: T[], x: T): T[] {
+  return array.includes(x) ? array : [...array, x];
+}
+
+export function objectWithoutKey<T>(obj: Record<string, T>, keyToRemove: string): Record<string, T> {
+  return Object.fromEntries(Object.entries(obj).filter(([key]) => key !== keyToRemove));
+}
+
 export function arrayDifference<T>(A: readonly T[], B: readonly T[]): T[] {
   return A.filter((a) => !B.includes(a));
 }

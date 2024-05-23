@@ -1,8 +1,10 @@
 import { produce } from "immer";
-import { atom, getDefaultStore, useAtomValue } from "jotai";
-import { getAtom, nameAtom } from "./state";
+import { atom, getDefaultStore, useAtom, useAtomValue } from "jotai";
+import { nameAtom } from "./state";
 import type { Change, CompactChange, ManyWeeksData } from "./types";
-import { dateToShortString } from "./utils";
+import { arrayWith, arrayWithout, dateToShortString, objectWithoutKey, sleep } from "./utils";
+
+const store = getDefaultStore();
 
 function debouncify<Args extends any[]>({ ms }: { ms: number }, callback: (...args: Args) => any) {
   let timeoutId: NodeJS.Timeout;
@@ -13,20 +15,60 @@ function debouncify<Args extends any[]>({ ms }: { ms: number }, callback: (...ar
 }
 
 import { BalancedExample as dummyData } from "./dummy-data"; // TODO REMOVE
+import { fetchWeek } from "./server-mock";
 const cacheAtom = atom<ManyWeeksData>(dummyData);
 
-const weekKeysLoading = new Set<string>();
-const weekKeysErrors = new Map<string, Error>();
+const weekKeysLoadingAtom = atom<string[]>([]);
+const weekKeysErrorsAtom = atom<Record<string, Error>>({});
 
 export function useWeekData(dateWeekStarts: Date) {
   const cache = useAtomValue(cacheAtom);
   const weekKey = dateToShortString(dateWeekStarts);
-  // TODO maybe fire up request
+  const weekKeysErrors = useAtomValue(weekKeysErrorsAtom);
+  const [weekKeysLoading, setWeekKeysLoading] = useAtom(weekKeysLoadingAtom);
+
+  if (!cache[weekKey]) {
+    makeSureWeRequest(weekKey);
+  }
+
   return {
-    weekLoading: weekKeysLoading.has(weekKey),
-    weekError: weekKeysErrors.get(weekKey),
+    weekLoading: weekKeysLoading.includes(weekKey),
+    weekError: weekKeysErrors[weekKey],
     weekData: cache[weekKey],
   };
+}
+
+/**
+ * Retries a few times, with exponentioal backoff.
+ */
+async function tryMultipleTimes<Res, Err>(asyncFn: () => Promise<Res | Err>, _attemptsSoFar = 0) {
+  const MAX_ATTEMPTS = 3;
+
+  try {
+    return await asyncFn();
+  } catch (error) {
+    if (_attemptsSoFar >= MAX_ATTEMPTS) return error as Err;
+    await sleep(500 * 2 ** _attemptsSoFar);
+    return await tryMultipleTimes(asyncFn, _attemptsSoFar + 1);
+  }
+}
+
+async function makeSureWeRequest(weekKey: string) {
+  if (store.get(weekKeysLoadingAtom).includes(weekKey)) {
+    return; // don't fire another request if one with the same key is pending (avoiding race conditions)
+  }
+
+  store.set(weekKeysLoadingAtom, (weekKeysLoading) => arrayWith(weekKeysLoading, weekKey));
+  store.set(weekKeysErrorsAtom, (weekKeysErrors) => objectWithoutKey(weekKeysErrors, weekKey));
+
+  try {
+    const weekData = await tryMultipleTimes(() => fetchWeek(weekKey));
+    store.set(cacheAtom, (cache) => ({ ...cache, [weekKey]: weekData }));
+  } catch (error) {
+    store.set(weekKeysErrorsAtom, (weekKeysErrors) => ({ ...weekKeysErrors, [weekKey]: error as Error }));
+  } finally {
+    store.set(weekKeysLoadingAtom, (weekKeysLoading) => arrayWithout(weekKeysLoading, weekKey));
+  }
 }
 
 const stagingChanges: Change[] = [];
@@ -38,18 +80,18 @@ const debouncedSendChanges = debouncify({ ms: 300 }, () => {
 });
 
 export const toggleMyself = ({ dateWeekStarts, dayName, mealName }: CompactChange) => {
-  const name = getAtom(nameAtom);
+  const name = store.get(nameAtom);
 
   // todo: what if i'm already pending?
 
-  const newCache = produce(getAtom(cacheAtom), (cache) => {
+  const newCache = produce(store.get(cacheAtom), (cache) => {
     const mealData = cache[dateToShortString(dateWeekStarts)][dayName][mealName];
     const becoming = mealData.positive.includes(name) ? "negative" : "positive";
     mealData.pendingBecoming = becoming;
     stagingChanges.push({ dateWeekStarts, dayName, mealName, person: name, becoming });
   });
 
-  getDefaultStore().set(cacheAtom, newCache);
+  store.set(cacheAtom, newCache);
 
   debouncedSendChanges();
 };
