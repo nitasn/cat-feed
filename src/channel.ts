@@ -4,7 +4,7 @@ import { atom, getDefaultStore, useAtom, useAtomValue } from "jotai";
 import { dateToShortString } from "./utils";
 import { getAtom, nameAtom } from "./state";
 import { produce } from "immer";
-import type { Change, ManyWeeksData, ToggleProps } from "./types";
+import type { Change, ManyWeeksData, CompactChange } from "./types";
 
 function debouncify<Args extends any[]>({ ms }: { ms: number }, callback: (...args: Args) => any) {
   let timeoutId: NodeJS.Timeout;
@@ -39,7 +39,7 @@ const debouncedSendChanges = debouncify({ ms: 300 }, () => {
   // TODO
 });
 
-export const toggleMyself = ({ dateWeekStarts, dayName, mealName }: ToggleProps) => {
+export const toggleMyself = ({ dateWeekStarts, dayName, mealName }: CompactChange) => {
   const name = getAtom(nameAtom);
 
   const newCache = produce(getAtom(cacheAtom), (cache) => {

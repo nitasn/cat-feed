@@ -29,13 +29,13 @@ export type DayName = "sunday" | "monday" | "tuesday" | "wednesday" | "thursday"
 
 export type ManyWeeksData = Record<string, WeekData>;
 
-export interface ToggleProps {
+export interface CompactChange {
   dateWeekStarts: Date;
   dayName: DayName;
   mealName: MealName;
 }
 
-export interface Change extends ToggleProps {
+export interface Change extends CompactChange {
   person: Name; // todo change to personName: PersonName
   becoming: PosNeg;
 }
