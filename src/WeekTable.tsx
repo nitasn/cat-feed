@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View } from "react-native";
 import FixedColumns from "./FixedColumns";
 import { toggleMyself } from "./channel";
-import { nameAtom, weekDisplayedAtom } from "./state";
+import { nameAtom, weekDisplayedDateAtom, weekKeyAtom } from "./state";
 import { days } from "./types";
 import { advanceDateByDays, arrayWithout, dateToShortString } from "./utils";
 
@@ -54,7 +54,7 @@ export const columnWidths = ["16%", "42%", "42%"] as `${number}%`[];
 const columnWeights = columnWidths.map((value) => +value.substring(0, value.length - 1) / 100);
 
 function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
-  const weekKey = dateToShortString(useAtomValue(weekDisplayedAtom));
+  const weekKey = useAtomValue(weekKeyAtom);
   const widthRef = useRef(0);
 
   const onPress = (event: GestureResponderEvent) => {
@@ -91,7 +91,7 @@ function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
 }
 
 function DateColumn({ dayData, dayName }: { dayName: DayName; dayData: DayData }) {
-  const [dateWeekStarts] = useAtom(weekDisplayedAtom);
+  const [dateWeekStarts] = useAtom(weekDisplayedDateAtom);
   const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
   const name = useAtomValue(nameAtom);
 

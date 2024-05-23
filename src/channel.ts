@@ -22,9 +22,8 @@ const cacheAtom = atom<ManyWeeksData>(dummyData);
 const weekKeysLoadingAtom = atom<string[]>([]);
 const weekKeysErrorsAtom = atom<Record<string, Error>>({});
 
-export function useWeekData(dateWeekStarts: Date) {
+export function useWeekData(weekKey: string) {
   const cache = useAtomValue(cacheAtom);
-  const weekKey = dateToShortString(dateWeekStarts);
   const weekKeysErrors = useAtomValue(weekKeysErrorsAtom);
   const weekKeysLoading = useAtomValue(weekKeysLoadingAtom);
 

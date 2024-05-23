@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { WeekTable, columnWidths, mealsColor } from "./WeekTable";
 import { useWeekData } from "./channel";
-import { weekDisplayedAtom } from "./state";
+import { weekDisplayedDateAtom, weekKeyAtom } from "./state";
 import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
 
 import type { BlurViewProps } from "expo-blur";
@@ -61,7 +61,7 @@ function IconButton({ glyph, onPress }: IconButtonProps) {
 }
 
 function Header() {
-  const [firstDayOfWeek, setFirstDayOfWeek] = useAtom(weekDisplayedAtom);
+  const [firstDayOfWeek, setFirstDayOfWeek] = useAtom(weekDisplayedDateAtom);
 
   const title = useMemo(() => {
     return relativeWeek(firstDayOfWeek);
@@ -82,8 +82,8 @@ function Header() {
 }
 
 function BlurContainerContent() {
-  const dateWeekStarts = useAtomValue(weekDisplayedAtom);
-  const { weekLoading, weekError, weekData } = useWeekData(dateWeekStarts);
+  const weekKey = useAtomValue(weekKeyAtom);
+  const { weekLoading, weekError, weekData } = useWeekData(weekKey);
 
   if (weekLoading) {
     return (
