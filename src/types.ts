@@ -2,9 +2,13 @@ export const names = ["imma", "nitsan", "tal", "ronnie", "shahar"] as const;
 
 export const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] as const;
 
+export const meals = ["morning", "evening"] as const;
+
 export type Name = (typeof names)[number];
 
 export type DayName = (typeof days)[number];
+
+export type MealName = (typeof meals)[number];
 
 export interface MealData {
   positive: Name[];
@@ -13,8 +17,6 @@ export interface MealData {
 }
 
 export type PosNeg = "positive" | "negative";
-
-export type MealName = "morning" | "evening";
 
 export interface DayData {
   morning: MealData;
@@ -40,7 +42,7 @@ export interface CompactChange {
 }
 
 export interface Change extends CompactChange {
-  person: Name; // todo change to personName: PersonName
+  person: Name;
   becoming: PosNeg;
 }
 

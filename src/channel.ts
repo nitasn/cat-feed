@@ -1,7 +1,7 @@
 import { produce } from "immer";
-import { atom, getDefaultStore, useAtom, useAtomValue } from "jotai";
+import { atom, getDefaultStore, useAtomValue } from "jotai";
 import { nameAtom } from "./state";
-import type { Change, CompactChange, ManyWeeksData } from "./types";
+import { days, meals, type Change, type CompactChange, type ManyWeeksData, type WeekData } from "./types";
 import { arrayWith, arrayWithout, dateToShortString, objectWithoutKey, sleep } from "./utils";
 
 const store = getDefaultStore();
@@ -25,7 +25,7 @@ export function useWeekData(dateWeekStarts: Date) {
   const cache = useAtomValue(cacheAtom);
   const weekKey = dateToShortString(dateWeekStarts);
   const weekKeysErrors = useAtomValue(weekKeysErrorsAtom);
-  const [weekKeysLoading, setWeekKeysLoading] = useAtom(weekKeysLoadingAtom);
+  const weekKeysLoading = useAtomValue(weekKeysLoadingAtom);
 
   if (!cache[weekKey]) {
     makeSureWeRequest(weekKey);
@@ -53,6 +53,19 @@ async function tryMultipleTimes<Res, Err>(asyncFn: () => Promise<Res | Err>, _at
   }
 }
 
+function mergeReceivedWeekWithPendingChanges(weekKey: string, receivedWeek: WeekData) {
+  store.set(cacheAtom, (cache) => ({
+    ...cache,
+    [weekKey]: produce(receivedWeek, (recvWeek) => {
+      for (const day of days) {
+        for (const meal of meals) {
+          recvWeek[day][meal].pendingBecoming = cache[weekKey][day][meal].pendingBecoming;
+        }
+      }
+    }),
+  }));
+}
+
 async function makeSureWeRequest(weekKey: string) {
   if (store.get(weekKeysLoadingAtom).includes(weekKey)) {
     return; // don't fire another request if one with the same key is pending (avoiding race conditions)
@@ -62,8 +75,8 @@ async function makeSureWeRequest(weekKey: string) {
   store.set(weekKeysErrorsAtom, (weekKeysErrors) => objectWithoutKey(weekKeysErrors, weekKey));
 
   try {
-    const weekData = await tryMultipleTimes(() => fetchWeek(weekKey));
-    store.set(cacheAtom, (cache) => ({ ...cache, [weekKey]: weekData }));
+    const receivedWeek = await tryMultipleTimes(() => fetchWeek(weekKey));
+    mergeReceivedWeekWithPendingChanges(weekKey, receivedWeek);
   } catch (error) {
     store.set(weekKeysErrorsAtom, (weekKeysErrors) => ({ ...weekKeysErrors, [weekKey]: error as Error }));
   } finally {
