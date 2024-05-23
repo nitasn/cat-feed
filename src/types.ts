@@ -1,4 +1,10 @@
-export type Name = "nitsan" | "tal" | "ronnie" | "shahar" | "imma";
+export const names = ["imma", "nitsan", "tal", "ronnie", "shahar"] as const;
+
+export const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] as const;
+
+export type Name = (typeof names)[number];
+
+export type DayName = (typeof days)[number];
 
 export interface MealData {
   positive: Name[];
@@ -25,8 +31,6 @@ export interface WeekData {
   saturday: DayData;
 }
 
-export type DayName = "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday";
-
 export type ManyWeeksData = Record<string, WeekData>;
 
 export interface CompactChange {
@@ -41,7 +45,3 @@ export interface Change extends CompactChange {
 }
 
 //////////////////
-
-export const names: Name[] = ["imma", "nitsan", "tal", "ronnie", "shahar"];
-
-export const days: DayName[] = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];

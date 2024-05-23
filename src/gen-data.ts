@@ -1,8 +1,8 @@
 import { arrayDifference } from "./utils";
-import { names } from "./types";
+import { days, names } from "./types";
 import type { Name, WeekData } from "./types";
 
-function randomSample<T>(array: T[], k: number): T[] {
+function randomSample<T>(array: readonly T[], k: number): T[] {
   const result: T[] = [];
   for (let i = 0; i < k; i++) {
     result.push(randomChoice(array));
@@ -10,7 +10,7 @@ function randomSample<T>(array: T[], k: number): T[] {
   return result;
 }
 
-function randomChoice<T>(array: T[]): T {
+function randomChoice<T>(array: readonly T[]): T {
   const index = Math.floor(Math.random() * array.length);
   return array[index];
 }
@@ -32,13 +32,11 @@ function randomPosNeg(): { positive: Name[]; negative: Name[] } {
 }
 
 export function randomWeeklyData(): WeekData {
-  const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
   const daysEntries = days.map((day) => [day, { morning: randomPosNeg(), evening: randomPosNeg() }]);
   return Object.fromEntries(daysEntries) as WeekData;
 }
 
 export function emptyWeeklyData(): WeekData {
-  const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
   const daysEntries = days.map((day) => [
     day,
     {

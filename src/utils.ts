@@ -48,10 +48,10 @@ export function removeIfExists<T>(array: T[], x: T): void {
   if (idx !== -1) array.splice(idx, 1);
 }
 
-export function arrayWithout<T>(array: T[], x: T): T[] {
+export function arrayWithout<T>(array: readonly T[], x: T): T[] {
   return array.filter((y) => x !== y);
 }
 
-export function arrayDifference<T>(A: T[], B: T[]): T[] {
+export function arrayDifference<T>(A: readonly T[], B: readonly T[]): T[] {
   return A.filter((a) => !B.includes(a));
 }
