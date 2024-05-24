@@ -10,7 +10,7 @@ import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
 
 import type { BlurViewProps } from "expo-blur";
 
-export default function Layout() {
+export default function MainScreen() {
   const blurTint: BlurViewProps["tint"] | undefined = Platform.select({
     ios: "light",
     android: "prominent",

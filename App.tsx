@@ -1,7 +1,7 @@
+import { QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { ImageBackground, Platform, SafeAreaView, StyleSheet } from "react-native";
-import Layout from "./src/Layout";
-import { QueryClientProvider } from "@tanstack/react-query";
+import Main from "./src/Main";
 import queryClient from "./src/query-client";
 
 // @ts-ignore
@@ -13,7 +13,7 @@ export default function App() {
       <StatusBar style="auto" />
       <ImageBackground source={backgroundImage} style={styles.image} resizeMode="stretch">
         <SafeAreaView style={styles.container}>
-          <Layout />
+          <Main />
         </SafeAreaView>
       </ImageBackground>
     </QueryClientProvider>
