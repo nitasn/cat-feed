@@ -16,10 +16,10 @@ function mergeReceivedWeekWithPendingChanges(weekKey: string, receivedWeek: Week
     return receivedWeek;
   }
 
-  return produce(existingWeekData, (weekData) => {
+  return produce(receivedWeek, (receivedWeek) => {
     for (const day of days) {
       for (const meal of meals) {
-        weekData[day][meal].pendingChangingTo = receivedWeek[day][meal].pendingChangingTo;
+        receivedWeek[day][meal].pendingChangingTo = existingWeekData[day][meal].pendingChangingTo;
       }
     }
   });
