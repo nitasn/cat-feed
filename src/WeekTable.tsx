@@ -1,20 +1,12 @@
 import { format } from "date-fns";
 import { useAtomValue } from "jotai";
-import { useContext, useRef } from "react";
+import { useRef } from "react";
 import type { GestureResponderEvent } from "react-native";
-import {
-  ActivityIndicator,
-  ImageBackground,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View } from "react-native";
 import FixedColumns from "./FixedColumns";
-import { DayNameContext, WeekKeyContext } from "./contexts";
-import { toggleMyself, usePendingChange } from "./fetcher";
+import { toggleMyself } from "./fetcher";
 import { nameAtom, weekDisplayedDateAtom, weekKeyAtom } from "./state";
-import type { DayData, DayName, MealName, MealPath, Name, WeekData } from "./types";
+import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 import { days } from "./types";
 import { advanceDateByDays, arrayWithout } from "./utils";
 
@@ -35,9 +27,7 @@ export function WeekTable({ weekData }: { weekData: WeekData }) {
   return (
     <View style={styles.container}>
       {Object.entries(weekData).map(([dayName, dayData]) => (
-        <DayNameContext.Provider key={dayName} value={dayName}>
-          <Row dayName={dayName} dayData={dayData} />
-        </DayNameContext.Provider>
+        <Row key={dayName} dayName={dayName} dayData={dayData} />
       ))}
     </View>
   );
@@ -104,27 +94,17 @@ function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
   );
 }
 
-function usePendingChangeFromContext(mealName: MealName) {
-  const weekKey = useContext(WeekKeyContext);
-  const dayName = useContext(DayNameContext);
-  return usePendingChange(`${weekKey}.${dayName}.${mealName}` as MealPath);
-}
-
 function DateColumn({ dayData, dayName }: { dayName: DayName; dayData: DayData }) {
   const name = useAtomValue(nameAtom);
   const dateWeekStarts = useAtomValue(weekDisplayedDateAtom);
 
-  const morningChanges = usePendingChangeFromContext("morning");
-  const eveningChanges = usePendingChangeFromContext("evening");
-  const changes = { morning: morningChanges, evening: eveningChanges };
-
   const isMealTakenCareOf = (meal: MealName) => {
-    const staysPositive =
-      changes[meal] === "negative"
-        ? arrayWithout(dayData[meal].positive, name)
-        : dayData[meal].positive;
+    const { pendingChange } = dayData[meal];
 
-    return staysPositive.length || changes[meal] === "positive";
+    const staysPositive =
+      pendingChange === "negative" ? arrayWithout(dayData[meal].positive, name) : dayData[meal].positive;
+
+    return staysPositive.length || pendingChange === "positive";
   };
 
   const dayTakenCareOf = isMealTakenCareOf("morning") && isMealTakenCareOf("evening");
@@ -142,11 +122,11 @@ function DateColumn({ dayData, dayName }: { dayName: DayName; dayData: DayData }
 
 function MealColumn({ dayData, mealName }: { dayData: DayData; mealName: MealName }) {
   const myName = useAtomValue(nameAtom);
-  const pendingChangeTo = usePendingChangeFromContext(mealName);
+  const { pendingChange } = dayData[mealName];
 
   return (
     <View style={styles.peopleColumn}>
-      {pendingChangeTo === "positive" && (
+      {pendingChange === "positive" && (
         <PersonBubble key={myName} name={myName} mealName={mealName} pending={true} />
       )}
       {dayData[mealName].positive.map((name) => (
@@ -154,22 +134,14 @@ function MealColumn({ dayData, mealName }: { dayData: DayData; mealName: MealNam
           key={name}
           name={name}
           mealName={mealName}
-          pending={name === myName && pendingChangeTo === "negative"}
+          pending={name === myName && pendingChange === "negative"}
         />
       ))}
     </View>
   );
 }
 
-function PersonBubble({
-  name,
-  pending,
-  mealName,
-}: {
-  name: Name;
-  pending: boolean;
-  mealName: MealName;
-}) {
+function PersonBubble({ name, pending, mealName }: { name: Name; pending: boolean; mealName: MealName }) {
   const style = [
     styles.bubbleOverlay,
     pending && styles.bubbleOverlayPending,

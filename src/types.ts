@@ -13,6 +13,7 @@ export type MealName = (typeof meals)[number];
 export interface MealData {
   positive: Name[];
   negative: Name[];
+  pendingChange?: PosNeg;
 }
 
 export type PosNeg = "positive" | "negative";
