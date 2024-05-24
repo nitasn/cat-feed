@@ -5,7 +5,7 @@ import queryClient from "./query-client";
 import { Change, fetchWeek, postChanges } from "./server-mock";
 import { nameAtom } from "./state";
 import { DayName, MealName, MealPath, PosNeg, WeekData, opposite } from "./types";
-import { debouncify, groupArrayBy, removeIfExists, sleep, tryMultipleTimes } from "./utils";
+import { debouncify, groupArrayBy, removeIfExists, tryMultipleTimes } from "./utils";
 
 const store = getDefaultStore();
 
