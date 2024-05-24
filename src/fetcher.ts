@@ -10,6 +10,7 @@ import { debouncify, filterInPlace, groupArrayBy, removeIfExists, tryMultipleTim
 /*
  * TODO:
  * state can flicker when server overrides our changes;
+ * easier to repro if invalidating cache after sending (and sending multiple requests)
  */
 
 const store = getDefaultStore();
@@ -60,8 +61,7 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
 
   try {
     await tryMultipleTimes(() => postChanges(changesToSend));
-  } 
-  catch (error) {
+  } catch (error) {
     // if server didn't ack, we remove the pending
 
     newChangesByWeek.forEach((weeklyNewChanges, weekKey) => {
@@ -101,6 +101,8 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
 
   // delete ack'd changes from the changes array
   filterInPlace(changes, (change) => !changesToSend.includes(change));
+
+  // queryClient.invalidateQueries({ queryKey: ["weekData"] });
 });
 
 function extractWeekKey(mealPath: MealPath) {
