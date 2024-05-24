@@ -5,7 +5,7 @@ import queryClient from "./query-client";
 import { Change, fetchWeek, postChanges } from "./server-mock";
 import { nameAtom } from "./state";
 import { DayName, MealName, MealPath, PosNeg, WeekData, opposite } from "./types";
-import { debouncify, groupArrayBy, removeIfExists, tryMultipleTimes } from "./utils";
+import { debouncify, groupArrayBy, removeIfExists, sleep, tryMultipleTimes } from "./utils";
 
 const store = getDefaultStore();
 
@@ -32,23 +32,22 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
 
   changesToSend.forEach((change) => {
     change.isInAir = true;
-    console.log("sending change:", change.mealPath, "->", change.changeTo);
   });
 
   try {
     await tryMultipleTimes(() => postChanges(changesToSend));
   } catch (error) {
-    return alert(`Error :/ \n coudn't post to server`); // todo better handler
+    // todo better handler
+    return alert(`Error :/ \n coudn't post to server`);
   }
 
   // the server has acknoledged the changes we sent!
 
-  // 1. deletes them from the changes array (they're not waiting to be sent, nor pending)
-  store.set(changesAtom, (changes) => changes.filter((change) => !changesToSend.includes(change)));
-
-  // 2. wapply the changes to our copy of the data as an "optimistic" update.
-  //    (more like realistic update, because the server has acknoledged our post)
-  const newChangesByWeek = groupArrayBy(store.get(changesAtom), (change) => extractWeekKey(change.mealPath));
+  // apply the changes to our copy of the data as an "optimistic" update.
+  // (more like realistic update, because the server has acknoledged our post)
+  const newChangesByWeek = groupArrayBy(store.get(changesAtom), (change) =>
+    extractWeekKey(change.mealPath)
+  );
 
   newChangesByWeek.forEach((weeklyNewChanges, weekKey) => {
     queryClient.setQueryData(["weekData", weekKey], (weekData: WeekData) => {
@@ -57,18 +56,25 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
           const [_, dayName, mealName] = mealPath.split(".");
           const mealData = weekData[dayName as DayName][mealName as MealName];
           removeIfExists(mealData[opposite(changeTo)], name);
-          mealData[changeTo].push(name);
+          mealData[changeTo].unshift(name);
         }
       });
     });
   });
+
+  // delete ack'd changes from the changes array
+  store.set(changesAtom, (changes) => {
+    return changes.filter((change) => !changesToSend.includes(change));
+  });
+
+  await sleep(10_000);
 
   // needed? we fetch every 5s anyway...
   queryClient.invalidateQueries({ queryKey: ["weekData"] });
 });
 
 function extractWeekKey(mealPath: MealPath) {
-  return mealPath.slice(mealPath.indexOf("."));
+  return mealPath.slice(0, mealPath.indexOf("."));
 }
 
 export const toggleMyself = (mealPath: MealPath) => {

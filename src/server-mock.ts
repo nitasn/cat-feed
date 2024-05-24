@@ -34,8 +34,8 @@ export async function postChanges(changes: Change[]): Promise<void> {
     for (const { mealPath, changeTo, name } of changes) {
       const mealData = getProperty(data, mealPath)!;
       removeIfExists(mealData[opposite(changeTo)], name);
-      if (!mealData[changeTo].includes(name)) mealData[changeTo].push(name);
-      console.log("server state was set:", mealPath, "=", mealData);
+      if (!mealData[changeTo].includes(name)) mealData[changeTo].unshift(name);
+      // console.log("server state was set:", mealPath, "=", mealData);
     }
   });
 }
