@@ -4,7 +4,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { WeekTable, columnWidths, mealsColor } from "./WeekTable";
-import { useWeekData } from "./channel";
+import { useWeekData } from "./fetcher";
 import { weekDisplayedDateAtom, weekKeyAtom } from "./state";
 import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
 

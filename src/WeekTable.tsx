@@ -3,10 +3,10 @@ import { useAtom, useAtomValue } from "jotai";
 import { useRef } from "react";
 import { ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View } from "react-native";
 import FixedColumns from "./FixedColumns";
-import { toggleMyself } from "./channel";
+import { toggleMyself } from "./fetcher";
 import { nameAtom, weekDisplayedDateAtom, weekKeyAtom } from "./state";
 import { days } from "./types";
-import { advanceDateByDays, arrayWithout, dateToShortString } from "./utils";
+import { advanceDateByDays, arrayWithout } from "./utils";
 
 import type { GestureResponderEvent } from "react-native";
 import type { DayData, DayName, MealName, Name, WeekData } from "./types";
@@ -25,11 +25,13 @@ const personToImage: Record<Name, number> = {
 };
 
 export function WeekTable({ weekData }: { weekData: WeekData }) {
-  const rows = Object.entries(weekData).map(([dayName, dayData]) => (
-    <Row key={dayName} dayName={dayName as DayName} dayData={dayData} />
-  ));
-
-  return <View style={styles.container}>{rows}</View>;
+  return (
+    <View style={styles.container}>
+      {Object.entries(weekData).map(([dayName, dayData]) => (
+        <Row key={dayName} dayName={dayName as DayName} dayData={dayData as DayData} />
+      ))}
+    </View>
+  );
 }
 
 const dayNameAbbreviation: Record<DayName, string> = {

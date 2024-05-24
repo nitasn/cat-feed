@@ -43,6 +43,12 @@ export function removeFromArray<T>(array: T[], x: T): void {
   array.splice(array.indexOf(x), 1);
 }
 
+export function arraySetAdd<T>(array: T[], x: T): void {
+  if (!array.includes(x)) {
+    array.push(x);
+  }
+}
+
 export function removeIfExists<T>(array: T[], x: T): void {
   const idx = array.indexOf(x);
   if (idx !== -1) array.splice(idx, 1);
@@ -101,4 +107,12 @@ export async function tryMultipleTimes<T>(asyncFn: () => Promise<T>, _attemptsSo
     await sleep(500 * 2 ** _attemptsSoFar);
     return await tryMultipleTimes(asyncFn, _attemptsSoFar + 1);
   }
+}
+
+export function debouncify<Args extends any[]>({ ms }: { ms: number }, callback: (...args: Args) => any) {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: Args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback(...args), ms);
+  };
 }
