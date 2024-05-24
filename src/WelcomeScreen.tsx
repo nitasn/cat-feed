@@ -5,6 +5,8 @@ import BlurContainer from "./BlurContainer";
 import { Name, names } from "./types";
 import { personToImage } from "./stuff";
 import { Ionicons } from "@expo/vector-icons";
+import { useSetAtom } from "jotai";
+import { nameAtom } from "./state";
 
 export default function NamePrompt() {
   return (
@@ -24,8 +26,14 @@ export default function NamePrompt() {
 }
 
 function PersonRow({ name }: { name: Name }) {
+  const setNameAtom = useSetAtom(nameAtom);
+
+  const onPress = () => {
+    setNameAtom(name);
+  }
+
   return (
-    <TouchableOpacity style={styles.personRow}>
+    <TouchableOpacity style={styles.personRow} onPress={onPress}>
       <Image source={personToImage[name]} style={styles.personBubble} />
       <Text style={styles.personName}>{name}</Text>
 

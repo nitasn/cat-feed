@@ -110,10 +110,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     alignItems: "center",
-    marginTop: Platform.select({
-      android: 22, // apprx. status bar
-      default: 0,
-    }),
   },
   title: {
     fontSize: 30,

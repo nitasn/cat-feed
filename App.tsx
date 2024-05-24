@@ -23,6 +23,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: Platform.select({
+      android: 22, // apprx. status bar
+      default: 0,
+    }),
   },
   // @ts-ignore
   image: {
