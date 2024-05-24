@@ -93,7 +93,7 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
     filterInPlace(changes, (change) => !changesToSend.includes(change));
 
     // todo better handler
-    return alert(`Error :/ \n couldn't post to server \n ${error}`);
+    return alert(`Error :/ \n Couldn't post to server. \n ${error}`);
   }
 
   // the server has acknoledged the changes we sent!
