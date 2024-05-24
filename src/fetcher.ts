@@ -38,17 +38,17 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
     await tryMultipleTimes(() => postChanges(changesToSend));
   } catch (error) {
     // todo better handler
-    return alert(`Error :/ \n coudn't post to server`);
+    return alert(`Error :/ \n couldn't post to server \n ${error}`);
   }
 
   // the server has acknoledged the changes we sent!
 
-  // apply the changes to our copy of the data as an "optimistic" update.
-  // (more like realistic update, because the server has acknoledged our post)
   const newChangesByWeek = groupArrayBy(store.get(changesAtom), (change) =>
     extractWeekKey(change.mealPath)
   );
 
+  // apply the changes to our copy of the data as an "optimistic" update.
+  // (more like realistic update, because the server has acknoledged our post)
   newChangesByWeek.forEach((weeklyNewChanges, weekKey) => {
     queryClient.setQueryData(["weekData", weekKey], (weekData: WeekData) => {
       return produce(weekData, (weekData) => {
@@ -56,7 +56,7 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
           const [_, dayName, mealName] = mealPath.split(".");
           const mealData = weekData[dayName as DayName][mealName as MealName];
           removeIfExists(mealData[opposite(changeTo)], name);
-          mealData[changeTo].unshift(name);
+          if (!mealData[changeTo].includes(name)) mealData[changeTo].unshift(name);
         }
       });
     });
@@ -66,8 +66,6 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
   store.set(changesAtom, (changes) => {
     return changes.filter((change) => !changesToSend.includes(change));
   });
-
-  await sleep(10_000);
 
   // needed? we fetch every 5s anyway...
   queryClient.invalidateQueries({ queryKey: ["weekData"] });

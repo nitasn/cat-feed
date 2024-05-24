@@ -12,7 +12,10 @@ export async function fetchWeek(keyStartWeek: string): Promise<WeekData> {
   return allWeeks[keyStartWeek] ?? emptyWeeklyData();
 }
 
-export async function updateAndFetch(keyStartWeek: string, newWeeklyData: WeekData): Promise<WeekData> {
+export async function updateAndFetch(
+  keyStartWeek: string,
+  newWeeklyData: WeekData
+): Promise<WeekData> {
   await sleep(1000);
 
   // clone for referential equality
@@ -28,11 +31,16 @@ export interface Change {
 }
 
 export async function postChanges(changes: Change[]): Promise<void> {
-  await sleep(1000);
+  await sleep(5000);
 
-  allWeeks = produce(allWeeks, (data) => {
+  allWeeks = produce(allWeeks, (allWeeks) => {
     for (const { mealPath, changeTo, name } of changes) {
-      const mealData = getProperty(data, mealPath)!;
+      let mealData = getProperty(allWeeks, mealPath);
+      if (!mealData) {
+        const weekKey = mealPath.slice(0, mealPath.indexOf("."));
+        allWeeks[weekKey] = emptyWeeklyData();
+        mealData = getProperty(allWeeks, mealPath)!;
+      }
       removeIfExists(mealData[opposite(changeTo)], name);
       if (!mealData[changeTo].includes(name)) mealData[changeTo].unshift(name);
       // console.log("server state was set:", mealPath, "=", mealData);
