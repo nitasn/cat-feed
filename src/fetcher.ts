@@ -4,33 +4,48 @@ import { getDefaultStore } from "jotai";
 import queryClient from "./query-client";
 import { Change, fetchWeek, postChanges } from "./server-mock";
 import { nameAtom } from "./state";
-import { DayName, MealName, MealPath, WeekData, days, meals, opposite } from "./types";
+import {
+  DayName,
+  MealName,
+  MealPath,
+  PosNeg,
+  WeekData,
+  days,
+  meals,
+  opposite,
+  positiveNegative,
+} from "./types";
 import { debouncify, filterInPlace, groupArrayBy, removeIfExists, tryMultipleTimes } from "./utils";
-
-/*
- * TODO:
- * state can flicker when server overrides our changes;
- * easier to repro if invalidating cache after sending (and sending multiple requests)
- */
 
 const store = getDefaultStore();
 
 const changes: Array<Change & { wasFired?: boolean }> = [];
 
-/**
- * preserve the pendingChange? fields.
- */
 function mergeFetchedWeekWithPendingState(weekKey: string, fetchedWeek: WeekData) {
+  const myName = store.get(nameAtom);
   const existingWeek: WeekData | undefined = queryClient.getQueryData(["weekData", weekKey]);
 
   if (!existingWeek) {
     return fetchedWeek;
   }
 
+  // 1. preserve the pendingChange? fields.
+  // 2. ignore values that involve me if any change i sent is in air.
+
   return produce(existingWeek, (existingWeek) => {
     days.forEach((dayName) => {
       meals.forEach((mealName) => {
-        existingWeek[dayName][mealName] = fetchedWeek[dayName][mealName];
+        positiveNegative.forEach((posNeg: PosNeg) => {
+          const incomingNames = fetchedWeek[dayName][mealName][posNeg];
+          const existingNames = existingWeek[dayName][mealName][posNeg];
+          const myPresence = existingNames.includes(myName);
+          existingNames.length = 0;
+          incomingNames.forEach((name) => {
+            if (name !== myName || myPresence || changes.length === 0) {
+              existingNames.push(name);
+            }
+          });
+        });
       });
     });
   });

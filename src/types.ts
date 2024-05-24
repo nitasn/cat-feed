@@ -4,6 +4,8 @@ export const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "fr
 
 export const meals = ["morning", "evening"] as const;
 
+export const positiveNegative = ["positive", "negative"] as const;
+
 export type Name = (typeof names)[number];
 
 export type DayName = (typeof days)[number];
@@ -16,7 +18,7 @@ export interface MealData {
   pendingChange?: PosNeg;
 }
 
-export type PosNeg = "positive" | "negative";
+export type PosNeg = (typeof positiveNegative)[number];
 
 export interface DayData {
   morning: MealData;
