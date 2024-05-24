@@ -9,6 +9,7 @@ import { weekDisplayedDateAtom, weekKeyAtom } from "./state";
 import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
 
 import type { BlurViewProps } from "expo-blur";
+import { WeekKeyContext } from "./contexts";
 
 export default function Layout() {
   const blurTint: BlurViewProps["tint"] | undefined = Platform.select({
@@ -104,7 +105,11 @@ function BlurContainerContent() {
   }
 
   if (weekData) {
-    return <WeekTable weekData={weekData} />;
+    return (
+      <WeekKeyContext.Provider value={weekKey}>
+        <WeekTable weekData={weekData} />
+      </WeekKeyContext.Provider>
+    );
   }
 }
 

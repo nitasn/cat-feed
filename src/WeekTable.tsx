@@ -1,15 +1,22 @@
 import { format } from "date-fns";
-import { useAtom, useAtomValue } from "jotai";
-import { useRef } from "react";
-import { ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View } from "react-native";
+import { useAtomValue } from "jotai";
+import { useContext, useRef } from "react";
+import type { GestureResponderEvent } from "react-native";
+import {
+  ActivityIndicator,
+  ImageBackground,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import FixedColumns from "./FixedColumns";
-import { toggleMyself } from "./fetcher";
+import { DayNameContext, WeekKeyContext } from "./contexts";
+import { toggleMyself, usePendingChange } from "./fetcher";
 import { nameAtom, weekDisplayedDateAtom, weekKeyAtom } from "./state";
+import type { DayData, DayName, MealName, MealPath, Name, WeekData } from "./types";
 import { days } from "./types";
 import { advanceDateByDays, arrayWithout } from "./utils";
-
-import type { GestureResponderEvent } from "react-native";
-import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 
 const personToImage: Record<Name, number> = {
   // @ts-ignore
@@ -28,7 +35,9 @@ export function WeekTable({ weekData }: { weekData: WeekData }) {
   return (
     <View style={styles.container}>
       {Object.entries(weekData).map(([dayName, dayData]) => (
-        <Row key={dayName} dayName={dayName as DayName} dayData={dayData as DayData} />
+        <DayNameContext.Provider key={dayName} value={dayName}>
+          <Row dayName={dayName} dayData={dayData} />
+        </DayNameContext.Provider>
       ))}
     </View>
   );
@@ -44,7 +53,10 @@ const dayNameAbbreviation: Record<DayName, string> = {
   saturday: "Sat",
 };
 
-const dayToIndex = Object.fromEntries(days.map((dayName, index) => [dayName, index])) as Record<DayName, number>;
+const dayToIndex = Object.fromEntries(days.map((dayName, index) => [dayName, index])) as Record<
+  DayName,
+  number
+>;
 
 export const mealsColor = {
   morning: "#bc8e56",
@@ -64,7 +76,7 @@ function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
     const normalizedX = (event.nativeEvent.pageX - offset) / widthRef.current;
     const spill = 0.1;
     if (normalizedX < columnWeights[0] + spill) {
-      // ignoring day column was pressed
+      // day column was pressed (ignored for now)
     } else if (normalizedX < columnWeights[0] + columnWeights[1] + spill) {
       toggleMyself(`${weekKey}.${dayName}.morning`);
     } else {
@@ -92,18 +104,27 @@ function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
   );
 }
 
+function usePendingChangeFromContext(mealName: MealName) {
+  const weekKey = useContext(WeekKeyContext);
+  const dayName = useContext(DayNameContext);
+  return usePendingChange(`${weekKey}.${dayName}.${mealName}` as MealPath);
+}
+
 function DateColumn({ dayData, dayName }: { dayName: DayName; dayData: DayData }) {
-  const [dateWeekStarts] = useAtom(weekDisplayedDateAtom);
-  const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
   const name = useAtomValue(nameAtom);
+  const dateWeekStarts = useAtomValue(weekDisplayedDateAtom);
+
+  const morningChanges = usePendingChangeFromContext("morning");
+  const eveningChanges = usePendingChangeFromContext("evening");
+  const changes = { morning: morningChanges, evening: eveningChanges };
 
   const isMealTakenCareOf = (meal: MealName) => {
     const staysPositive =
-      dayData[meal].pendingChangingTo === "negative"
+      changes[meal] === "negative"
         ? arrayWithout(dayData[meal].positive, name)
         : dayData[meal].positive;
 
-    return staysPositive.length || dayData[meal].pendingChangingTo === "positive";
+    return staysPositive.length || changes[meal] === "positive";
   };
 
   const dayTakenCareOf = isMealTakenCareOf("morning") && isMealTakenCareOf("evening");
@@ -112,29 +133,43 @@ function DateColumn({ dayData, dayName }: { dayName: DayName; dayData: DayData }
   return (
     <View style={styles.dayColumn}>
       <Text style={[styles.dayName, color]}>{dayNameAbbreviation[dayName]}</Text>
-      <Text style={[styles.date, color]}>{format(date, "MMM d")}</Text>
+      <Text style={[styles.date, color]}>
+        {format(advanceDateByDays(dateWeekStarts, dayToIndex[dayName]), "MMM d")}
+      </Text>
     </View>
   );
 }
 
 function MealColumn({ dayData, mealName }: { dayData: DayData; mealName: MealName }) {
-  const meal = dayData[mealName];
   const myName = useAtomValue(nameAtom);
-  const ImPending = !!dayData[mealName].pendingChangingTo;
+  const pendingChangeTo = usePendingChangeFromContext(mealName);
 
   return (
     <View style={styles.peopleColumn}>
-      {ImPending && !dayData[mealName].positive.includes(myName) && (
+      {pendingChangeTo === "positive" && (
         <PersonBubble key={myName} name={myName} mealName={mealName} pending={true} />
       )}
-      {meal.positive.map((name) => (
-        <PersonBubble key={name} name={name} mealName={mealName} pending={name === myName && ImPending} />
+      {dayData[mealName].positive.map((name) => (
+        <PersonBubble
+          key={name}
+          name={name}
+          mealName={mealName}
+          pending={name === myName && pendingChangeTo === "negative"}
+        />
       ))}
     </View>
   );
 }
 
-function PersonBubble({ name, pending, mealName }: { name: Name; pending: boolean; mealName: MealName }) {
+function PersonBubble({
+  name,
+  pending,
+  mealName,
+}: {
+  name: Name;
+  pending: boolean;
+  mealName: MealName;
+}) {
   const style = [
     styles.bubbleOverlay,
     pending && styles.bubbleOverlayPending,
