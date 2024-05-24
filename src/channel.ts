@@ -1,8 +1,8 @@
 import { produce } from "immer";
 import { atom, getDefaultStore, useAtomValue } from "jotai";
 import { nameAtom } from "./state";
-import { days, meals, type Change, type ChangePath, type ManyWeeksData, type WeekData } from "./types";
-import { arrayWith, arrayWithout, dateToShortString, objectWithoutKey, sleep } from "./utils";
+import { days, meals, MealPath, ManyWeeksData, WeekData } from "./types";
+import { arrayWith, arrayWithout, objectWithoutKey, tryMultipleTimes } from "./utils";
 
 const store = getDefaultStore();
 
@@ -15,7 +15,7 @@ function debouncify<Args extends any[]>({ ms }: { ms: number }, callback: (...ar
 }
 
 import { BalancedExample as dummyData } from "./dummy-data"; // TODO REMOVE
-import { fetchWeek } from "./server-mock";
+import { Change, fetchWeek } from "./server-mock";
 import { getProperty } from "dot-prop";
 const cacheAtom = atom<ManyWeeksData>(dummyData);
 
@@ -36,21 +36,6 @@ export function useWeekData(weekKey: string) {
     weekError: weekKeysErrors[weekKey],
     weekData: cache[weekKey],
   };
-}
-
-/**
- * Retries a few times, with exponentioal backoff.
- */
-async function tryMultipleTimes<Res, Err>(asyncFn: () => Promise<Res | Err>, _attemptsSoFar = 0) {
-  const MAX_ATTEMPTS = 3;
-
-  try {
-    return await asyncFn();
-  } catch (error) {
-    if (_attemptsSoFar >= MAX_ATTEMPTS) return error as Err;
-    await sleep(500 * 2 ** _attemptsSoFar);
-    return await tryMultipleTimes(asyncFn, _attemptsSoFar + 1);
-  }
 }
 
 function mergeReceivedWeekWithPendingChanges(weekKey: string, receivedWeek: WeekData) {
@@ -92,7 +77,7 @@ const debouncedSendChanges = debouncify({ ms: 300 }, () => {
   // TODO
 });
 
-export const toggleMyself = (mealPath: ChangePath) => {
+export const toggleMyself = (mealPath: MealPath) => {
   const name = store.get(nameAtom);
 
   // todo: what if i'm already pending?

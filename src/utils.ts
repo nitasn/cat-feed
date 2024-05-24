@@ -64,7 +64,41 @@ export function arrayDifference<T>(A: readonly T[], B: readonly T[]): T[] {
   return A.filter((a) => !B.includes(a));
 }
 
-export function makeIdGenerator() {
-  let id = 0;
-  return () => id++;
+export function filterInPlace<T>(array: T[], predicate: (t: T) => boolean) {
+  let i = array.length;
+  while (i--) {
+    if (!predicate(array[i])) {
+      array.splice(i, 1);
+    }
+  }
+}
+
+export function groupArrayBy<T, K>(array: readonly T[], mappingFn: (t: T) => K) {
+  const groups = new Map<K, T[]>();
+  array.forEach((t) => {
+    const k = mappingFn(t);
+    if (!groups.has(k)) {
+      groups.set(k, [t]);
+    } else {
+      groups.get(k)!.push(t);
+    }
+  });
+  return groups;
+}
+
+/**
+ * Retries a few times, with exponentioal backoff.
+ */
+export async function tryMultipleTimes<T>(asyncFn: () => Promise<T>, _attemptsSoFar = 0) {
+  const MAX_ATTEMPTS = 3;
+
+  try {
+    return await asyncFn();
+  } catch (error) {
+    if (_attemptsSoFar >= MAX_ATTEMPTS) {
+      throw error;
+    }
+    await sleep(500 * 2 ** _attemptsSoFar);
+    return await tryMultipleTimes(asyncFn, _attemptsSoFar + 1);
+  }
 }

@@ -35,18 +35,8 @@ export interface WeekData {
 
 export type ManyWeeksData = Record<string, WeekData>;
 
-// export interface CompactChange {
-//   dateWeekStarts: Date;
-//   dayName: DayName;
-//   mealName: MealName;
-// }
+export type MealPath = `${string}.${DayName}.${MealName}`;
 
-export type ChangePath = `${string}.${DayName}.${MealName}`;
-
-export interface Change {
-  mealPath: ChangePath;
-  changeTo: PosNeg;
-  name: Name;
+export function opposite(flag: PosNeg): PosNeg {
+  return flag === "positive" ? "negative" : "positive";
 }
-
-//////////////////

@@ -1,9 +1,9 @@
+import { getProperty } from "dot-prop";
 import { BalancedExample as dummyData } from "./dummy-data";
 import { emptyWeeklyData } from "./gen-data";
-import { dateToShortString, removeIfExists, sleep } from "./utils";
-
-import type { Change, WeekData } from "./types";
-import { getProperty } from "dot-prop";
+import { opposite, type MealPath, type Name, type PosNeg, type WeekData } from "./types";
+import { removeIfExists, sleep } from "./utils";
+import { produce } from "immer";
 
 let allWeeks: Record<string, WeekData> = dummyData;
 
@@ -21,17 +21,20 @@ export async function updateAndFetch(keyStartWeek: string, newWeeklyData: WeekDa
   return allWeeks[keyStartWeek];
 }
 
+export interface Change {
+  mealPath: MealPath;
+  changeTo: PosNeg;
+  name: Name;
+}
+
 export async function postChanges(changes: Change[]): Promise<void> {
   await sleep(1000);
 
-  // deep clone for referential equality
-  allWeeks = JSON.parse(JSON.stringify(allWeeks));
-
-  for (const change of changes) {
-    const mealData = getProperty(allWeeks, change.mealPath)!;
-    if (change.changeTo === "positive") {
-      removeIfExists(mealData.positive, change.name);
+  allWeeks = produce(allWeeks, (data) => {
+    for (const { mealPath, changeTo, name } of changes) {
+      const mealData = getProperty(data, mealPath)!;
+      removeIfExists(mealData[opposite(changeTo)], name);
+      mealData[changeTo].push(name);
     }
-    // TODO continue
-  }
+  });
 }
