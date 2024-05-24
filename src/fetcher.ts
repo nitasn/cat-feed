@@ -1,83 +1,69 @@
 import { useQuery } from "@tanstack/react-query";
 import { produce } from "immer";
-import { getDefaultStore } from "jotai";
+import { atom, getDefaultStore, useAtomValue } from "jotai";
 import queryClient from "./query-client";
 import { Change, fetchWeek, postChanges } from "./server-mock";
 import { nameAtom } from "./state";
-import { DayName, MealName, MealPath, PosNeg, WeekData, days, meals, opposite } from "./types";
-import { debouncify, groupArrayBy, removeFromArray, removeIfExists, tryMultipleTimes } from "./utils";
+import { DayName, MealName, MealPath, PosNeg, WeekData, opposite } from "./types";
+import { debouncify, groupArrayBy, removeIfExists, tryMultipleTimes } from "./utils";
 
 const store = getDefaultStore();
 
-function mergeReceivedWeekWithPendingChanges(weekKey: string, receivedWeek: WeekData) {
-  const existingWeekData: WeekData | undefined = queryClient.getQueryData(["weekData", weekKey]);
+const changesAtom = atom([] as (Change & { isInAir: boolean })[]);
 
-  if (!existingWeekData) {
-    return receivedWeek;
-  }
-
-  return produce(receivedWeek, (receivedWeek) => {
-    for (const day of days) {
-      for (const meal of meals) {
-        receivedWeek[day][meal].pendingChangingTo = existingWeekData[day][meal].pendingChangingTo;
-      }
-    }
-  });
+export function usePendingChange(mealPath: MealPath): PosNeg | undefined {
+  const changes = useAtomValue(changesAtom);
+  return changes.find((change) => change.mealPath === mealPath)?.changeTo;
 }
 
 export function useWeekData(weekKey: string) {
   const { isLoading, data, error } = useQuery({
     queryKey: ["weekData", weekKey],
-    queryFn: async () => {
-      const recievedWeek = await fetchWeek(weekKey);
-      return mergeReceivedWeekWithPendingChanges(weekKey, recievedWeek);
-    },
-    refetchInterval: 5000,
+    queryFn: () => fetchWeek(weekKey),
+    // refetchInterval: 5000,
   });
 
   return { weekLoading: isLoading, weekError: error, weekData: data };
 }
 
-type ExtChange = Change & { isInAir: boolean };
-const changes: ExtChange[] = [];
-
 const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
-  const newChanges = changes.filter((change) => !change.isInAir);
+  // changes that weren't sent yet (as opposed to changes awaiting server acknoledgement)
+  const changesToSend = store.get(changesAtom).filter((change) => !change.isInAir);
 
-  newChanges.forEach((change) => {
+  changesToSend.forEach((change) => {
     change.isInAir = true;
     console.log("sending change:", change.mealPath, "->", change.changeTo);
   });
 
   try {
-    await tryMultipleTimes(() => postChanges(newChanges));
+    await tryMultipleTimes(() => postChanges(changesToSend));
   } catch (error) {
     return alert(`Error :/ \n coudn't post to server`); // todo better handler
   }
 
-  newChanges.forEach((change) => {
-    removeFromArray(changes, change);
-  });
+  // the server has acknoledged the changes we sent!
 
-  // after successfully posting changes to the server,
-  // we apply the changes to our copy of the data.
+  // 1. deletes them from the changes array (they're not waiting to be sent, nor pending)
+  store.set(changesAtom, (changes) => changes.filter((change) => !changesToSend.includes(change)));
 
-  const newChangesByWeek = groupArrayBy(changes, (change) => extractWeekKey(change.mealPath));
+  // 2. wapply the changes to our copy of the data as an "optimistic" update.
+  //    (more like realistic update, because the server has acknoledged our post)
+  const newChangesByWeek = groupArrayBy(store.get(changesAtom), (change) => extractWeekKey(change.mealPath));
 
   newChangesByWeek.forEach((weeklyNewChanges, weekKey) => {
-    queryClient.setQueryData(["weekData", weekKey], (existingWeekData: WeekData) => {
-      return produce(existingWeekData, (weekData) => {
+    queryClient.setQueryData(["weekData", weekKey], (weekData: WeekData) => {
+      return produce(weekData, (weekData) => {
         for (const { mealPath, changeTo, name } of weeklyNewChanges) {
           const [_, dayName, mealName] = mealPath.split(".");
           const mealData = weekData[dayName as DayName][mealName as MealName];
           removeIfExists(mealData[opposite(changeTo)], name);
           mealData[changeTo].push(name);
-          mealData.pendingChangingTo = undefined;
         }
       });
     });
   });
 
+  // needed? we fetch every 5s anyway...
   queryClient.invalidateQueries({ queryKey: ["weekData"] });
 });
 
@@ -88,22 +74,16 @@ function extractWeekKey(mealPath: MealPath) {
 export const toggleMyself = (mealPath: MealPath) => {
   const name = store.get(nameAtom);
 
-  if (changes.find((change) => change.mealPath === mealName)) {
-    // if already pending, ignore, to avoid race conditions
+  if (store.get(changesAtom).find((change) => change.mealPath === mealPath)) {
+    return; // if already pending, ignore the tap, to avoid race conditions
   }
 
   const [weekKey, dayName, mealName] = mealPath.split(".");
+  const weekData = queryClient.getQueryData(["weekData", weekKey]) as WeekData;
+  const mealData = weekData[dayName as DayName][mealName as MealName];
+  const changeTo = mealData.positive.includes(name) ? "negative" : "positive";
 
-  let changeTo: PosNeg;
-  queryClient.setQueryData(["weekData", weekKey], (existingWeekData: WeekData) => {
-    return produce(existingWeekData, (weekData) => {
-      const mealData = weekData[dayName as DayName][mealName as MealName];
-      changeTo = mealData.positive.includes(name) ? "negative" : "positive";
-      mealData.pendingChangingTo = changeTo;
-    });
-  });
-
-  changes.push({ mealPath, changeTo: changeTo!, name, isInAir: false });
+  store.set(changesAtom, (changes) => [...changes, { mealPath, changeTo, name, isInAir: false }]);
 
   debouncedSendChanges();
 };
