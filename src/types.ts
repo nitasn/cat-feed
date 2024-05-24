@@ -6,7 +6,7 @@ export const meals = ["morning", "evening"] as const;
 
 export const positiveNegative = ["positive", "negative"] as const;
 
-export type Name = (typeof names)[number];
+export type Name = (typeof names)[number] | "nobody";
 
 export type DayName = (typeof days)[number];
 

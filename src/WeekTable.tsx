@@ -9,19 +9,8 @@ import { nameAtom, weekDisplayedDateAtom, weekKeyAtom } from "./state";
 import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 import { days } from "./types";
 import { advanceDateByDays, arrayWithout } from "./utils";
-
-const personToImage: Record<Name, number> = {
-  // @ts-ignore
-  imma: require("../assets/people/imma.jpg"),
-  // @ts-ignore
-  nitsan: require("../assets/people/nitsan.jpg"),
-  // @ts-ignore
-  tal: require("../assets/people/tal.jpg"),
-  // @ts-ignore
-  ronnie: require("../assets/people/ronnie.jpg"),
-  // @ts-ignore
-  shahar: require("../assets/people/shahar.jpg"),
-};
+import { blurContainerContentOffset } from "./BlurContainer";
+import { personToImage } from "./stuff";
 
 export function WeekTable({ weekData }: { weekData: WeekData }) {
   return (
@@ -62,7 +51,7 @@ function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
   const widthRef = useRef(0);
 
   const onPress = (event: GestureResponderEvent) => {
-    const offset = 36; // blur container padding + margin. TODO get offset dynamically
+    const offset = blurContainerContentOffset; // TODO get offset dynamically
     const normalizedX = (event.nativeEvent.pageX - offset) / widthRef.current;
     const spill = 0.1;
     if (normalizedX < columnWeights[0] + spill) {

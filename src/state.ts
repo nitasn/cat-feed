@@ -7,7 +7,7 @@ export const weekDisplayedDateAtom = atom(dateFirstDayOfWeek());
 
 export const weekKeyAtom = atom((get) => dateToShortString(get(weekDisplayedDateAtom)));
 
-export const nameAtom = atom<Name>("nitsan");
+export const nameAtom = atom<Name>("nobody");
 
 ///////////////////////////////////////////////////////////////////////////////
 

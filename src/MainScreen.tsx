@@ -1,30 +1,20 @@
 import { Ionicons } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
 import { useAtom, useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import BlurContainer from "./BlurContainer";
 import { WeekTable, columnWidths, mealsColor } from "./WeekTable";
 import { useWeekData } from "./fetcher";
 import { weekDisplayedDateAtom, weekKeyAtom } from "./state";
 import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
 
-import type { BlurViewProps } from "expo-blur";
-
 export default function MainScreen() {
-  const blurTint: BlurViewProps["tint"] | undefined = Platform.select({
-    ios: "light",
-    android: "prominent",
-  });
-
   return (
     <View style={styles.container}>
       <Header />
-      <View style={styles.blurWrapper}>
-        <SunAndMoon />
-        <BlurView intensity={70} tint={blurTint} style={styles.blurContainer}>
-          <BlurContainerContent />
-        </BlurView>
-      </View>
+      <BlurContainer componentAbove={<SunAndMoon />}>
+        <BlurContainerContent />
+      </BlurContainer>
     </View>
   );
 }
@@ -132,16 +122,5 @@ const styles = StyleSheet.create({
   iconButton: {
     paddingVertical: 18,
     paddingHorizontal: 36,
-  },
-  blurWrapper: {
-    flex: 1,
-    margin: 18,
-    alignSelf: "stretch",
-  },
-  blurContainer: {
-    flex: 1,
-    padding: 18,
-    overflow: "hidden",
-    borderRadius: 16,
   },
 });
