@@ -120,6 +120,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     alignItems: "center",
+    marginTop: Platform.select({
+      android: 22,
+      default: 0,
+    }),
   },
   title: {
     fontSize: 30,
