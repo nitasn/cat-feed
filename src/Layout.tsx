@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: Platform.select({
-      android: 22,
+      android: 22, // apprx. status bar
       default: 0,
     }),
   },
