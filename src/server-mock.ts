@@ -31,7 +31,7 @@ export interface Change {
 }
 
 export async function postChanges(changes: Change[]): Promise<void> {
-  await sleep(1000);
+  await sleep(500);
 
   allWeeks = produce(allWeeks, (allWeeks) => {
     for (const { mealPath, changeTo, name } of changes) {
