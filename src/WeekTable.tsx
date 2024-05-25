@@ -10,7 +10,7 @@ import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 import { days } from "./types";
 import { advanceDateByDays, arrayWithout } from "./utils";
 import { blurContainerContentOffset } from "./BlurContainer";
-import { personToImage } from "./stuff";
+import { dropShadow, personToImage } from "./stuff";
 
 export function WeekTable({ weekData }: { weekData: WeekData }) {
   return (
@@ -138,9 +138,11 @@ function PersonBubble({ name, pending, mealName }: { name: Name; pending: boolea
   ];
 
   return (
-    <ImageBackground source={personToImage[name]} style={styles.personBubble}>
-      <View style={style}>{pending && <ActivityIndicator color="#ffffff85" size="small" />}</View>
-    </ImageBackground>
+    <View style={dropShadow}>
+      <ImageBackground source={personToImage[name]} style={styles.personBubble}>
+        <View style={style}>{pending && <ActivityIndicator color="#ffffff85" size="small" />}</View>
+      </ImageBackground>
+    </View>
   );
 }
 

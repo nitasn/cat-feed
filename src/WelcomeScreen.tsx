@@ -3,7 +3,7 @@ import { Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from
 import catImg from "../assets/black-cat.png";
 import BlurContainer from "./BlurContainer";
 import { Name, names } from "./types";
-import { personToImage } from "./stuff";
+import { dropShadow, personToImage } from "./stuff";
 import { Ionicons } from "@expo/vector-icons";
 import { useSetAtom } from "jotai";
 import { nameAtom } from "./state";
@@ -30,13 +30,12 @@ function PersonRow({ name }: { name: Name }) {
 
   const onPress = () => {
     setNameAtom(name);
-  }
+  };
 
   return (
     <TouchableOpacity style={styles.personRow} onPress={onPress}>
       <Image source={personToImage[name]} style={styles.personBubble} />
       <Text style={styles.personName}>{name}</Text>
-
       <Ionicons name="chevron-forward" size={30} style={styles.personChevron} />
     </TouchableOpacity>
   );
@@ -76,9 +75,9 @@ const styles = StyleSheet.create({
   personName: {
     fontSize: 16,
     textTransform: "capitalize",
-    fontWeight: "600"
+    fontWeight: "600",
   },
   personChevron: {
-    marginStart: "auto"
-  }
+    marginStart: "auto",
+  },
 });
