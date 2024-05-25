@@ -5,11 +5,11 @@ export function dateFirstDayOfWeek(inputDate: Date = new Date()): Date {
 }
 
 export function dateToShortString(date: Date): string {
-  return format(date, "MMMM d, yyyy");
+  return format(date, "MMM d, yyyy");
 }
 
 export function shortStringToDate(str: string): Date {
-  return parse(str, "MMMM d, yyyy", new Date());
+  return parse(str, "MMM d, yyyy", new Date());
 }
 
 export function advanceDateByDays(date: Date | number | string, numDaysLater: number): Date {
