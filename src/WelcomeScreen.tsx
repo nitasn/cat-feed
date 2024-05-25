@@ -1,12 +1,12 @@
-import { Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useSetAtom } from "jotai";
 // @ts-ignore
 import catImg from "../assets/black-cat.png";
 import BlurContainer from "./BlurContainer";
-import { Name, names } from "./types";
-import { dropShadow, personToImage } from "./stuff";
-import { Ionicons } from "@expo/vector-icons";
-import { useSetAtom } from "jotai";
 import { nameAtom } from "./state";
+import { personToImage } from "./stuff";
+import { Name, names } from "./types";
 
 export default function NamePrompt() {
   return (
