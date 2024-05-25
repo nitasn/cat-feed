@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
       position: "absolute",
       inset: 0,
       width: "100vw",
-      height: "100vh",
+      height: "100dvh",
     }),
   },
 });
