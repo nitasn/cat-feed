@@ -3,8 +3,6 @@ import { StatusBar } from "expo-status-bar";
 import { ImageBackground, Platform, SafeAreaView, StyleSheet } from "react-native";
 import Main from "./src/Main";
 import queryClient from "./src/query-client";
-
-// @ts-ignore
 import backgroundImage from "./assets/street.webp";
 
 export default function App() {
@@ -28,15 +26,14 @@ const styles = StyleSheet.create({
       default: 0,
     }),
   },
-  // @ts-ignore
   image: {
     flex: 1,
     // web full screen
     ...(Platform.OS === "web" && {
       position: "absolute",
       inset: 0,
-      width: "100vw",
-      height: "100dvh",
+      width: "100dvw" as unknown as number,
+      height: "100dvh" as unknown as number,
     }),
   },
 });

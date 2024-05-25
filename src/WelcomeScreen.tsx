@@ -1,7 +1,6 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSetAtom } from "jotai";
-// @ts-ignore
 import catImg from "../assets/black-cat.png";
 import BlurContainer from "./BlurContainer";
 import { nameAtom } from "./state";
@@ -14,6 +13,7 @@ export default function NamePrompt() {
       <Text style={styles.title}>
         Welcome to <Text style={{ fontWeight: "bold" }}>Cat Feed</Text>
       </Text>
+
       <Image style={styles.catImage} source={catImg} />
 
       <BlurContainer style={styles.blurContainer}>
@@ -54,6 +54,11 @@ const styles = StyleSheet.create({
   catImage: {
     width: 250,
     height: 250,
+    // web full screen
+    ...(Platform.OS === "web" && {
+      width: "20dvh" as unknown as number,
+      height: "20dvh" as unknown as number,
+    }),
   },
   blurContainer: {
     justifyContent: "space-evenly",
