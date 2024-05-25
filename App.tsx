@@ -10,8 +10,8 @@ import backgroundImage from "./assets/street.webp";
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <StatusBar style="auto" />
       <ImageBackground source={backgroundImage} style={styles.image} resizeMode="stretch">
-        <StatusBar style="auto" />
         <SafeAreaView style={styles.container}>
           <Main />
         </SafeAreaView>
@@ -32,6 +32,11 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     // web full screen
-    ...(Platform.OS === "web" && { position: "absolute", inset: 0, width: "100vw", height: "100vh" }),
+    ...(Platform.OS === "web" && {
+      position: "absolute",
+      inset: 0,
+      width: "100vw",
+      height: "100vh",
+    }),
   },
 });
