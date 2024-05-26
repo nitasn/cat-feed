@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { produce } from "immer";
-import { getDefaultStore } from "jotai";
 import queryClient from "./query-client";
 import { Change, FailureResponse, fetchWeek, postChanges } from "./server-mock";
-import { nameAtom } from "./state";
+import { nameAtom, store } from "./state";
 import {
   DayName,
   MealData,
@@ -24,8 +23,6 @@ import {
   tryMultipleTimes,
   unshiftIfNotExists,
 } from "./utils";
-
-const store = getDefaultStore();
 
 const changes: Array<Change & { wasFired?: boolean }> = [];
 

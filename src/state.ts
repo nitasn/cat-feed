@@ -1,4 +1,4 @@
-import { Atom, atom, getDefaultStore } from "jotai";
+import { atom, getDefaultStore } from "jotai";
 import { dateFirstDayOfWeek, dateToShortString } from "./utils";
 
 import type { Name } from "./types";
@@ -11,8 +11,4 @@ export const nameAtom = atom<Name>("nobody");
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const store = getDefaultStore();
-
-export function getAtom<T>(atom: Atom<T>): T {
-  return store.get(atom);
-}
+export const store = getDefaultStore();
