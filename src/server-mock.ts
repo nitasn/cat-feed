@@ -59,13 +59,15 @@ export interface Change {
 }
 
 export interface SuccessResponse {
-  weekKey: string;
-  success: true;
+  weekKey: string, 
+  path: "WEEK ITSELF" | MealPath,
+  success: true,
 }
 
 export interface FailureResponse {
-  weekKey: string;
-  success: false;
+  weekKey: string, 
+  path: "WEEK ITSELF" | MealPath,
+  success: false,
   error: string;
 }
 

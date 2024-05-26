@@ -82,14 +82,14 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
 
   const newChangesByWeek = groupArrayBy(changes, (change) => extractWeekKey(change.mealPath));
 
-  function updateCache(forEachChange: (mealData: MealData, weekKey: string, change: Change) => void) {
+  function updateCache(forEachChange: (mealData: MealData, change: Change) => void) {
     newChangesByWeek.forEach((weeklyNewChanges, weekKey) => {
       queryClient.setQueryData(["weekData", weekKey], (weekData: WeekData) => {
         return produce(weekData, (weekData) => {
           for (const change of weeklyNewChanges) {
             const [_, dayName, mealName] = change.mealPath.split(".");
             const mealData = weekData[dayName as DayName][mealName as MealName];
-            forEachChange(mealData, weekKey, change);
+            forEachChange(mealData, change);
           }
         });
       });
@@ -101,16 +101,29 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
 
     // server has reponded and (hopefully) ack'd our changes.
 
-    const failedWeeks = results.filter((r) => !r.success) as FailureResponse[];
+    const failures = results.filter(({ success }) => !success) as FailureResponse[];
 
-    if (failedWeeks.length) {
+    if (failures.length) {
+      // const weekItselved = failures.filter(({ path }) => path === "WEEK ITSELF");
+      // weekItselved.forEach(({ weekKey }) => {
+      //   filterInPlace(results, (result) => result.weekKey !== weekKey || result.path === "WEEK ITSELF");
+      // });
+
+      // const errMsgs = new Set(
+      //   failures.map(({ weekKey, path, error: why }) => {
+      //     const when =
+      //       path === "WEEK ITSELF" ? `The week that starts on ${weekKey}` : path.replaceAll(".", " ");
+
+      //     return `${when} (${why})`;
+      //   })
+      // );
+
       // todo better handler
-      const errMsgs = [...new Set(failedWeeks.map((obj) => obj.error))].join("\n")
-      alert("Failed sending changes to server:/ \n\n" + errMsgs);
+      alert("Failed sending changes to server :/");
     }
 
-    updateCache((mealData, weekKey, { changeTo, name }) => {
-      if (failedWeeks.length === 0 || results.find((r) => r.weekKey === weekKey)?.success) {
+    updateCache((mealData, { changeTo, name, mealPath }) => {
+      if (results.find(({ path }) => path === mealPath)?.success) {
         removeIfExists(mealData[opposite(changeTo)], name);
         unshiftIfNotExists(mealData[changeTo], name);
       }
@@ -122,11 +135,10 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
     updateCache((mealData) => delete mealData.pendingChange);
 
     // todo better handler
-    return alert(`Couldn't post to server :/ \n${(error as Error).message}`);
+    alert(`Couldn't post to server :/ \n${(error as Error).message}`);
   }
-  finally {
-    filterInPlace(changes, (change) => !changesToSend.includes(change));
-  }
+
+  filterInPlace(changes, (change) => !changesToSend.includes(change));
 
   // queryClient.invalidateQueries({ queryKey: ["weekData"] });
 });
