@@ -1,7 +1,7 @@
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { useAtomValue } from "jotai";
 import { useRef } from "react";
-import type { GestureResponderEvent } from "react-native";
+import type { GestureResponderEvent, StyleProp, TextStyle } from "react-native";
 import { ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View } from "react-native";
 import FixedColumns from "./FixedColumns";
 import { toggleMyself } from "./fetcher";
@@ -86,6 +86,8 @@ function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
 function DateColumn({ dayData, dayName }: { dayName: DayName; dayData: DayData }) {
   const name = useAtomValue(nameAtom);
   const dateWeekStarts = useAtomValue(weekDisplayedDateAtom);
+  const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
+  // const isToday = isSameDay(new Date(), date);
 
   const isMealTakenCareOf = (meal: MealName) => {
     const { pendingChange } = dayData[meal];
@@ -102,9 +104,7 @@ function DateColumn({ dayData, dayName }: { dayName: DayName; dayData: DayData }
   return (
     <View style={styles.dayColumn}>
       <Text style={[styles.dayName, color]}>{dayNameAbbreviation[dayName]}</Text>
-      <Text style={[styles.date, color]}>
-        {format(advanceDateByDays(dateWeekStarts, dayToIndex[dayName]), "MMM d")}
-      </Text>
+      <Text style={[styles.date, color]}>{format(date, "MMM d")}</Text>
     </View>
   );
 }
