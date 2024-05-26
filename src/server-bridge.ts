@@ -1,36 +1,9 @@
-import { getProperty } from "dot-prop";
-import { BalancedExample as dummyData } from "./dummy-data";
 import { emptyWeeklyData } from "./gen-data";
-import { opposite, type MealPath, type Name, type PosNeg, type WeekData } from "./types";
-import { removeIfExists, sleep } from "./utils";
-import { produce } from "immer";
-
-// let allWeeks: Record<string, WeekData> = dummyData;
-
-// export async function fetchWeek(keyStartWeek: string): Promise<WeekData> {
-//   await sleep(500);
-//   return allWeeks[keyStartWeek] ?? emptyWeeklyData();
-// }
-
-// export async function postChanges(changes: Change[]): Promise<void> {
-//   await sleep(500);
-
-//   allWeeks = produce(allWeeks, (allWeeks) => {
-//     for (const { mealPath, changeTo, name } of changes) {
-//       let mealData = getProperty(allWeeks, mealPath);
-//       if (!mealData) {
-//         const weekKey = mealPath.slice(0, mealPath.indexOf("."));
-//         allWeeks[weekKey] = emptyWeeklyData();
-//         mealData = getProperty(allWeeks, mealPath)!;
-//       }
-//       removeIfExists(mealData[opposite(changeTo)], name);
-//       if (!mealData[changeTo].includes(name)) mealData[changeTo].unshift(name);
-//       // console.log("server state was set:", mealPath, "=", mealData);
-//     }
-//   });
-// }
+import { type MealPath, type Name, type PosNeg, type WeekData } from "./types";
 
 const SERVER_URL = "http://localhost:3000";
+
+// const SERVER_URL = "https://cat-feed-server.vercel.app";
 
 async function fetchGET(path: string) {
   const res = await fetch(SERVER_URL + path);
