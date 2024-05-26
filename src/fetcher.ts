@@ -2,10 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { produce } from "immer";
 import { getDefaultStore } from "jotai";
 import queryClient from "./query-client";
-import { Change, fetchWeek, postChanges } from "./server-mock";
+import { Change, FailureResponse, fetchWeek, postChanges } from "./server-mock";
 import { nameAtom } from "./state";
 import {
   DayName,
+  MealData,
   MealName,
   MealPath,
   PosNeg,
@@ -15,7 +16,14 @@ import {
   opposite,
   positiveNegative,
 } from "./types";
-import { debouncify, filterInPlace, groupArrayBy, removeIfExists, tryMultipleTimes } from "./utils";
+import {
+  debouncify,
+  filterInPlace,
+  groupArrayBy,
+  removeIfExists,
+  tryMultipleTimes,
+  unshiftIfNotExists,
+} from "./utils";
 
 const store = getDefaultStore();
 
@@ -74,48 +82,51 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
 
   const newChangesByWeek = groupArrayBy(changes, (change) => extractWeekKey(change.mealPath));
 
-  try {
-    await tryMultipleTimes(() => postChanges(changesToSend));
-  } catch (error) {
-    // if server didn't ack, we remove the pending
-
+  function updateCache(forEachChange: (mealData: MealData, weekKey: string, change: Change) => void) {
     newChangesByWeek.forEach((weeklyNewChanges, weekKey) => {
       queryClient.setQueryData(["weekData", weekKey], (weekData: WeekData) => {
         return produce(weekData, (weekData) => {
-          for (const { mealPath } of weeklyNewChanges) {
-            const [_, dayName, mealName] = mealPath.split(".");
-            delete weekData[dayName as DayName][mealName as MealName].pendingChange;
+          for (const change of weeklyNewChanges) {
+            const [_, dayName, mealName] = change.mealPath.split(".");
+            const mealData = weekData[dayName as DayName][mealName as MealName];
+            forEachChange(mealData, weekKey, change);
           }
         });
       });
     });
-
-    filterInPlace(changes, (change) => !changesToSend.includes(change));
-
-    // todo better handler
-    return alert(`Error :/ \n Couldn't post to server. \n ${error}`);
   }
 
-  // the server has acknoledged the changes we sent!
+  try {
+    const results = await tryMultipleTimes(() => postChanges(changesToSend));
 
-  // apply the changes to our copy of the data as an "optimistic" update.
-  // (more like realistic update, because the server has acknoledged our post)
-  newChangesByWeek.forEach((weeklyNewChanges, weekKey) => {
-    queryClient.setQueryData(["weekData", weekKey], (weekData: WeekData) => {
-      return produce(weekData, (weekData) => {
-        for (const { mealPath, changeTo, name } of weeklyNewChanges) {
-          const [_, dayName, mealName] = mealPath.split(".");
-          const mealData = weekData[dayName as DayName][mealName as MealName];
-          removeIfExists(mealData[opposite(changeTo)], name);
-          if (!mealData[changeTo].includes(name)) mealData[changeTo].unshift(name);
-          delete mealData.pendingChange;
-        }
-      });
+    // server has reponded and (hopefully) ack'd our changes.
+
+    const failedWeeks = results.filter((r) => !r.success) as FailureResponse[];
+
+    if (failedWeeks.length) {
+      // todo better handler
+      const errMsgs = [...new Set(failedWeeks.map((obj) => obj.error))].join("\n")
+      alert("Failed sending changes to server:/ \n\n" + errMsgs);
+    }
+
+    updateCache((mealData, weekKey, { changeTo, name }) => {
+      if (failedWeeks.length === 0 || results.find((r) => r.weekKey === weekKey)?.success) {
+        removeIfExists(mealData[opposite(changeTo)], name);
+        unshiftIfNotExists(mealData[changeTo], name);
+      }
+      delete mealData.pendingChange;
     });
-  });
+  }
+  
+  catch (error) {
+    updateCache((mealData) => delete mealData.pendingChange);
 
-  // delete ack'd changes from the changes array
-  filterInPlace(changes, (change) => !changesToSend.includes(change));
+    // todo better handler
+    return alert(`Couldn't post to server :/ \n${(error as Error).message}`);
+  }
+  finally {
+    filterInPlace(changes, (change) => !changesToSend.includes(change));
+  }
 
   // queryClient.invalidateQueries({ queryKey: ["weekData"] });
 });

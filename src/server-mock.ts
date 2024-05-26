@@ -58,20 +58,19 @@ export interface Change {
   name: Name;
 }
 
-export async function postChanges(changes: Change[]): Promise<void> {
-  await sleep(500);
+export interface SuccessResponse {
+  weekKey: string;
+  success: true;
+}
 
-  allWeeks = produce(allWeeks, (allWeeks) => {
-    for (const { mealPath, changeTo, name } of changes) {
-      let mealData = getProperty(allWeeks, mealPath);
-      if (!mealData) {
-        const weekKey = mealPath.slice(0, mealPath.indexOf("."));
-        allWeeks[weekKey] = emptyWeeklyData();
-        mealData = getProperty(allWeeks, mealPath)!;
-      }
-      removeIfExists(mealData[opposite(changeTo)], name);
-      if (!mealData[changeTo].includes(name)) mealData[changeTo].unshift(name);
-      // console.log("server state was set:", mealPath, "=", mealData);
-    }
-  });
+export interface FailureResponse {
+  weekKey: string;
+  success: false;
+  error: string;
+}
+
+export async function postChanges(changes: Change[]) {
+  // throw new Error("hello");
+  const results = await fetchPOST("/api/post-changes", { changes });
+  return results as Array<SuccessResponse | FailureResponse>;
 }
