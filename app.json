@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "who-feeds-the-cats",
-    "slug": "who-feeds-the-cats",
+    "name": "cat-feed",
+    "slug": "cat-feed",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,6 +10,11 @@
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0
     },
     "ios": {
       "supportsTablet": true
