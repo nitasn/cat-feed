@@ -1,11 +1,19 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useAtom, useAtomValue } from "jotai";
-import { useMemo } from "react";
-import { ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useMemo, useRef } from "react";
+import {
+  ActivityIndicator,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import BlurContainer from "./BlurContainer";
 import { WeekTable, columnWidths, mealsColor } from "./WeekTable";
 import { useWeekData } from "./fetcher";
-import { weekDisplayedDateAtom, weekKeyAtom } from "./state";
+import { nameAtom, store, weekDisplayedDateAtom, weekKeyAtom } from "./state";
 import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
 
 export default function MainScreen() {
@@ -62,10 +70,21 @@ function Header() {
     setFirstDayOfWeek(dateFirstDayOfWeek(laterDate));
   };
 
+  const easterEggCountRef = useRef(0);
+
+  const easterEggOnPress = () => {
+    if (++easterEggCountRef.current >= 13) {
+      easterEggCountRef.current = 0;
+      store.set(nameAtom, "nobody");
+    }
+  };
+
   return (
     <View style={styles.header}>
       <IconButton glyph="arrow-back" onPress={changeWeekBy(-1)} />
-      <Text style={styles.title}>{title}</Text>
+      <Pressable onPress={easterEggOnPress}>
+        <Text style={styles.title}>{title}</Text>
+      </Pressable>
       <IconButton glyph="arrow-forward" onPress={changeWeekBy(+1)} />
     </View>
   );
