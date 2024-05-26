@@ -2,7 +2,7 @@
 
 An app for my family members, to schedule who feeds our cats.
 
-![Main Screen](assets-for-readme/MainScreen.png)
+<img src="assets-for-readme/MainScreen.png" alt="Main Screen" width="350"/>
 
 *Red date means a feeder is missing at morning / evening.*
 
