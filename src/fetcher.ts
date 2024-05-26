@@ -58,7 +58,7 @@ export function useWeekData(weekKey: string) {
       const fetchedWeek = await fetchWeek(weekKey);
       return mergeFetchedWeekWithPendingState(weekKey, fetchedWeek);
     },
-    refetchInterval: 5000,
+    // refetchInterval: 5000,
   });
 
   return { weekLoading: isLoading, weekError: error, weekData: data };

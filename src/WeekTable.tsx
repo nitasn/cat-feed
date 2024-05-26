@@ -13,6 +13,8 @@ import { blurContainerContentOffset } from "./BlurContainer";
 import { dropShadow, personToImage } from "./stuff";
 
 export function WeekTable({ weekData }: { weekData: WeekData }) {
+  console.log(JSON.stringify(weekData, null, 2));
+  
   return (
     <View style={styles.container}>
       {Object.entries(weekData).map(([dayName, dayData]) => (

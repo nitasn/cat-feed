@@ -87,8 +87,10 @@ function BlurContainerContent() {
   if (weekError) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text style={{ color: "maroon", fontSize: 16 }}>Can't load data from server :/</Text>
+        <Text style={{ color: "maroon", fontSize: 16 }}>Cannot connect to server :/</Text>
         <Text style={{ color: "maroon", fontSize: 16 }}>You got internet bro?</Text>
+        <Text>{"\n"}</Text>
+        <Text style={{ color: "gray", fontSize: 16 }}>{weekError.message}</Text>
       </View>
     );
   }

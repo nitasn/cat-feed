@@ -5,20 +5,51 @@ import { opposite, type MealPath, type Name, type PosNeg, type WeekData } from "
 import { removeIfExists, sleep } from "./utils";
 import { produce } from "immer";
 
-let allWeeks: Record<string, WeekData> = dummyData;
+// let allWeeks: Record<string, WeekData> = dummyData;
 
-export async function fetchWeek(keyStartWeek: string): Promise<WeekData> {
-  await sleep(500);
-  return allWeeks[keyStartWeek] ?? emptyWeeklyData();
+// export async function fetchWeek(keyStartWeek: string): Promise<WeekData> {
+//   await sleep(500);
+//   return allWeeks[keyStartWeek] ?? emptyWeeklyData();
+// }
+
+// export async function postChanges(changes: Change[]): Promise<void> {
+//   await sleep(500);
+
+//   allWeeks = produce(allWeeks, (allWeeks) => {
+//     for (const { mealPath, changeTo, name } of changes) {
+//       let mealData = getProperty(allWeeks, mealPath);
+//       if (!mealData) {
+//         const weekKey = mealPath.slice(0, mealPath.indexOf("."));
+//         allWeeks[weekKey] = emptyWeeklyData();
+//         mealData = getProperty(allWeeks, mealPath)!;
+//       }
+//       removeIfExists(mealData[opposite(changeTo)], name);
+//       if (!mealData[changeTo].includes(name)) mealData[changeTo].unshift(name);
+//       // console.log("server state was set:", mealPath, "=", mealData);
+//     }
+//   });
+// }
+
+const SERVER_URL = "http://localhost:3000";
+
+async function fetchGET(path: string) {
+  const res = await fetch(SERVER_URL + path);
+  return await res.json();
 }
 
-export async function updateAndFetch(keyStartWeek: string, newWeeklyData: WeekData): Promise<WeekData> {
-  await sleep(1000);
+async function fetchPOST(path: string, body: Object) {
+  const res = await fetch(SERVER_URL + path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return await res.json();
+}
 
-  // clone for referential equality
-  allWeeks = { ...allWeeks, [keyStartWeek]: { ...newWeeklyData } };
-
-  return allWeeks[keyStartWeek];
+export async function fetchWeek(weekKey: string): Promise<WeekData> {
+  const weekData = await fetchGET(`/api/get-week/?dateWeekStarts=${weekKey}`);
+  if (weekData.error) throw Error(weekData.error);
+  return weekData === "EMPTY WEEK" ? emptyWeeklyData() : (weekData as WeekData);
 }
 
 export interface Change {
