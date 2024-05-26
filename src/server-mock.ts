@@ -12,10 +12,7 @@ export async function fetchWeek(keyStartWeek: string): Promise<WeekData> {
   return allWeeks[keyStartWeek] ?? emptyWeeklyData();
 }
 
-export async function updateAndFetch(
-  keyStartWeek: string,
-  newWeeklyData: WeekData
-): Promise<WeekData> {
+export async function updateAndFetch(keyStartWeek: string, newWeeklyData: WeekData): Promise<WeekData> {
   await sleep(1000);
 
   // clone for referential equality
