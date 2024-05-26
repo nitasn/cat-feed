@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { produce } from "immer";
 import queryClient from "./query-client";
-import { Change, FailureResponse, fetchWeek, postChanges } from "./server-mock";
+import { Change, FailureResponse, fetchWeek, postChanges } from "./server-bridge";
 import { nameAtom, store } from "./state";
 import {
   DayName,
@@ -101,20 +101,6 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
     const failures = results.filter(({ success }) => !success) as FailureResponse[];
 
     if (failures.length) {
-      // const weekItselved = failures.filter(({ path }) => path === "WEEK ITSELF");
-      // weekItselved.forEach(({ weekKey }) => {
-      //   filterInPlace(results, (result) => result.weekKey !== weekKey || result.path === "WEEK ITSELF");
-      // });
-
-      // const errMsgs = new Set(
-      //   failures.map(({ weekKey, path, error: why }) => {
-      //     const when =
-      //       path === "WEEK ITSELF" ? `The week that starts on ${weekKey}` : path.replaceAll(".", " ");
-
-      //     return `${when} (${why})`;
-      //   })
-      // );
-
       // todo better handler
       alert("Failed sending changes to server :/");
     }

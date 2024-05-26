@@ -59,20 +59,17 @@ export interface Change {
 }
 
 export interface SuccessResponse {
-  weekKey: string, 
-  path: "WEEK ITSELF" | MealPath,
-  success: true,
+  path: MealPath;
+  success: true;
 }
 
 export interface FailureResponse {
-  weekKey: string, 
-  path: "WEEK ITSELF" | MealPath,
-  success: false,
+  path: MealPath;
+  success: false;
   error: string;
 }
 
 export async function postChanges(changes: Change[]) {
-  // throw new Error("hello");
   const results = await fetchPOST("/api/post-changes", { changes });
   return results as Array<SuccessResponse | FailureResponse>;
 }
