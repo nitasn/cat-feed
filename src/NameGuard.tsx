@@ -20,13 +20,14 @@ store.sub(nameAtom, () => {
   AsyncStorage.setItem("name", name);
 });
 
-export default function Main() {
+export default function NameGuard() {
   const name = useAtomValue(nameAtom);
   const isNameLoading = useAtomValue(nameRetrievalLoadingAtom);
 
   if (isNameLoading) {
     // the name usually finishes loading before the app loads...
     // the entire app loading is ~13ms
+    // todo: make a nice loading screen anyway till the current week loads (+ name if already waiting)
     return null;
   }
 
