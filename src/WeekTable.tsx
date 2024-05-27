@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   row: {
-    padding: 8, // TODO container padding... prev file
+    padding: 8, // todo container padding... prev file
     alignItems: "center",
   },
   hr: {
