@@ -28,11 +28,15 @@ yarn-error.*
 .DS_Store
 *.pem
 
+# typescript
+*.tsbuildinfo
+
 # env files
 .env*.local
 .env
 .env.production
-eas.json
 
-# typescript
-*.tsbuildinfo
+catfeed.keystore
+notes.md
+eas.json
+build
