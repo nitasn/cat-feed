@@ -6,8 +6,10 @@ import { type MealPath, type Name, type PosNeg, type WeekData } from "./types";
 const SERVER_URL = "http://192.168.1.120:3000";
 // const SERVER_URL = "https://cat-feed-server.vercel.app";
 
+// console.log(authorizationHeader());
+
 function authorizationHeader() {
-  const payload = { iat: Date.now() };
+  const payload = { iat: Math.floor(Date.now() / 1000) };
   const secret = process.env.EXPO_PUBLIC_JWT_SECRET as string;
   const token = JWT.encode(payload, secret, { algorithm: SupportedAlgorithms.HS512 });
   return { Authorization: `Bearer ${token}` };
