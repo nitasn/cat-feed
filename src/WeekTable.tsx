@@ -51,7 +51,7 @@ function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
   const widthRef = useRef(0);
 
   const onPress = (event: GestureResponderEvent) => {
-    const offset = blurContainerContentOffset; // TODO get offset dynamically
+    const offset = blurContainerContentOffset; // todo get offset dynamically
     const normalizedX = (event.nativeEvent.pageX - offset) / widthRef.current;
     const spill = 0.1;
     if (normalizedX < columnWeights[0] + spill) {
