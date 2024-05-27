@@ -1,7 +1,7 @@
 import { emptyWeeklyData } from "./gen-data";
 import { type MealPath, type Name, type PosNeg, type WeekData } from "./types";
 
-const SERVER_URL = "http://localhost:3000";
+const SERVER_URL = "http://192.168.1.120:3000";
 
 // const SERVER_URL = "https://cat-feed-server.vercel.app";
 
