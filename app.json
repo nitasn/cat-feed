@@ -17,13 +17,15 @@
       "fallbackToCacheTimeout": 0
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nitsanbh.catfeed"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.nitsanbh.catfeed"
     },
     "web": {
       "favicon": "./assets/favicon.png"
