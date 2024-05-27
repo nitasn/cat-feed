@@ -73,7 +73,13 @@ function Header() {
   const easterEggOnPress = useEasterEggClicker({
     clicksNeeded: 15,
     msToClearCount: 200,
-    onAchieved: () => store.set(nameAtom, "nobody"),
+    onAchieved: () => {
+      const firstDayOfWeek = store.get(weekDisplayedDateAtom);
+      const title = relativeWeek(firstDayOfWeek);
+      if (title === "15 Weeks Ago") {
+        store.set(nameAtom, "nobody");
+      }
+    },
   });
 
   return (
