@@ -1,40 +1,33 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { atom, useAtomValue } from "jotai";
 import MainScreen from "./MainScreen";
 import WelcomeScreen from "./WelcomeScreen";
 import { nameAtom, store } from "./state";
 import { Name } from "./types";
 
-const nameRetrievalPromise = AsyncStorage.getItem("name");
+const nameRetrievalLoadingAtom = atom(true);
+
+AsyncStorage.getItem("name")
+  .then((name) => {
+    name && store.set(nameAtom, name as Name);
+  })
+  .finally(() => {
+    store.set(nameRetrievalLoadingAtom, false);
+  });
 
 store.sub(nameAtom, () => {
   const name = store.get(nameAtom);
   AsyncStorage.setItem("name", name);
 });
 
-function useNameRetrieval() {
-  const [name, setName] = useAtom(nameAtom);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    nameRetrievalPromise
-      .then((name) => {
-        name && setName(name as Name);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
-  return { loading, name };
-}
-
 export default function Main() {
-  const { loading, name } = useNameRetrieval();
+  const name = useAtomValue(nameAtom);
+  const isNameLoading = useAtomValue(nameRetrievalLoadingAtom);
 
-  if (loading) {
-    return null; // it takes ~13ms
+  if (isNameLoading) {
+    // the name usually finishes loading before the app loads...
+    // the entire app loading is ~13ms
+    return null;
   }
 
   return name === "nobody" ? <WelcomeScreen /> : <MainScreen />;

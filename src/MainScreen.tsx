@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useAtom, useAtomValue } from "jotai";
-import { useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 import {
   ActivityIndicator,
   Platform,
@@ -14,7 +14,8 @@ import BlurContainer from "./BlurContainer";
 import { WeekTable, columnWidths, mealsColor } from "./WeekTable";
 import { useWeekData } from "./fetcher";
 import { nameAtom, store, weekDisplayedDateAtom, weekKeyAtom } from "./state";
-import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
+import { advanceDateByDays, dateFirstDayOfWeek, debouncify, relativeWeek } from "./utils";
+import { useEasterEggClicker } from "./hooks";
 
 export default function MainScreen() {
   return (
@@ -57,7 +58,6 @@ function IconButton({ glyph, onPress }: IconButtonProps) {
     </TouchableOpacity>
   );
 }
-
 function Header() {
   const [firstDayOfWeek, setFirstDayOfWeek] = useAtom(weekDisplayedDateAtom);
 
@@ -70,14 +70,11 @@ function Header() {
     setFirstDayOfWeek(dateFirstDayOfWeek(laterDate));
   };
 
-  const easterEggCountRef = useRef(0);
-
-  const easterEggOnPress = () => {
-    if (++easterEggCountRef.current >= 13) {
-      easterEggCountRef.current = 0;
-      store.set(nameAtom, "nobody");
-    }
-  };
+  const easterEggOnPress = useEasterEggClicker({
+    clicksNeeded: 13,
+    msToClearCount: 300,
+    onAchieved: () => store.set(nameAtom, "nobody"),
+  });
 
   return (
     <View style={styles.header}>
