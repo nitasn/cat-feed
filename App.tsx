@@ -3,7 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { ImageBackground, Platform, SafeAreaView, StyleSheet } from "react-native";
 import Main from "./src/Main";
 import queryClient from "./src/query-client";
-import backgroundImage from "./assets/street.webp";
+import backgroundImage from "./assets/splash.png";
 
 export default function App() {
   return (
