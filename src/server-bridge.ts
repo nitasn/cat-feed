@@ -3,10 +3,7 @@ import { SupportedAlgorithms } from "expo-jwt/dist/types/algorithms";
 import { emptyWeeklyData } from "./gen-data";
 import { type MealPath, type Name, type PosNeg, type WeekData } from "./types";
 
-const SERVER_URL = "http://192.168.1.120:3000";
-// const SERVER_URL = "https://cat-feed-server.vercel.app";
-
-// console.log(authorizationHeader());
+const baseurl = process.env.EXPO_PUBLIC_SERVER_URL as string;
 
 function authorizationHeader() {
   const payload = { iat: Math.floor(Date.now() / 1000) };
@@ -16,12 +13,12 @@ function authorizationHeader() {
 }
 
 async function fetchGET(path: string) {
-  const res = await fetch(SERVER_URL + path, { headers: authorizationHeader() });
+  const res = await fetch(baseurl + path, { headers: authorizationHeader() });
   return await res.json();
 }
 
 async function fetchPOST(path: string, body: Object) {
-  const res = await fetch(SERVER_URL + path, {
+  const res = await fetch(baseurl + path, {
     method: "POST",
     headers: { ...authorizationHeader(), "Content-Type": "application/json" },
     body: JSON.stringify(body),
