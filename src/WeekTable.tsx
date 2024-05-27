@@ -150,10 +150,6 @@ function Hr() {
   return <View style={styles.hr} />;
 }
 
-function Vr() {
-  return <View style={styles.vr} />;
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -168,11 +164,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#33333322",
     width: "100%",
     height: 1,
-  },
-  vr: {
-    backgroundColor: "#33333322",
-    width: 1,
-    height: "100%",
   },
   dayColumn: {
     // backgroundColor: "white"

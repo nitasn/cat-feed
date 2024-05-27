@@ -71,8 +71,8 @@ function Header() {
   };
 
   const easterEggOnPress = useEasterEggClicker({
-    clicksNeeded: 13,
-    msToClearCount: 300,
+    clicksNeeded: 15,
+    msToClearCount: 200,
     onAchieved: () => store.set(nameAtom, "nobody"),
   });
 
