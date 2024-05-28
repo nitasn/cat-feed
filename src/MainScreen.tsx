@@ -1,21 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useAtom, useAtomValue } from "jotai";
-import { useCallback, useMemo } from "react";
-import {
-  ActivityIndicator,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { useMemo } from "react";
+import { ActivityIndicator, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import BlurContainer from "./BlurContainer";
 import { WeekTable, columnWidths, mealsColor } from "./WeekTable";
 import { useWeekData } from "./fetcher";
-import { nameAtom, store, weekDisplayedDateAtom, weekKeyAtom } from "./state";
-import { advanceDateByDays, dateFirstDayOfWeek, debouncify, relativeWeek } from "./utils";
 import { useEasterEggClicker } from "./hooks";
+import { nameAtom, store, weekDisplayedDateAtom, weekKeyAtom } from "./state";
+import { isLTR, rowLTR } from "./stuff";
+import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
+import { weekTitleEasterEggClicked } from "./nitsan-privileges";
 
 export default function MainScreen() {
   return (
@@ -31,15 +25,18 @@ export default function MainScreen() {
 function SunAndMoon() {
   const [W0, W1, W2] = columnWidths;
 
+  const rowStart = isLTR ? "flex-start" : "flex-end";
+  const rowEnd = isLTR ? "flex-end" : "flex-start";
+
   return (
-    <View style={{ flexDirection: "row", paddingHorizontal: 26, marginBottom: 10, marginTop: -2 }}>
-      <View style={{ width: W0, alignItems: "flex-start" }}>
+    <View style={{ flexDirection: rowLTR, paddingHorizontal: 26, marginBottom: 10, marginTop: -2 }}>
+      <View style={{ width: W0, alignItems: rowStart }}>
         {/* <Ionicons color={color} name="paw-outline" size={24} /> */}
       </View>
-      <View style={{ width: W1, alignItems: "flex-end" }}>
+      <View style={{ width: W1, alignItems: rowEnd }}>
         <Ionicons color={mealsColor.morning} name="sunny" size={26.2} />
       </View>
-      <View style={{ width: W2, alignItems: "flex-end" }}>
+      <View style={{ width: W2, alignItems: rowEnd }}>
         <Ionicons color={mealsColor.evening} name="moon" size={24} />
       </View>
     </View>
@@ -70,22 +67,16 @@ function Header() {
     setFirstDayOfWeek(dateFirstDayOfWeek(laterDate));
   };
 
-  const easterEggOnPress = useEasterEggClicker({
-    clicksNeeded: 15,
+  const onEasterEggPress = useEasterEggClicker({
+    clicksNeeded: 13,
     msToClearCount: 200,
-    onAchieved: () => {
-      const firstDayOfWeek = store.get(weekDisplayedDateAtom);
-      const title = relativeWeek(firstDayOfWeek);
-      if (title === "15 Weeks Ago") {
-        store.set(nameAtom, "nobody");
-      }
-    },
+    onAchieved: () => weekTitleEasterEggClicked(title),
   });
 
   return (
     <View style={styles.header}>
       <IconButton glyph="arrow-back" onPress={changeWeekBy(-1)} />
-      <Pressable onPress={easterEggOnPress}>
+      <Pressable onPress={onEasterEggPress}>
         <Text style={styles.title}>{title}</Text>
       </Pressable>
       <IconButton glyph="arrow-forward" onPress={changeWeekBy(+1)} />
@@ -99,7 +90,9 @@ function BlurContainerContent() {
 
   if (weekLoading) {
     return (
-      <View style={{ flex: 1, flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 4 }}>
+      <View
+        style={{ flex: 1, flexDirection: rowLTR, justifyContent: "center", alignItems: "center", gap: 4 }}
+      >
         <Text style={{ color: "#333", fontSize: 16 }}>Loading...</Text>
         <ActivityIndicator color="black" />
       </View>
@@ -130,7 +123,7 @@ const styles = StyleSheet.create({
   header: {
     width: "100%",
     justifyContent: "space-between",
-    flexDirection: "row",
+    flexDirection: rowLTR,
     alignItems: "center",
   },
   title: {

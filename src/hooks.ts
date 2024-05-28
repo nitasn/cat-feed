@@ -15,8 +15,6 @@ export function useEasterEggClicker({ clicksNeeded, msToClearCount, onAchieved }
     if (++clicksCountRef.current === clicksNeeded) {
       onAchieved();
     }
-    timeoutRef.current = setTimeout(() => {
-      clicksCountRef.current = 0;
-    }, msToClearCount);
+    timeoutRef.current = setTimeout(() => (clicksCountRef.current = 0), msToClearCount);
   };
 }

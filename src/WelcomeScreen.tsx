@@ -1,10 +1,10 @@
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSetAtom } from "jotai";
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import catImg from "../assets/black-cat.png";
 import BlurContainer from "./BlurContainer";
 import { nameAtom } from "./state";
-import { personToImage } from "./stuff";
+import { isLTR, personToImage } from "./stuff";
 import { Name, names } from "./types";
 
 export default function NamePrompt() {
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   },
   personRow: {
     paddingHorizontal: 16,
-    flexDirection: "row",
+    flexDirection: isLTR ? "row" : "row-reverse",
     alignItems: "center",
     gap: 18,
   },
@@ -83,6 +83,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   personChevron: {
-    marginStart: "auto",
+    [isLTR ? "marginStart" : "marginEnd"]: "auto",
   },
 });

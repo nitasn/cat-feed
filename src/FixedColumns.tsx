@@ -1,5 +1,6 @@
 import React from "react";
 import { DimensionValue, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { rowLTR } from "./stuff";
 
 interface FixedColumnsProps {
   children?: React.ReactNode;
@@ -21,6 +22,6 @@ export default function FixedColumns({ style, children, widths }: FixedColumnsPr
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
+    flexDirection: rowLTR,
   },
 });

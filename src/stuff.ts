@@ -1,5 +1,6 @@
 import { StyleProp, ViewStyle } from "react-native";
 import type { Name } from "./types";
+import { I18nManager } from "react-native";
 
 // @ts-ignore ("nobody" is not present)
 export const personToImage: Record<Name, number> = {
@@ -21,3 +22,7 @@ export const dropShadow: StyleProp<ViewStyle> = {
 
   elevation: 4,
 };
+
+export const isLTR = !I18nManager.isRTL;
+
+export const rowLTR = (isLTR ? "row" : "row-reverse");

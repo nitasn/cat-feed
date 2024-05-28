@@ -1,16 +1,16 @@
-import { format, isSameDay } from "date-fns";
+import { format } from "date-fns";
 import { useAtomValue } from "jotai";
 import { useRef } from "react";
-import type { GestureResponderEvent, StyleProp, TextStyle } from "react-native";
+import type { GestureResponderEvent } from "react-native";
 import { ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View } from "react-native";
+import { blurContainerContentOffset } from "./BlurContainer";
 import FixedColumns from "./FixedColumns";
 import { toggleMyself } from "./fetcher";
 import { nameAtom, weekDisplayedDateAtom, weekKeyAtom } from "./state";
+import { dropShadow, personToImage, rowLTR } from "./stuff";
 import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 import { days } from "./types";
 import { advanceDateByDays, arrayWithout } from "./utils";
-import { blurContainerContentOffset } from "./BlurContainer";
-import { dropShadow, personToImage } from "./stuff";
 
 export function WeekTable({ weekData }: { weekData: WeekData }) {
   return (
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     color: "hsl(180, 100%, 17.45%)",
   },
   peopleColumn: {
-    flexDirection: "row",
+    flexDirection: rowLTR,
     justifyContent: "flex-end",
   },
   personBubble: {
