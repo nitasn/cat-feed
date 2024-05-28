@@ -10,8 +10,8 @@ interface BlurContainerProps {
 
 export default function BlurContainer({ children, componentAbove, style }: BlurContainerProps) {
   const blurTint: BlurViewProps["tint"] | undefined = Platform.select({
-    ios: "light",
     android: "prominent",
+    ios: "light",
   });
 
   return (

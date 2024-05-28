@@ -29,7 +29,7 @@ function SunAndMoon() {
   const rowEnd = isLTR ? "flex-end" : "flex-start";
 
   return (
-    <View style={{ flexDirection: rowLTR, paddingHorizontal: 26, marginBottom: 10, marginTop: -2 }}>
+    <View style={styles.sunAndMoon}>
       <View style={{ width: W0, alignItems: rowStart }}>
         {/* <Ionicons color={color} name="paw-outline" size={24} /> */}
       </View>
@@ -119,6 +119,12 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+  },
+  sunAndMoon: {
+    flexDirection: rowLTR,
+    paddingHorizontal: 26,
+    marginBottom: 10,
+    marginTop: -2,
   },
   header: {
     width: "100%",

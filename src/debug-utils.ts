@@ -8,3 +8,22 @@ export async function forceAppHorizontalDirection(dir: "rtl" | "ltr") {
     reloadAsync();
   }
 }
+
+export class Tracker<T> {
+  #value: T;
+  #name: string;
+
+  constructor(value: T, name?: string) {
+    this.#value = value;
+    this.#name = name ?? "value";
+  }
+
+  get value() {
+    return this.#value;
+  }
+
+  set value(value) {
+    this.#value = value;
+    console.log(`Tracked ${this.#name} -> ${this.#value}`);
+  }
+}
