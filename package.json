@@ -1,7 +1,7 @@
 {
   "name": "cat-feed",
   "version": "1.0.0",
-  "main": "./AppEntry.js",
+  "main": "./AppEntry.ts",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -26,7 +26,8 @@
     "react-native": "0.74.1",
     "react-native-web": "~0.19.10",
     "type-fest": "^4.18.2",
-    "typescript": "~5.3.3"
+    "typescript": "~5.3.3",
+    "expo-updates": "~0.25.14"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

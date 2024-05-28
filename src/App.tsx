@@ -5,6 +5,9 @@ import NameGuard from "./NameGuard";
 import queryClient from "./query-client";
 import backgroundImage from "../assets/splash.png";
 
+import { forceAppHorizontalDirection } from "./debug-utils";
+forceAppHorizontalDirection("rtl");
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
