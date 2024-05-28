@@ -4,7 +4,7 @@ import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react
 import catImg from "../assets/black-cat.png";
 import BlurContainer from "./BlurContainer";
 import { nameAtom } from "./state";
-import { isLTR, personToImage } from "./stuff";
+import { isLTR, personToImage, rowLTR } from "./stuff";
 import { Name, names } from "./types";
 
 export default function NamePrompt() {
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   },
   personRow: {
     paddingHorizontal: 16,
-    flexDirection: isLTR ? "row" : "row-reverse",
+    flexDirection: rowLTR,
     alignItems: "center",
     gap: 18,
   },
