@@ -24,6 +24,7 @@ import {
   tryMultipleTimes,
 } from "./utils";
 
+// todo: instead of adding a `wasFired` field, use a weakMap
 const changes: Array<Change & { wasFired?: boolean }> = [];
 
 function mergeFetchedWeekWithPendingState(weekKey: string, fetchedWeek: WeekData) {
