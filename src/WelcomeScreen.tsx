@@ -54,11 +54,6 @@ const styles = StyleSheet.create({
   catImage: {
     width: 250,
     height: 250,
-    // web full screen
-    ...(Platform.OS === "web" && {
-      width: "20dvh" as unknown as number,
-      height: "20dvh" as unknown as number,
-    }),
   },
   blurContainer: {
     justifyContent: "space-evenly",
