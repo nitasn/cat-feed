@@ -118,7 +118,7 @@ function MealColumn({ dayData, mealName }: { dayData: DayData; mealName: MealNam
       {pendingChange === "positive" && (
         <PersonBubble key={myName} name={myName} mealName={mealName} pending={true} />
       )}
-      {dayData[mealName].positive.map((name) => (
+      {[...dayData[mealName].positive].reverse().map((name) => (
         <PersonBubble
           key={name}
           name={name}
@@ -131,16 +131,12 @@ function MealColumn({ dayData, mealName }: { dayData: DayData; mealName: MealNam
 }
 
 function PersonBubble({ name, pending, mealName }: { name: Name; pending: boolean; mealName: MealName }) {
-  const style = [
-    styles.bubbleOverlay,
-    pending && styles.bubbleOverlayPending,
-    // { borderColor: mealsColor[mealName] }
-  ];
-
   return (
     <View style={dropShadow}>
       <ImageBackground source={personToImage[name]} style={styles.personBubble}>
-        <View style={style}>{pending && <ActivityIndicator color="#ffffff85" size="small" />}</View>
+        <View style={[styles.bubbleOverlay, pending && styles.bubbleOverlayPending]}>
+          {pending && <ActivityIndicator color="#ffffff85" size="small" />}
+        </View>
       </ImageBackground>
     </View>
   );

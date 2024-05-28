@@ -2,7 +2,7 @@
   "expo": {
     "name": "cat-feed",
     "slug": "cat-feed",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -14,7 +14,8 @@
     "updates": {
       "enabled": true,
       "checkAutomatically": "ON_LOAD",
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/61083e5a-f9e2-4501-aa51-5eb930f95854"
     },
     "ios": {
       "supportsTablet": true,
@@ -34,6 +35,9 @@
       "eas": {
         "projectId": "61083e5a-f9e2-4501-aa51-5eb930f95854"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }

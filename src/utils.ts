@@ -54,9 +54,9 @@ export function removeIfExists<T>(array: T[], x: T): void {
   if (idx !== -1) array.splice(idx, 1);
 }
 
-export function unshiftIfNotExists<T>(array: T[], x: T): void {
+export function pushIfNotExists<T>(array: T[], x: T): void {
   if (!array.includes(x)) {
-    array.unshift(x);
+    array.push(x);
   }
 }
 

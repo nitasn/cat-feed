@@ -19,9 +19,9 @@ import {
   debouncify,
   filterInPlace,
   groupArrayBy,
+  pushIfNotExists,
   removeIfExists,
   tryMultipleTimes,
-  unshiftIfNotExists,
 } from "./utils";
 
 const changes: Array<Change & { wasFired?: boolean }> = [];
@@ -63,7 +63,7 @@ export function useWeekData(weekKey: string) {
       const fetchedWeek = await fetchWeek(weekKey);
       return mergeFetchedWeekWithPendingState(weekKey, fetchedWeek);
     },
-    refetchInterval: 10_000, // TODO ACTIVATE
+    // refetchInterval: 10_000, // TODO ACTIVATE
   });
 
   return { weekLoading: isLoading, weekError: error, weekData: data };
@@ -108,7 +108,7 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
     updateCache((mealData, { changeTo, name, mealPath }) => {
       if (results.find(({ path }) => path === mealPath)?.success) {
         removeIfExists(mealData[opposite(changeTo)], name);
-        unshiftIfNotExists(mealData[changeTo], name);
+        pushIfNotExists(mealData[changeTo], name);
       }
       delete mealData.pendingChange;
     });
@@ -122,8 +122,6 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
   }
 
   filterInPlace(changes, (change) => !changesToSend.includes(change));
-
-  // queryClient.invalidateQueries({ queryKey: ["weekData"] });
 });
 
 function extractWeekKey(mealPath: MealPath) {
