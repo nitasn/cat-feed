@@ -21,14 +21,15 @@
       "bundleIdentifier": "com.nitsanbh.catfeed"
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#bfc9e1"
-      },
       "package": "com.nitsanbh.catfeed"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6557e597-d3cc-4417-8c61-24ececa47848"
+      }
     }
   }
 }
