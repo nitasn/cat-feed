@@ -1,4 +1,4 @@
-import { format, parse, startOfWeek } from "date-fns";
+import { format, parse, setHours, startOfDay, startOfHour, startOfWeek } from "date-fns";
 
 export function dateFirstDayOfWeek(inputDate: Date = new Date()): Date {
   return startOfWeek(inputDate, { weekStartsOn: 0 });
@@ -9,10 +9,17 @@ export function dateToShortString(date: Date): string {
 }
 
 export function shortStringToDate(str: string): Date {
-  return parse(str, "MMM d, yyyy", new Date());
+  return parse(str, "MMM d, yyyy", 0);
 }
 
-export function advanceDateByDays(date: Date | number | string, numDaysLater: number): Date {
+/**
+ * @param hour between 0 and 24
+ */
+export function atRoundHour(date: Date | number, hour: number) {
+  return startOfHour(setHours(date, hour));
+}
+
+export function advanceDateByDays(date: Date, numDaysLater: number): Date {
   const result = new Date(date);
   result.setDate(result.getDate() + numDaysLater);
   return result;

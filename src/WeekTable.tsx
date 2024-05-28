@@ -1,16 +1,15 @@
-import { format } from "date-fns";
+import { format, startOfDay } from "date-fns";
 import { useAtomValue } from "jotai";
 import { useRef } from "react";
 import type { GestureResponderEvent } from "react-native";
 import { ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View } from "react-native";
 import { blurContainerContentOffset } from "./BlurContainer";
 import FixedColumns from "./FixedColumns";
-import { toggleMyself } from "./fetcher";
 import { nameAtom, weekDisplayedDateAtom, weekKeyAtom } from "./state";
 import { dropShadow, personToImage, rowLTR } from "./stuff";
 import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 import { days } from "./types";
-import { advanceDateByDays, arrayWithout } from "./utils";
+import { advanceDateByDays, arrayWithout, shortStringToDate, atRoundHour } from "./utils";
 
 export function WeekTable({ weekData }: { weekData: WeekData }) {
   return (
@@ -46,6 +45,20 @@ export const columnWidths = ["16%", "42%", "42%"] as `${number}%`[];
 
 const columnWeights = columnWidths.map((value) => +value.substring(0, value.length - 1) / 100);
 
+function onMealPress(weekKey: string, dayName: DayName, mealName: MealName) {
+  const mealDate = advanceDateByDays(shortStringToDate(weekKey), dayToIndex[dayName]);
+
+  if (mealDate < startOfDay(Date.now())) {
+    return alert("can't: past day");
+  }
+
+  if (mealName === "morning" && +atRoundHour(mealDate, 3) < Date.now()) {
+    return alert("can't: past hour");
+  }
+
+  alert(`SETTING ${mealDate.toLocaleDateString()}, ${dayName}, ${mealName}`);
+}
+
 function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
   const weekKey = useAtomValue(weekKeyAtom);
   const widthRef = useRef(0);
@@ -57,9 +70,9 @@ function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
     if (normalizedX < columnWeights[0] + spill) {
       // day column was pressed (ignored for now)
     } else if (normalizedX < columnWeights[0] + columnWeights[1] + spill) {
-      toggleMyself(`${weekKey}.${dayName}.morning`);
+      onMealPress(weekKey, dayName, "morning");
     } else {
-      toggleMyself(`${weekKey}.${dayName}.evening`);
+      onMealPress(weekKey, dayName, "evening");
     }
   };
 
