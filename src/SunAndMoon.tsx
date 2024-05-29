@@ -1,10 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { columnWidths, mealsColor } from "./WeekTable";
-import { isLTR, rowLTR } from "./stuff";
-import { nameAtom, store } from "./state";
 import { withSelectionHaptics } from "./haptics";
+import { nameAtom, store } from "./state";
+import { isLTR, rowLTR } from "./stuff";
 
 export default function SunAndMoon() {
   const onPress = () => {
@@ -13,9 +13,9 @@ export default function SunAndMoon() {
 
   return (
     <View style={styles.container}>
-      <Pressable style={styles.settings} hitSlop={25} onPress={onPress} {...withSelectionHaptics}>
+      <TouchableOpacity style={styles.settings} hitSlop={25} onPress={onPress} {...withSelectionHaptics}>
         <Ionicons color="#3333336d" name="settings-outline" size={22} />
-      </Pressable>
+      </TouchableOpacity>
       <View style={styles.sun}>
         <Ionicons color={mealsColor.morning} name="sunny" size={26.2} />
       </View>
