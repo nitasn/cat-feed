@@ -10,6 +10,7 @@ import { weekTitleEasterEggClicked } from "./nitsan-privileges";
 import { weekDisplayedDateAtom } from "./state";
 import { rowLTR } from "./stuff";
 import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
+import { withLightHaptics } from "./haptics";
 
 export default function MainScreen() {
   return (
@@ -27,9 +28,9 @@ interface IconButtonProps {
   onPress: () => void;
 }
 
-function HeaderIconButton({ glyph, onPress }: IconButtonProps) {
+function HeaderArrowBtn({ glyph, onPress }: IconButtonProps) {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.iconButton}>
+    <TouchableOpacity onPress={onPress} style={styles.headerArrowBtn} {...withLightHaptics}>
       <Ionicons color="black" name={glyph} size={24} />
     </TouchableOpacity>
   );
@@ -48,17 +49,17 @@ function Header() {
 
   const onEasterEggPress = useEasterEggClicker({
     clicksNeeded: 13,
-    msToClearCount: 200,
+    msToClearCount: 500,
     onAchieved: () => weekTitleEasterEggClicked(title),
   });
 
   return (
     <View style={styles.header}>
-      <HeaderIconButton glyph="arrow-back" onPress={changeWeekBy(-1)} />
-      <Pressable onPress={onEasterEggPress}>
+      <HeaderArrowBtn glyph="arrow-back" onPress={changeWeekBy(-1)} />
+      <Pressable onPress={onEasterEggPress} hitSlop={50}>
         <Text style={styles.title}>{title}</Text>
       </Pressable>
-      <HeaderIconButton glyph="arrow-forward" onPress={changeWeekBy(+1)} />
+      <HeaderArrowBtn glyph="arrow-forward" onPress={changeWeekBy(+1)} />
     </View>
   );
 }
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: "black",
   },
-  iconButton: {
+  headerArrowBtn: {
     paddingVertical: 18,
     paddingHorizontal: 36,
   },

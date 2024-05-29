@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useSetAtom } from "jotai";
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import catImg from "../assets/black-cat.png";
 import BlurContainer from "./BlurContainer";
+import { withSelectionHaptics } from "./haptics";
 import { nameAtom } from "./state";
 import { isLTR, personToImage, rowLTR } from "./stuff";
 import { Name, names } from "./types";
@@ -33,7 +34,7 @@ function PersonRow({ name }: { name: Name }) {
   };
 
   return (
-    <TouchableOpacity style={styles.personRow} onPress={onPress}>
+    <TouchableOpacity style={styles.personRow} {...withSelectionHaptics} onPress={onPress}>
       <Image source={personToImage[name]} style={styles.personBubble} />
       <Text style={styles.personName}>{name}</Text>
       <Ionicons name="chevron-forward" size={30} style={styles.personChevron} />

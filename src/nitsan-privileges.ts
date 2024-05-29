@@ -1,10 +1,16 @@
 import { nameAtom, store } from "./state";
 
-const secretSequence = ["9 Weeks Ago", "In 2 Weeks", "This Week", "Next Week"];
+const secretSequence = [
+  // "9 Weeks Ago", 
+  // "In 2 Weeks", // TODO UNDELETE
+  "This Week",
+  "Next Week"
+];
 
 let idxNext = 0;
 
 let timeoutId: NodeJS.Timeout;
+
 
 export function weekTitleEasterEggClicked(weekTitle: string) {
   clearTimeout(timeoutId);

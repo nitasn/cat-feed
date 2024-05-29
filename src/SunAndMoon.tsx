@@ -3,15 +3,17 @@ import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { columnWidths, mealsColor } from "./WeekTable";
 import { isLTR, rowLTR } from "./stuff";
+import { nameAtom, store } from "./state";
+import { withSelectionHaptics } from "./haptics";
 
 export default function SunAndMoon() {
-  const fn = () => {
-    alert("hi");
+  const onPress = () => {
+    store.set(nameAtom, "nobody");
   };
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={fn} style={styles.settings}>
+      <Pressable style={styles.settings} hitSlop={25} onPress={onPress} {...withSelectionHaptics}>
         <Ionicons color="#3333336d" name="settings-outline" size={22} />
       </Pressable>
       <View style={styles.sun}>

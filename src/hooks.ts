@@ -5,16 +5,17 @@ interface useEasterEggClickerProps {
   msToClearCount: number;
   onAchieved: () => void;
 }
-export function useEasterEggClicker({ clicksNeeded, msToClearCount, onAchieved }: useEasterEggClickerProps) {
-  const clicksCountRef = useRef(0);
 
+export function useEasterEggClicker({ clicksNeeded, msToClearCount, onAchieved }: useEasterEggClickerProps) {
+  const countRef = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout>();
 
   return () => {
     clearTimeout(timeoutRef.current);
-    if (++clicksCountRef.current === clicksNeeded) {
+
+    if (++countRef.current === clicksNeeded) {
       onAchieved();
     }
-    timeoutRef.current = setTimeout(() => (clicksCountRef.current = 0), msToClearCount);
+    timeoutRef.current = setTimeout(() => (countRef.current = 0), msToClearCount);
   };
 }
