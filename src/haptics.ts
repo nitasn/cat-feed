@@ -1,4 +1,5 @@
 import * as Haptics from "expo-haptics";
+import { sleep } from "./utils";
 
 export const withLightHaptics = {
   onPressIn: () => {
@@ -18,4 +19,18 @@ export const lightHaptics = () => {
 
 export const warningHaptics = () => {
   Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+};
+
+export const errorHaptics = () => {
+  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+};
+
+export const successHaptics = () => {
+  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+};
+
+export const fwooshWoosh = async () => {
+  await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  await sleep(200);
+  await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 };

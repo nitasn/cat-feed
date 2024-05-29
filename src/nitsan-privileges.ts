@@ -1,8 +1,8 @@
 import { nameAtom, store } from "./state";
 
 const secretSequence = [
-  // "9 Weeks Ago", 
-  // "In 2 Weeks", // TODO UNDELETE
+  "9 Weeks Ago", 
+  "In 2 Weeks",
   "This Week",
   "Next Week"
 ];

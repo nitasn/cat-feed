@@ -23,6 +23,7 @@ import {
   removeIfExists,
   tryMultipleTimes,
 } from "./utils";
+import { errorHaptics, successHaptics } from "./haptics";
 
 // todo: instead of adding a `wasFired` field, use a weakMap
 const changes: Array<Change & { wasFired?: boolean }> = [];
@@ -35,7 +36,7 @@ function mergeFetchedWeekWithPendingState(weekKey: string, fetchedWeek: WeekData
     return fetchedWeek;
   }
 
-  // 1. preserve the pendingChange? fields.
+  // 1. preserve the `pendingChange?` fields.
   // 2. ignore values that involve me if any change i sent is in air.
 
   return produce(existingWeek, (existingWeek) => {
@@ -64,8 +65,7 @@ export function useWeekData(weekKey: string) {
       const fetchedWeek = await fetchWeek(weekKey);
       return mergeFetchedWeekWithPendingState(weekKey, fetchedWeek);
     },
-    // refetchInterval: 10_000, // TODO ACTIVATE
-    retry: 0 // TODO DELETE
+    refetchInterval: __DEV__ ? false : 10_000,
   });
 
   return { weekLoading: isLoading, weekError: error, weekData: data };
@@ -104,7 +104,10 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
 
     if (failures.length) {
       // todo better handler
-      alert("Failed sending changes to server :/");
+      alert("Seems like the server didn't like some of these changes...");
+      errorHaptics();
+    } else {
+      successHaptics();
     }
 
     updateCache((mealData, { changeTo, name, mealPath }) => {
@@ -114,13 +117,12 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
       }
       delete mealData.pendingChange;
     });
-  }
-  
-  catch (error) {
+  } catch (error) {
     updateCache((mealData) => delete mealData.pendingChange);
 
     // todo better handler
-    alert(`Couldn't post to server :/ \n${(error as Error).message}`);
+    alert(`Couldn't send data to server 😕 \n${(error as Error).message}`);
+    errorHaptics();
   }
 
   filterInPlace(changes, (change) => !changesToSend.includes(change));

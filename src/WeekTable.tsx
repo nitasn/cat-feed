@@ -20,7 +20,7 @@ import { dropShadow, personToImage, rowLTR, vmin } from "./stuff";
 import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 import { days } from "./types";
 import { advanceDateByDays, arrayWithout, atRoundHour, shortStringToDate } from "./utils";
-import { lightHaptics, warningHaptics } from "./haptics";
+import { fwooshWoosh, lightHaptics, warningHaptics } from "./haptics";
 import * as Haptics from "expo-haptics";
 
 // @ts-ignore (no value initialized)
@@ -33,7 +33,7 @@ function toast(message: string) {
     shadow: true,
     animation: true,
     hideOnPress: true,
-    delay: 100,
+    delay: 50,
     shadowColor: "#36363669",
     containerStyle: {
       padding: 10,
@@ -134,7 +134,7 @@ function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
   const onPressIn = (event: GestureResponderEvent) => {
     const column = columnPressed(event);
     column !== "date" && reasonCannotChangeMeal(weekKey, dayName, column)
-      ? Haptics.selectionAsync()
+      ? lightHaptics()
       : Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
   };
 

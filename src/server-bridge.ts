@@ -3,8 +3,7 @@ import { SupportedAlgorithms } from "expo-jwt/dist/types/algorithms";
 import { emptyWeeklyData } from "./gen-data";
 import { type MealPath, type Name, type PosNeg, type WeekData } from "./types";
 
-// const baseurl = process.env.EXPO_PUBLIC_SERVER_URL as string;
-const baseurl = "http://192.168.1.120:3000"; // TODO DELETE
+const baseurl = __DEV__ ? "http://192.168.1.120:3000" : (process.env.EXPO_PUBLIC_SERVER_URL as string);
 
 function authorizationHeader() {
   const payload = { iat: Math.floor(Date.now() / 1000) };
@@ -15,10 +14,7 @@ function authorizationHeader() {
 
 async function fetchGET(path: string) {
   const res = await fetch(baseurl + path, { headers: authorizationHeader() });
-  if (res.status >= 400) {
-    throw Error(`HTTP Status ${res.status}`);
-  }
-  return await res.json();
+  return await _continueWithJson(res);
 }
 
 async function fetchPOST(path: string, body: Object) {
@@ -27,10 +23,17 @@ async function fetchPOST(path: string, body: Object) {
     headers: { ...authorizationHeader(), "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
+  return await _continueWithJson(res);
+}
+
+async function _continueWithJson(res: Response) {
+  const data = await res.json();
+
   if (res.status >= 400) {
-    throw Error(`HTTP Status ${res.status}`);
+    throw Error(data.error ? `Error message: ${data.error}` : `HTTP status: ${res.status}`);
   }
-  return await res.json();
+
+  return data;
 }
 
 export async function fetchWeek(weekKey: string): Promise<WeekData> {
