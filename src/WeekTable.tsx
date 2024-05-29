@@ -73,8 +73,9 @@ export const columnWidths = ["16%", "42%", "42%"] as `${number}%`[];
 
 const columnWeights = columnWidths.map((value) => +value.substring(0, value.length - 1) / 100);
 
+/** Afternoon == 15:00 */
 function pastTodaysAfternoon(date: Date) {
-  return +atRoundHour(date, 2) < Date.now();
+  return +atRoundHour(date, 15) < Date.now();
 }
 
 function onMealPress(weekKey: string, dayName: DayName, mealName: MealName) {
