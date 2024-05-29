@@ -11,6 +11,15 @@ export const personToImage: Record<Name, number> = {
   shahar: require("../assets/people/shahar.jpg"),
 };
 
+// @ts-ignore ("nobody" is not present)
+export const personToGrayScaleImage: Record<Name, number> = {
+  imma: require("../assets/people-gray/imma.jpg"),
+  nitsan: require("../assets/people-gray/nitsan.jpg"),
+  tal: require("../assets/people-gray/tal.jpg"),
+  ronnie: require("../assets/people-gray/ronnie.jpg"),
+  shahar: require("../assets/people-gray/shahar.jpg"),
+};
+
 export const dropShadow: StyleProp<ViewStyle> = {
   shadowColor: "#000",
   shadowOffset: {

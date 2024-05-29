@@ -1,16 +1,43 @@
 import { format, startOfDay } from "date-fns";
 import { useAtomValue } from "jotai";
-import { useRef } from "react";
+import { createContext, useContext, useRef } from "react";
 import type { GestureResponderEvent } from "react-native";
 import { ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View } from "react-native";
 import { blurContainerContentOffset } from "./BlurContainer";
 import FixedColumns from "./FixedColumns";
 import { nameAtom, weekDisplayedDateAtom, weekKeyAtom } from "./state";
-import { dropShadow, personToImage, rowLTR } from "./stuff";
+import { dropShadow, personToGrayScaleImage, personToImage, rowLTR } from "./stuff";
 import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 import { days } from "./types";
 import { advanceDateByDays, arrayWithout, shortStringToDate, atRoundHour } from "./utils";
 import { toggleMyself } from "./fetcher";
+import Toast from "react-native-root-toast";
+
+// @ts-ignore (no value initialized)
+const RowDateContext = createContext<{ date: Date; isPast: boolean }>();
+
+function toast(message: string, duration: number) {
+  Toast.show(message, {
+    duration,
+    position: Toast.positions.TOP,
+    shadow: true,
+    animation: true,
+    hideOnPress: true,
+    delay: 0,
+    shadowColor: "#36363669",
+    containerStyle: {
+      padding: 10,
+      paddingHorizontal: 20,
+      backgroundColor: "#54545adc",
+      borderRadius: Number.MAX_SAFE_INTEGER,
+      // transform: [{ translateY: -4 }]
+      transform: [{ translateY: 68 }],
+    },
+  });
+}
+
+// You can manually hide the Toast, or it will automatically disappear after a `duration` ms timeout.
+// setTimeout(() => Toast.hide(toast), 1500);
 
 export function WeekTable({ weekData }: { weekData: WeekData }) {
   return (
@@ -46,18 +73,22 @@ export const columnWidths = ["16%", "42%", "42%"] as `${number}%`[];
 
 const columnWeights = columnWidths.map((value) => +value.substring(0, value.length - 1) / 100);
 
+function pastTodaysAfternoon(date: Date) {
+  return +atRoundHour(date, 2) < Date.now();
+}
+
 function onMealPress(weekKey: string, dayName: DayName, mealName: MealName) {
-  const mealDate = advanceDateByDays(shortStringToDate(weekKey), dayToIndex[dayName]);
+  const mealDateTime = advanceDateByDays(shortStringToDate(weekKey), dayToIndex[dayName]);
 
-  if (mealDate < startOfDay(Date.now())) {
-    return alert("yesterday is history, tomorrow is a mystery, but today is a gift. that is why it is called the present");
+  if (mealDateTime < startOfDay(Date.now())) {
+    return toast("Can't change the past.", 1500);
   }
 
-  if (mealName === "morning" && +atRoundHour(mealDate, 15) < Date.now()) {
-    return alert("today's morning ended at 15:00 bud");
+  if (mealName === "morning" && pastTodaysAfternoon(mealDateTime)) {
+    return toast("Morning's ended at 15:00.", 1750);
   }
 
-  alert(`SETTING ${mealDate.toLocaleDateString()}, ${dayName}, ${mealName}`);
+  // toast(`SETTING ${mealDate.toLocaleDateString()}, ${dayName}, ${mealName}`);
 
   toggleMyself(`${weekKey}.${dayName}.${mealName}`);
 }
@@ -65,6 +96,10 @@ function onMealPress(weekKey: string, dayName: DayName, mealName: MealName) {
 function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
   const weekKey = useAtomValue(weekKeyAtom);
   const widthRef = useRef(0);
+
+  const dateWeekStarts = useAtomValue(weekDisplayedDateAtom);
+  const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
+  const isPast = date < startOfDay(Date.now());
 
   const onPress = (event: GestureResponderEvent) => {
     const offset = blurContainerContentOffset; // todo get offset dynamically
@@ -87,11 +122,13 @@ function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
           widthRef.current = event.nativeEvent.layout.width;
         }}
       >
-        <FixedColumns widths={columnWidths} style={styles.row}>
-          <DateColumn dayData={dayData} dayName={dayName} />
-          <MealColumn dayData={dayData} mealName="morning" />
-          <MealColumn dayData={dayData} mealName="evening" />
-        </FixedColumns>
+        <RowDateContext.Provider value={{ date, isPast }}>
+          <FixedColumns widths={columnWidths} style={styles.row}>
+            <DateColumn dayData={dayData} dayName={dayName} />
+            <MealColumn dayData={dayData} mealName="morning" />
+            <MealColumn dayData={dayData} mealName="evening" />
+          </FixedColumns>
+        </RowDateContext.Provider>
       </Pressable>
 
       {dayName !== "saturday" && <Hr />}
@@ -101,9 +138,7 @@ function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
 
 function DateColumn({ dayData, dayName }: { dayName: DayName; dayData: DayData }) {
   const name = useAtomValue(nameAtom);
-  const dateWeekStarts = useAtomValue(weekDisplayedDateAtom);
-  const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
-  // const isToday = isSameDay(new Date(), date);
+  const { date, isPast } = useContext(RowDateContext);
 
   const isMealTakenCareOf = (meal: MealName) => {
     const { pendingChange } = dayData[meal];
@@ -114,8 +149,11 @@ function DateColumn({ dayData, dayName }: { dayName: DayName; dayData: DayData }
     return staysPositive.length || pendingChange === "positive";
   };
 
-  const dayTakenCareOf = isMealTakenCareOf("morning") && isMealTakenCareOf("evening");
-  const color = dayTakenCareOf ? styles.colorGood : styles.colorBad;
+  const color = isPast
+    ? styles.colorPast
+    : isMealTakenCareOf("morning") && isMealTakenCareOf("evening")
+    ? styles.colorGood
+    : styles.colorBad;
 
   return (
     <View style={styles.dayColumn}>
@@ -147,9 +185,20 @@ function MealColumn({ dayData, mealName }: { dayData: DayData; mealName: MealNam
 }
 
 function PersonBubble({ name, pending, mealName }: { name: Name; pending: boolean; mealName: MealName }) {
+  const { date, isPast } = useContext(RowDateContext);
+
+  const disabled = isPast || (mealName === "morning" && pastTodaysAfternoon(date));
+  const images = disabled ? personToGrayScaleImage : personToImage;
+
   return (
     <View style={dropShadow}>
-      <ImageBackground source={personToImage[name]} style={styles.personBubble}>
+      <ImageBackground
+        source={images[name]}
+        style={[
+          styles.personBubble,
+          // disabled && { opacity: 0.65 }
+        ]}
+      >
         <View style={[styles.bubbleOverlay, pending && styles.bubbleOverlayPending]}>
           {pending && <ActivityIndicator color="#ffffff85" size="small" />}
         </View>
@@ -189,11 +238,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   colorBad: {
-    color: "hsl(0, 100%, 17.45%)",
-    // color: "black",
+    color: "#5b0606",
   },
   colorGood: {
-    color: "hsl(180, 100%, 17.45%)",
+    color: "#005959",
+  },
+  colorPast: {
+    color: "#484848a0",
   },
   peopleColumn: {
     flexDirection: rowLTR,
