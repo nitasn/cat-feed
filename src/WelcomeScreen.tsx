@@ -5,7 +5,7 @@ import catImg from "../assets/black-cat.png";
 import BlurContainer from "./BlurContainer";
 import { withSelectionHaptics } from "./haptics";
 import { nameAtom } from "./state";
-import { isLTR, personToImage, rowLTR } from "./stuff";
+import { isLTR, personToImage, rowLTR, vmax } from "./stuff";
 import { Name, names } from "./types";
 
 export default function NamePrompt() {
@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   catImage: {
-    width: 250,
-    height: 250,
+    width: 33 * vmax,
+    height: 33 * vmax,
   },
   blurContainer: {
     justifyContent: "space-evenly",

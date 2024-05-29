@@ -16,7 +16,7 @@ import { blurContainerContentOffset } from "./BlurContainer";
 import FixedColumns from "./FixedColumns";
 import { toggleMyself } from "./fetcher";
 import { nameAtom, weekDisplayedDateAtom, weekKeyAtom } from "./state";
-import { dropShadow, personToGrayScaleImage, personToImage, rowLTR } from "./stuff";
+import { dropShadow, personToImage, rowLTR, vmin } from "./stuff";
 import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 import { days } from "./types";
 import { advanceDateByDays, arrayWithout, atRoundHour, shortStringToDate } from "./utils";
@@ -188,18 +188,11 @@ function MealColumn({ dayData, mealName }: { dayData: DayData; mealName: MealNam
 }
 
 function PersonBubble({ name, pending, mealName }: { name: Name; pending: boolean; mealName: MealName }) {
-  // const { date, isPast } = useContext(RowDateContext);
-  // const disabled = isPast || (mealName === "morning" && pastTodaysAfternoon(date));
-
   return (
     <View style={Platform.OS === "ios" && dropShadow}>
       <ImageBackground
         source={personToImage[name]}
-        style={[
-          styles.personBubble,
-          Platform.OS === "android" && dropShadow,
-          // disabled && { opacity: 0.65 }
-        ]}
+        style={[styles.personBubble, Platform.OS === "android" && dropShadow]}
       >
         <View style={[styles.bubbleOverlay, pending && styles.bubbleOverlayPending]}>
           {pending && <ActivityIndicator color="#ffffff85" size="small" />}
@@ -251,8 +244,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   personBubble: {
-    width: 36,
-    height: 36,
+    width: 9.6 * vmin,
+    height: 9.6 * vmin,
     borderRadius: Number.MAX_SAFE_INTEGER,
     overflow: "hidden",
     marginHorizontal: -7,

@@ -1,4 +1,4 @@
-import { StyleProp, ViewStyle } from "react-native";
+import { Dimensions, StyleProp, ViewStyle } from "react-native";
 import type { Name } from "./types";
 import { I18nManager } from "react-native";
 
@@ -37,4 +37,9 @@ export const dropShadow: StyleProp<ViewStyle> = {
 
 export const isLTR = !I18nManager.isRTL;
 
-export const rowLTR = (isLTR ? "row" : "row-reverse");
+export const rowLTR = isLTR ? "row" : "row-reverse";
+
+export const vw = Dimensions.get("window").width / 100;
+export const vh = Dimensions.get("window").height / 100;
+export const vmin = Math.min(vw, vh);
+export const vmax = Math.max(vw, vh);
