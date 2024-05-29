@@ -6,10 +6,10 @@ import BlurContainer from "./BlurContainer";
 import { WeekTable, columnWidths, mealsColor } from "./WeekTable";
 import { useWeekData } from "./fetcher";
 import { useEasterEggClicker } from "./hooks";
+import { weekTitleEasterEggClicked } from "./nitsan-privileges";
 import { weekDisplayedDateAtom, weekKeyAtom } from "./state";
 import { isLTR, rowLTR } from "./stuff";
 import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
-import { weekTitleEasterEggClicked } from "./nitsan-privileges";
 
 export default function MainScreen() {
   return (

@@ -3,41 +3,37 @@ import { useAtomValue } from "jotai";
 import { createContext, useContext, useRef } from "react";
 import type { GestureResponderEvent } from "react-native";
 import { ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View } from "react-native";
+import Toast from "react-native-root-toast";
 import { blurContainerContentOffset } from "./BlurContainer";
 import FixedColumns from "./FixedColumns";
+import { toggleMyself } from "./fetcher";
 import { nameAtom, weekDisplayedDateAtom, weekKeyAtom } from "./state";
 import { dropShadow, personToGrayScaleImage, personToImage, rowLTR } from "./stuff";
 import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 import { days } from "./types";
-import { advanceDateByDays, arrayWithout, shortStringToDate, atRoundHour } from "./utils";
-import { toggleMyself } from "./fetcher";
-import Toast from "react-native-root-toast";
+import { advanceDateByDays, arrayWithout, atRoundHour, shortStringToDate } from "./utils";
 
 // @ts-ignore (no value initialized)
 const RowDateContext = createContext<{ date: Date; isPast: boolean }>();
 
-function toast(message: string, duration: number) {
+function toast(message: string) {
   Toast.show(message, {
-    duration,
-    position: Toast.positions.TOP,
+    duration: Toast.durations.SHORT,
+    position: Toast.positions.BOTTOM,
     shadow: true,
     animation: true,
     hideOnPress: true,
-    delay: 0,
+    delay: 100,
     shadowColor: "#36363669",
     containerStyle: {
       padding: 10,
       paddingHorizontal: 20,
       backgroundColor: "#54545adc",
       borderRadius: Number.MAX_SAFE_INTEGER,
-      // transform: [{ translateY: -4 }]
-      transform: [{ translateY: 68 }],
+      transform: [{ translateY: 12 }],
     },
   });
 }
-
-// You can manually hide the Toast, or it will automatically disappear after a `duration` ms timeout.
-// setTimeout(() => Toast.hide(toast), 1500);
 
 export function WeekTable({ weekData }: { weekData: WeekData }) {
   return (
@@ -82,14 +78,12 @@ function onMealPress(weekKey: string, dayName: DayName, mealName: MealName) {
   const mealDateTime = advanceDateByDays(shortStringToDate(weekKey), dayToIndex[dayName]);
 
   if (mealDateTime < startOfDay(Date.now())) {
-    return toast("Can't change the past.", 1500);
+    return toast("Can't change the past 🐼");
   }
 
   if (mealName === "morning" && pastTodaysAfternoon(mealDateTime)) {
-    return toast("Morning's ended at 15:00.", 1750);
+    return toast("Morning's ended at 15:00 😜");
   }
-
-  // toast(`SETTING ${mealDate.toLocaleDateString()}, ${dayName}, ${mealName}`);
 
   toggleMyself(`${weekKey}.${dayName}.${mealName}`);
 }
