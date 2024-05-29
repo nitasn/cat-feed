@@ -2,7 +2,15 @@ import { format, startOfDay } from "date-fns";
 import { useAtomValue } from "jotai";
 import { createContext, useContext, useRef } from "react";
 import type { GestureResponderEvent } from "react-native";
-import { ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  ImageBackground,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import Toast from "react-native-root-toast";
 import { blurContainerContentOffset } from "./BlurContainer";
 import FixedColumns from "./FixedColumns";
@@ -180,17 +188,16 @@ function MealColumn({ dayData, mealName }: { dayData: DayData; mealName: MealNam
 }
 
 function PersonBubble({ name, pending, mealName }: { name: Name; pending: boolean; mealName: MealName }) {
-  const { date, isPast } = useContext(RowDateContext);
-
-  const disabled = isPast || (mealName === "morning" && pastTodaysAfternoon(date));
-  const images = disabled ? personToGrayScaleImage : personToImage;
+  // const { date, isPast } = useContext(RowDateContext);
+  // const disabled = isPast || (mealName === "morning" && pastTodaysAfternoon(date));
 
   return (
-    <View style={dropShadow}>
+    <View style={Platform.OS === "ios" && dropShadow}>
       <ImageBackground
-        source={images[name]}
+        source={personToImage[name]}
         style={[
           styles.personBubble,
+          Platform.OS === "android" && dropShadow,
           // disabled && { opacity: 0.65 }
         ]}
       >

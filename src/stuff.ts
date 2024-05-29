@@ -20,6 +20,9 @@ export const personToGrayScaleImage: Record<Name, number> = {
   shahar: require("../assets/people-gray/shahar.jpg"),
 };
 
+/**
+ * When using on android, backgroundColor must be set!!
+ */
 export const dropShadow: StyleProp<ViewStyle> = {
   shadowColor: "#000",
   shadowOffset: {
