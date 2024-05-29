@@ -10,6 +10,7 @@ import { dropShadow, personToImage, rowLTR } from "./stuff";
 import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 import { days } from "./types";
 import { advanceDateByDays, arrayWithout, shortStringToDate, atRoundHour } from "./utils";
+import { toggleMyself } from "./fetcher";
 
 export function WeekTable({ weekData }: { weekData: WeekData }) {
   return (
@@ -49,14 +50,16 @@ function onMealPress(weekKey: string, dayName: DayName, mealName: MealName) {
   const mealDate = advanceDateByDays(shortStringToDate(weekKey), dayToIndex[dayName]);
 
   if (mealDate < startOfDay(Date.now())) {
-    return alert("can't: past day");
+    return alert("yesterday is history, tomorrow is a mystery, but today is a gift. that is why it is called the present");
   }
 
-  if (mealName === "morning" && +atRoundHour(mealDate, 3) < Date.now()) {
-    return alert("can't: past hour");
+  if (mealName === "morning" && +atRoundHour(mealDate, 15) < Date.now()) {
+    return alert("today's morning ended at 15:00 bud");
   }
 
   alert(`SETTING ${mealDate.toLocaleDateString()}, ${dayName}, ${mealName}`);
+
+  toggleMyself(`${weekKey}.${dayName}.${mealName}`);
 }
 
 function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
