@@ -226,9 +226,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 1,
   },
-  dayColumn: {
-    // backgroundColor: "white"
-  },
+  dayColumn: {},
   dayName: {
     fontSize: 16,
     textTransform: "capitalize",
