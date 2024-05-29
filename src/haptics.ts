@@ -11,3 +11,11 @@ export const withSelectionHaptics = {
     Haptics.selectionAsync();
   },
 };
+
+export const lightHaptics = () => {
+  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+};
+
+export const warningHaptics = () => {
+  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+};

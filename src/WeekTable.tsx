@@ -20,6 +20,8 @@ import { dropShadow, personToImage, rowLTR, vmin } from "./stuff";
 import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 import { days } from "./types";
 import { advanceDateByDays, arrayWithout, atRoundHour, shortStringToDate } from "./utils";
+import { lightHaptics, warningHaptics } from "./haptics";
+import * as Haptics from "expo-haptics";
 
 // @ts-ignore (no value initialized)
 const RowDateContext = createContext<{ date: Date; isPast: boolean }>();
@@ -82,18 +84,26 @@ function pastTodaysAfternoon(date: Date) {
   return +atRoundHour(date, 15) < Date.now();
 }
 
-function onMealPress(weekKey: string, dayName: DayName, mealName: MealName) {
+/**
+ * a reason why the meal can't be changed, or null if the meal can be changed.
+ */
+function reasonCannotChangeMeal(weekKey: string, dayName: DayName, mealName: MealName) {
   const mealDateTime = advanceDateByDays(shortStringToDate(weekKey), dayToIndex[dayName]);
 
   if (mealDateTime < startOfDay(Date.now())) {
-    return toast("Can't change the past 🐼");
+    return "Can't change the past 🐼";
   }
 
   if (mealName === "morning" && pastTodaysAfternoon(mealDateTime)) {
-    return toast("Morning's ended at 15:00 😜");
+    return "Morning's ended at 15:00 😜";
   }
 
-  toggleMyself(`${weekKey}.${dayName}.${mealName}`);
+  return null;
+}
+
+function onMealPress(weekKey: string, dayName: DayName, mealName: MealName) {
+  const whyNot = reasonCannotChangeMeal(weekKey, dayName, mealName);
+  whyNot ? toast(whyNot) : toggleMyself(`${weekKey}.${dayName}.${mealName}`);
 }
 
 function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
@@ -104,26 +114,36 @@ function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
   const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
   const isPast = date < startOfDay(Date.now());
 
-  const onPress = (event: GestureResponderEvent) => {
+  const columnPressed = (event: GestureResponderEvent) => {
     const offset = blurContainerContentOffset; // todo get offset dynamically
     const normalizedX = (event.nativeEvent.pageX - offset) / widthRef.current;
     const spill = 0.1;
-    if (normalizedX < columnWeights[0] + spill) {
-      // day column was pressed (ignored for now)
-    } else if (normalizedX < columnWeights[0] + columnWeights[1] + spill) {
-      onMealPress(weekKey, dayName, "morning");
-    } else {
-      onMealPress(weekKey, dayName, "evening");
-    }
+
+    return normalizedX < columnWeights[0] + spill
+      ? "date"
+      : normalizedX < columnWeights[0] + columnWeights[1] + spill
+      ? "morning"
+      : "evening";
+  };
+
+  const onPress = (event: GestureResponderEvent) => {
+    const column = columnPressed(event);
+    column !== "date" && onMealPress(weekKey, dayName, column);
+  };
+
+  const onPressIn = (event: GestureResponderEvent) => {
+    const column = columnPressed(event);
+    column !== "date" && reasonCannotChangeMeal(weekKey, dayName, column)
+      ? Haptics.selectionAsync()
+      : Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
   };
 
   return (
     <>
       <Pressable
+        onLayout={(event) => (widthRef.current = event.nativeEvent.layout.width)}
+        onPressIn={onPressIn}
         onPress={onPress}
-        onLayout={(event) => {
-          widthRef.current = event.nativeEvent.layout.width;
-        }}
       >
         <RowDateContext.Provider value={{ date, isPast }}>
           <FixedColumns widths={columnWidths} style={styles.row}>
