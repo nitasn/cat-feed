@@ -40,7 +40,7 @@ export default function useSettingsModal() {
   return { modal, showModal, hideModal };
 }
 
-const currentVersion = "1.0.7.0";
+const currentVersion = "1.0.7.1";
 
 const updateResultAtom = atom<Updates.UpdateCheckResult | undefined>(undefined);
 const updateErrorAtom = atom<Error | undefined>(undefined);
@@ -74,7 +74,7 @@ function Settings({ hideModal }: { hideModal: () => void }) {
 
       <View style={{ marginTop: 40 }}>
         <Button title="Close" onPress={hideModal} />
-        {/* {__DEV__ && <Button title="Welcome Screen" onPress={() => store.set(nameAtom, "nobody")} />} */}
+        {__DEV__ && <Button title="Welcome Screen" onPress={() => store.set(nameAtom, "nobody")} />}
       </View>
     </View>
   );
