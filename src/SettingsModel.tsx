@@ -40,7 +40,7 @@ export default function useSettingsModal() {
   return { modal, showModal, hideModal };
 }
 
-const currentVersion = "1.0.6.0";
+const currentVersion = "1.0.7.0";
 
 const updateResultAtom = atom<Updates.UpdateCheckResult | undefined>(undefined);
 const updateErrorAtom = atom<Error | undefined>(undefined);
@@ -119,7 +119,7 @@ function Update() {
     <View>
       <Text>An upadte is available!</Text>
       <TouchableOpacity
-        // onPress={doUpdate}
+        onPress={doUpdate}
         style={{
           padding: 12,
           backgroundColor: "rgb(60, 108, 190)",
