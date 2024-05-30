@@ -1,19 +1,19 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
+import useSettingsModal from "./SettingsModel";
 import { columnWidths, mealsColor } from "./WeekTable";
 import { withSelectionHaptics } from "./haptics";
-import { nameAtom, store } from "./state";
 import { isLTR, rowLTR } from "./stuff";
 
 export default function SunAndMoon() {
-  const onPress = () => {
-    store.set(nameAtom, "nobody");
-  };
+  const { modal, showModal } = useSettingsModal();
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.settings} hitSlop={25} onPress={onPress} {...withSelectionHaptics}>
+      {modal}
+
+      <TouchableOpacity style={styles.settings} hitSlop={25} onPress={showModal} {...withSelectionHaptics}>
         <Ionicons color="#33333344" name="settings-outline" size={22} />
       </TouchableOpacity>
       <View style={styles.sun}>
