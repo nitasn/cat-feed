@@ -3,7 +3,7 @@ import { SupportedAlgorithms } from "expo-jwt/dist/types/algorithms";
 import { emptyWeeklyData } from "./gen-data";
 import { type MealPath, type Name, type PosNeg, type WeekData } from "./types";
 
-const baseurl = __DEV__ ? "http://192.168.1.121:3000" : (process.env.EXPO_PUBLIC_SERVER_URL as string);
+const baseurl = __DEV__ ? "http://localhost:3000" : (process.env.EXPO_PUBLIC_SERVER_URL as string);
 
 function authorizationHeader() {
   const payload = { iat: Math.floor(Date.now() / 1000) };
