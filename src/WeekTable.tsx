@@ -118,12 +118,8 @@ function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
     const offset = blurContainerContentOffset; // todo get offset dynamically
     const normalizedX = (event.nativeEvent.pageX - offset) / widthRef.current;
     const spill = 0.1;
-
-    return normalizedX < columnWeights[0] + spill
-      ? "date"
-      : normalizedX < columnWeights[0] + columnWeights[1] + spill
-      ? "morning"
-      : "evening";
+    const [W0, W1] = columnWeights;
+    return normalizedX < W0 + spill ? "date" : normalizedX < W0 + W1 + spill ? "morning" : "evening";
   };
 
   const onPress = (event: GestureResponderEvent) => {
