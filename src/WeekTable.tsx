@@ -133,9 +133,10 @@ function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
 
   const onPressIn = (event: GestureResponderEvent) => {
     const column = columnPressed(event);
-    column !== "date" && reasonCannotChangeMeal(weekKey, dayName, column)
-      ? lightHaptics()
-      : Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+    column !== "date" &&
+      (reasonCannotChangeMeal(weekKey, dayName, column)
+        ? lightHaptics()
+        : Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft));
   };
 
   return (
