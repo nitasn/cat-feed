@@ -7,6 +7,7 @@ import {
   Button,
   GestureResponderEvent,
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -15,6 +16,7 @@ import {
 } from "react-native";
 import { nameAtom, store } from "./state";
 import { dropShadow, vw } from "./stuff";
+import { Booten } from "./components";
 
 export default function useSettingsModal() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -40,7 +42,7 @@ export default function useSettingsModal() {
   return { modal, showModal, hideModal };
 }
 
-const currentVersion = "1.0.7.1";
+const currentVersion = "1.0.7.2";
 
 const updateResultAtom = atom<Updates.UpdateCheckResult | undefined>(undefined);
 const updateErrorAtom = atom<Error | undefined>(undefined);
@@ -73,8 +75,8 @@ function Settings({ hideModal }: { hideModal: () => void }) {
       <Update />
 
       <View style={{ marginTop: 40 }}>
-        <Button title="Close" onPress={hideModal} />
-        {__DEV__ && <Button title="Welcome Screen" onPress={() => store.set(nameAtom, "nobody")} />}
+        <MyButton title="Close" onPress={hideModal} />
+        {/* {__DEV__ && <MyButton title="Welcome Screen" onPress={() => store.set(nameAtom, "nobody")} />} */}
       </View>
     </View>
   );
@@ -148,6 +150,17 @@ function Update() {
   );
 }
 
+function MyButton({ title, onPress }: { title: string; onPress?: () => void }) {
+  return Platform.select({
+    android: (
+      <Booten onPress={onPress}>
+        <Text style={{ fontSize: 18, color: "rgb(9, 115, 227)", alignSelf: "center" }}>{title}</Text>
+      </Booten>
+    ),
+    ios: <Button title={title} onPress={onPress}/>
+  });
+}
+
 const styles = StyleSheet.create({
   modalDropshadow: {
     flex: 1,
@@ -159,12 +172,14 @@ const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: "#eeefef",
     borderRadius: 16,
-    padding: 35,
+    padding: 34,
+    paddingTop: 30,
+    paddingBottom: 24,
     width: 100 * vw - 72,
   },
   header: {
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 22,
     marginBottom: 32,
   },
 });
