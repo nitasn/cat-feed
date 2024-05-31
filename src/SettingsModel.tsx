@@ -167,8 +167,6 @@ function MyButton({ title, onPress }: { title: string; onPress?: () => void }) {
   });
 }
 
-console.log(Platform.OS, vw, vh);
-
 const styles = StyleSheet.create({
   modalDropshadow: {
     justifyContent: "center",
