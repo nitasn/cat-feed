@@ -2,13 +2,13 @@ import JWT from "expo-jwt";
 import { SupportedAlgorithms } from "expo-jwt/dist/types/algorithms";
 import { emptyWeeklyData } from "./gen-data";
 import { type MealPath, type Name, type PosNeg, type WeekData } from "./types";
+import * as env from "../.env";
 
-const baseurl = __DEV__ ? "http://192.168.1.121:3000" : (process.env.EXPO_PUBLIC_SERVER_URL as string);
+const baseurl = __DEV__ ? "http://192.168.1.121:3000" : env.SERVER_URL;
 
 function authorizationHeader() {
   const payload = { iat: Math.floor(Date.now() / 1000) };
-  const secret = process.env.EXPO_PUBLIC_JWT_SECRET as string;
-  const token = JWT.encode(payload, secret, { algorithm: SupportedAlgorithms.HS512 });
+  const token = JWT.encode(payload, env.JWT_SECRET, { algorithm: SupportedAlgorithms.HS512 });
   return { Authorization: `Bearer ${token}` };
 }
 

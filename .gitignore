@@ -35,9 +35,9 @@ yarn-error.*
 .env*.local
 .env
 .env.production
+.env.ts
 
 bundle-android.sh
 catfeed.keystore
 notes.md
-eas.json
 build
