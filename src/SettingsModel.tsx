@@ -48,7 +48,7 @@ export default function useSettingsModal() {
   return { modal, showModal, hideModal };
 }
 
-const currentVersion = "1.0.7.3";
+const currentVersion = "1.0.7.4";
 
 const updateResultAtom = atom<Updates.UpdateCheckResult | undefined>(undefined);
 const updateErrorAtom = atom<Error | undefined>(undefined);
@@ -82,7 +82,7 @@ function Settings({ hideModal }: { hideModal: () => void }) {
 
       <View style={{ marginTop: 40 }}>
         <MyButton title="Close" onPress={hideModal} />
-        {__DEV__ && <MyButton title="Welcome Screen" onPress={() => store.set(nameAtom, "nobody")} />}
+        {/* {__DEV__ && <MyButton title="Welcome Screen" onPress={() => store.set(nameAtom, "nobody")} />} */}
       </View>
     </View>
   );
@@ -182,12 +182,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#eeefef",
     borderRadius: 16,
     padding: 34,
-    paddingVertical: 28,
+    paddingTop: 32,
+    paddingBottom: 24,
     width: 100 * vw - 72,
   },
   header: {
     textAlign: "center",
-    fontSize: 22,
-    marginBottom: 32,
+    fontSize: 24,
+    marginBottom: 36,
   },
 });
