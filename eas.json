@@ -5,6 +5,13 @@
   "build": {
     "production": {
       "channel": "production"
+    },
+    "internal": {
+      "distribution": "internal",
+      "channel": "internal",
+      "ios": {
+        "enterpriseProvisioning": "universal"
+      }
     }
   },
   "submit": {
