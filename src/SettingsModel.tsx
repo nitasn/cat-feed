@@ -15,7 +15,7 @@ import {
   View,
 } from "react-native";
 import { nameAtom, store } from "./state";
-import { dropShadow, vw } from "./stuff";
+import { dropShadow, vh, vw } from "./stuff";
 import { Booten } from "./components";
 
 export default function useSettingsModal() {
@@ -32,7 +32,13 @@ export default function useSettingsModal() {
   };
 
   const modal = (
-    <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={hideModal}>
+    <Modal
+      statusBarTranslucent
+      animationType="fade"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={hideModal}
+    >
       <Pressable style={styles.modalDropshadow} onPress={onPress}>
         <Settings hideModal={hideModal} />
       </Pressable>
@@ -42,7 +48,7 @@ export default function useSettingsModal() {
   return { modal, showModal, hideModal };
 }
 
-const currentVersion = "1.0.7.2";
+const currentVersion = "1.0.7.3";
 
 const updateResultAtom = atom<Updates.UpdateCheckResult | undefined>(undefined);
 const updateErrorAtom = atom<Error | undefined>(undefined);
@@ -76,7 +82,7 @@ function Settings({ hideModal }: { hideModal: () => void }) {
 
       <View style={{ marginTop: 40 }}>
         <MyButton title="Close" onPress={hideModal} />
-        {/* {__DEV__ && <MyButton title="Welcome Screen" onPress={() => store.set(nameAtom, "nobody")} />} */}
+        {__DEV__ && <MyButton title="Welcome Screen" onPress={() => store.set(nameAtom, "nobody")} />}
       </View>
     </View>
   );
@@ -157,24 +163,26 @@ function MyButton({ title, onPress }: { title: string; onPress?: () => void }) {
         <Text style={{ fontSize: 18, color: "rgb(9, 115, 227)", alignSelf: "center" }}>{title}</Text>
       </Booten>
     ),
-    ios: <Button title={title} onPress={onPress}/>
+    ios: <Button title={title} onPress={onPress} />,
   });
 }
 
 const styles = StyleSheet.create({
   modalDropshadow: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#33333377",
     ...(dropShadow as Object),
+    width: 150 * vw,
+    minHeight: 150 * vh,
+    maxHeight: 150 * vh,
+    transform: [{ translateX: -25 * vw }, { translateY: -25 * vh }],
   },
   modalContainer: {
     backgroundColor: "#eeefef",
     borderRadius: 16,
     padding: 34,
-    paddingTop: 30,
-    paddingBottom: 24,
+    paddingVertical: 28,
     width: 100 * vw - 72,
   },
   header: {

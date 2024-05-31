@@ -12,6 +12,10 @@
       "ios": {
         "enterpriseProvisioning": "universal"
       }
+    },
+    "preview": {
+      "distribution": "internal",
+      "channel": "preview"
     }
   },
   "submit": {
