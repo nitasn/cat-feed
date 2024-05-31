@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { produce } from "immer";
+import { errorHaptics } from "./haptics";
 import queryClient from "./query-client";
 import { Change, FailureResponse, fetchWeek, postChanges } from "./server-bridge";
 import { nameAtom, store } from "./state";
@@ -23,7 +24,6 @@ import {
   removeIfExists,
   tryMultipleTimes,
 } from "./utils";
-import { errorHaptics, successHaptics } from "./haptics";
 
 // todo: instead of adding a `wasFired` field, use a weakMap
 const changes: Array<Change & { wasFired?: boolean }> = [];
@@ -104,10 +104,8 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
 
     if (failures.length) {
       // todo better handler
-      alert("Seems like the server didn't like some of these changes...");
+      alert(`Change(s) rejected by the server 😕 \n${failures[0].error}`);
       errorHaptics();
-    } else {
-      successHaptics();
     }
 
     updateCache((mealData, { changeTo, name, mealPath }) => {
@@ -117,7 +115,8 @@ const debouncedSendChanges = debouncify({ ms: 300 }, async () => {
       }
       delete mealData.pendingChange;
     });
-  } catch (error) {
+  }
+  catch (error) {
     updateCache((mealData) => delete mealData.pendingChange);
 
     // todo better handler

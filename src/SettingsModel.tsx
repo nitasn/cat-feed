@@ -1,5 +1,6 @@
+import { Ionicons } from "@expo/vector-icons";
 import * as Updates from "expo-updates";
-import { atom, useAtom, useAtomValue } from "jotai";
+import { atom, useAtomValue } from "jotai";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -14,7 +15,6 @@ import {
 } from "react-native";
 import { nameAtom, store } from "./state";
 import { dropShadow, vw } from "./stuff";
-import { Ionicons } from "@expo/vector-icons";
 
 export default function useSettingsModal() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -96,7 +96,12 @@ function Update() {
   const fetchingError = useAtomValue(fetchingErrorAtom);
 
   if (updateError) {
-    return <Text>Couldn't check for updates :/ {updateError.message}</Text>;
+    return (
+      <Text>
+        Couldn't check for updates :/{"\n"}
+        {updateError.message}
+      </Text>
+    );
   }
 
   if (fetchingUpdate) {
@@ -104,7 +109,12 @@ function Update() {
   }
 
   if (fetchingError) {
-    return <Text>Couldn't fetch update :/ {fetchingError.message}</Text>;
+    return (
+      <Text>
+        Couldn't fetch update :/{"\n"}
+        {fetchingError.message}
+      </Text>
+    );
   }
 
   if (!updateResult) {
