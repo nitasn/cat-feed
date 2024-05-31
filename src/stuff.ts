@@ -30,6 +30,8 @@ export const isLTR = !I18nManager.isRTL;
 
 export const rowLTR = isLTR ? "row" : "row-reverse";
 
+export const signLTR = isLTR ? +1 : -1;
+
 export const vw = Dimensions.get("window").width / 100;
 export const vh = Dimensions.get("window").height / 100;
 export const vmin = Math.min(vw, vh);

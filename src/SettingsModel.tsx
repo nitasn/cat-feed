@@ -15,7 +15,7 @@ import {
   View,
 } from "react-native";
 import { nameAtom, store } from "./state";
-import { dropShadow, vh, vw } from "./stuff";
+import { dropShadow, signLTR, vh, vw } from "./stuff";
 import { Booten } from "./components";
 
 export default function useSettingsModal() {
@@ -167,6 +167,8 @@ function MyButton({ title, onPress }: { title: string; onPress?: () => void }) {
   });
 }
 
+console.log(Platform.OS, vw, vh);
+
 const styles = StyleSheet.create({
   modalDropshadow: {
     justifyContent: "center",
@@ -176,7 +178,7 @@ const styles = StyleSheet.create({
     width: 150 * vw,
     minHeight: 150 * vh,
     maxHeight: 150 * vh,
-    transform: [{ translateX: -25 * vw }, { translateY: -25 * vh }],
+    transform: [{ translateX: signLTR * -25 * vw }, { translateY: -25 * vh }],
   },
   modalContainer: {
     backgroundColor: "#eeefef",
