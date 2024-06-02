@@ -7,7 +7,7 @@ import backgroundImage from "../assets/splash.png";
 import NameGuard from "./NameGuard";
 import queryClient from "./query-client";
 
-export default function App() {
+export default function Main() {
   return (
     <QueryClientProvider client={queryClient}>
       <StatusBar style="auto" />
