@@ -76,6 +76,7 @@ function Settings({ hideModal }: { hideModal: () => void }) {
       <Update />
       <View style={styles.closeButtonContainer}>
         <MyButton title="Close" onPress={hideModal} />
+        {/* {__DEV__ && <MyButton title="Welcome Screen" onPress={() => store.set(require("./state").nameAtom, "nobody")} />} */}
       </View>
     </View>
   );
