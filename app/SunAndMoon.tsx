@@ -16,9 +16,11 @@ export default function SunAndMoon() {
       <TouchableOpacity style={styles.settings} hitSlop={25} onPress={showModal} {...withSelectionHaptics}>
         <Ionicons color="#33333344" name="settings-outline" size={22} />
       </TouchableOpacity>
+
       <View style={styles.sun}>
         <Ionicons color={mealsColor.morning} name="sunny" size={26.2} />
       </View>
+
       <View style={styles.moon}>
         <Ionicons color={mealsColor.evening} name="moon" size={24} />
       </View>
