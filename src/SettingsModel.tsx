@@ -4,19 +4,17 @@ import { atom, useAtomValue } from "jotai";
 import { useState } from "react";
 import {
   ActivityIndicator,
-  Button,
   GestureResponderEvent,
   Modal,
-  Platform,
   Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { nameAtom, store } from "./state";
-import { dropShadow, signLTR, vh, vw } from "./stuff";
 import { Booten } from "./components";
+import { store } from "./state";
+import { dropShadow, signLTR, vh, vw } from "./stuff";
 
 export default function useSettingsModal() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -26,7 +24,6 @@ export default function useSettingsModal() {
 
   const onPress = (event: GestureResponderEvent) => {
     if (event.target === event.currentTarget) {
-      // when cilcking the dropshadow (and not the modal's main area)
       hideModal();
     }
   };
@@ -48,17 +45,16 @@ export default function useSettingsModal() {
   return { modal, showModal, hideModal };
 }
 
-const currentVersion = "1.0.7.4";
+const currentVersion: string = "1.0.7.5";
 
 const updateResultAtom = atom<Updates.UpdateCheckResult | undefined>(undefined);
 const updateErrorAtom = atom<Error | undefined>(undefined);
+const fetchingUpdateAtom = atom<boolean>(false);
+const fetchingErrorAtom = atom<Error | undefined>(undefined);
 
 Updates.checkForUpdateAsync()
   .then((update) => store.set(updateResultAtom, update))
   .catch((error) => store.set(updateErrorAtom, error));
-
-const fetchingUpdateAtom = atom<boolean>(false);
-const fetchingErrorAtom = atom<Error | undefined>(undefined);
 
 async function doUpdate() {
   try {
@@ -76,13 +72,10 @@ function Settings({ hideModal }: { hideModal: () => void }) {
   return (
     <View style={styles.modalContainer}>
       <Text style={styles.header}>Settings</Text>
-
-      <Text style={{ marginBottom: 8 }}>Current Version: {currentVersion}</Text>
+      <Text style={styles.currentVersion}>Current Version: {currentVersion}</Text>
       <Update />
-
-      <View style={{ marginTop: 40 }}>
+      <View style={styles.closeButtonContainer}>
         <MyButton title="Close" onPress={hideModal} />
-        {/* {__DEV__ && <MyButton title="Welcome Screen" onPress={() => store.set(nameAtom, "nobody")} />} */}
       </View>
     </View>
   );
@@ -90,7 +83,7 @@ function Settings({ hideModal }: { hideModal: () => void }) {
 
 function WaitingText({ text }: { text: string }) {
   return (
-    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+    <View style={styles.waitingTextContainer}>
       <Text>{text}</Text>
       <ActivityIndicator size="small" color="black" />
     </View>
@@ -134,22 +127,10 @@ function Update() {
   }
 
   return (
-    <View>
-      <Text>An upadte is available!</Text>
-      <TouchableOpacity
-        onPress={doUpdate}
-        style={{
-          padding: 12,
-          backgroundColor: "rgb(60, 108, 190)",
-          marginTop: 16,
-          borderRadius: 16,
-          alignItems: "center",
-          flexDirection: "row",
-          justifyContent: "center",
-          gap: 12,
-        }}
-      >
-        <Text style={{ fontSize: 16, color: "white" }}>Update App</Text>
+    <View style={styles.updateAvailableContainer}>
+      <Text>An update is available!</Text>
+      <TouchableOpacity onPress={doUpdate} style={styles.updateButton}>
+        <Text style={styles.updateButtonText}>Update App</Text>
         <Ionicons name="paw-outline" color="white" size={16} />
       </TouchableOpacity>
     </View>
@@ -157,14 +138,11 @@ function Update() {
 }
 
 function MyButton({ title, onPress }: { title: string; onPress?: () => void }) {
-  return Platform.select({
-    android: (
-      <Booten onPress={onPress}>
-        <Text style={{ fontSize: 18, color: "rgb(9, 115, 227)", alignSelf: "center" }}>{title}</Text>
-      </Booten>
-    ),
-    ios: <Button title={title} onPress={onPress} />,
-  });
+  return (
+    <Booten onPress={onPress}>
+      <Text style={styles.buttonText}>{title}</Text>
+    </Booten>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -183,12 +161,46 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 34,
     paddingTop: 32,
-    paddingBottom: 24,
+    paddingBottom: 28,
     width: 100 * vw - 72,
   },
   header: {
     textAlign: "center",
     fontSize: 24,
     marginBottom: 36,
+  },
+  currentVersion: {
+    marginBottom: 8,
+  },
+  closeButtonContainer: {
+    marginTop: 40,
+  },
+  waitingTextContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  updateAvailableContainer: {
+    gap: 6,
+  },
+  updateButton: {
+    padding: 12,
+    backgroundColor: "rgb(60, 108, 190)",
+    marginTop: 16,
+    borderRadius: 16,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 12,
+  },
+  updateButtonText: {
+    fontSize: 16,
+    color: "white",
+  },
+  buttonText: {
+    fontSize: 18,
+    color: "rgb(9, 115, 227)",
+    alignSelf: "center",
+    letterSpacing: 0.1,
   },
 });
