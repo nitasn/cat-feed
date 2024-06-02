@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Booten } from "./components";
+import Booten from "./Booten";
 import { store } from "./state";
 import { dropShadow, signLTR, vh, vw } from "./stuff";
 
@@ -139,7 +139,7 @@ function Update() {
 
 function MyButton({ title, onPress }: { title: string; onPress?: () => void }) {
   return (
-    <Booten onPress={onPress}>
+    <Booten onPress={onPress} hitSlop={15}>
       <Text style={styles.buttonText}>{title}</Text>
     </Booten>
   );

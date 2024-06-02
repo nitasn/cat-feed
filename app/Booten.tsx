@@ -1,7 +1,13 @@
 import { ReactNode, useRef } from "react";
 import { Animated, Easing, Pressable } from "react-native";
 
-export function Booten({ onPress, children }: { onPress?: () => void; children: ReactNode }) {
+interface BootenProps {
+  onPress?: () => void;
+  children: ReactNode;
+  hitSlop?: number;
+}
+
+export default function Booten({ onPress, children, hitSlop }: BootenProps) {
   const opacity = useRef(new Animated.Value(1)).current;
 
   const animateOpacity = (toValue: number) => {
@@ -14,7 +20,12 @@ export function Booten({ onPress, children }: { onPress?: () => void; children: 
   };
 
   return (
-    <Pressable onPressIn={() => animateOpacity(0.2)} onPressOut={() => animateOpacity(1)} onPress={onPress}>
+    <Pressable
+      hitSlop={hitSlop}
+      onPress={onPress}
+      onPressIn={() => animateOpacity(0.2)}
+      onPressOut={() => animateOpacity(1)}
+    >
       <Animated.View style={{ opacity }}>{children}</Animated.View>
     </Pressable>
   );
