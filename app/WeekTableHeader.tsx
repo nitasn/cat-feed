@@ -6,7 +6,7 @@ import { columnWidths, mealsColor } from "./WeekTable";
 import { withSelectionHaptics } from "./haptics";
 import { isLTR, rowLTR } from "./stuff";
 
-export default function SunAndMoon() {
+export default function WeekTableHeader() {
   const { modal, showModal } = useSettingsModal();
 
   return (

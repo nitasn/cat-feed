@@ -3,7 +3,7 @@ import { useAtom } from "jotai";
 import { useMemo } from "react";
 import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import BlurContainer from "./BlurContainer";
-import SunAndMoon from "./SunAndMoon";
+import WeekTableHeader from "./WeekTableHeader";
 import WeekContentGuard from "./WeekContentGuard";
 import { useEasterEggClicker } from "./hooks";
 import { weekTitleEasterEggClicked } from "./nitsan-privileges";
@@ -16,7 +16,7 @@ export default function MainScreen() {
   return (
     <View style={styles.container}>
       <Header />
-      <BlurContainer componentAbove={<SunAndMoon />}>
+      <BlurContainer componentAbove={<WeekTableHeader />}>
         <WeekContentGuard />
       </BlurContainer>
     </View>
