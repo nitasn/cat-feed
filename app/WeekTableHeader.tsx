@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import useSettingsModal from "./SettingsModel";
+import useSettingsModal from "./SettingsModal";
 import { columnWidths, mealsColor } from "./WeekTable";
 import { withSelectionHaptics } from "./haptics";
 import { isLTR, rowLTR } from "./stuff";
