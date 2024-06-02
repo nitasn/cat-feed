@@ -3,9 +3,9 @@ import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import { ImageBackground, Platform, SafeAreaView, StyleSheet } from "react-native";
 import { RootSiblingParent } from "react-native-root-siblings";
-import backgroundImage from "./assets/splash.png";
-import NameGuard from "./src/NameGuard";
-import queryClient from "./src/query-client";
+import backgroundImage from "../assets/splash.png";
+import NameGuard from "./NameGuard";
+import queryClient from "./query-client";
 
 export default function App() {
   return (
