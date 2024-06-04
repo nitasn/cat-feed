@@ -32,6 +32,14 @@ export default function WeekContentGuard() {
     );
   }
 
+  /**
+   * Todo (Animations)
+   * 
+   * We could get rid of the global `weekDisplayedDateAtom` and `weekKeyAtom`,
+   * and instead provide them in a <Context> to the <WeekTable>;
+   * That way we can create multiple week tables, and swipe between them with animations.
+   */
+
   if (weekData) {
     return <WeekTable weekData={weekData} />;
   }
