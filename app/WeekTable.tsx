@@ -15,7 +15,7 @@ import Toast from "react-native-root-toast";
 import { blurContainerContentOffset } from "./BlurContainer";
 import FixedColumns from "./FixedColumns";
 import { toggleMyself } from "./fetcher";
-import { nameAtom, weekDisplayedDateAtom, weekKeyAtom } from "./state";
+import { WeekDisplayedContext, nameAtom } from "./state";
 import { dropShadow, personToImage, rowLTR, vmin } from "./stuff";
 import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 import { days } from "./types";
@@ -107,10 +107,10 @@ function onMealPress(weekKey: string, dayName: DayName, mealName: MealName) {
 }
 
 function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
-  const weekKey = useAtomValue(weekKeyAtom);
   const widthRef = useRef(0);
-
-  const dateWeekStarts = useAtomValue(weekDisplayedDateAtom);
+  
+  const { weekKey, dateWeekStarts } = useContext(WeekDisplayedContext);
+  
   const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
   const isPast = date < startOfDay(Date.now());
 

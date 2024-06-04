@@ -2,8 +2,9 @@ import { useAtomValue } from "jotai";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { WeekTable } from "./WeekTable";
 import { useWeekData } from "./fetcher";
-import { weekKeyAtom } from "./state";
+import { WeekDisplayedContext, weekDisplayedDateAtom, weekKeyAtom } from "./state";
 import { rowLTR } from "./stuff";
+import { useMemo } from "react";
 
 /**
  * Shows "Loading..." while awaiting week data from server.
@@ -13,6 +14,9 @@ import { rowLTR } from "./stuff";
 export default function WeekContentGuard() {
   const weekKey = useAtomValue(weekKeyAtom);
   const { weekLoading, weekError, weekData } = useWeekData(weekKey);
+
+  const dateWeekStarts = useAtomValue(weekDisplayedDateAtom);
+  const provided = useMemo(() => ({ weekKey, dateWeekStarts }), [weekKey, dateWeekStarts]);
 
   if (weekLoading) {
     return (
@@ -33,15 +37,15 @@ export default function WeekContentGuard() {
   }
 
   /**
-   * Todo (Animations)
-   * 
-   * We could get rid of the global `weekDisplayedDateAtom` and `weekKeyAtom`,
-   * and instead provide them in a <Context> to the <WeekTable>;
-   * That way we can create multiple week tables, and swipe between them with animations.
+   * Todo Animation of sliding between weeks
    */
 
   if (weekData) {
-    return <WeekTable weekData={weekData} />;
+    return (
+      <WeekDisplayedContext.Provider value={provided}>
+        <WeekTable weekData={weekData} />
+      </WeekDisplayedContext.Provider>
+    );
   }
 }
 

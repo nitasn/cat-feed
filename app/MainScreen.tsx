@@ -35,6 +35,7 @@ function HeaderArrowBtn({ glyph, onPress }: IconButtonProps) {
     </TouchableOpacity>
   );
 }
+
 function Header() {
   const [firstDayOfWeek, setFirstDayOfWeek] = useAtom(weekDisplayedDateAtom);
 
