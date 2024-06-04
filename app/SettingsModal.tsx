@@ -45,7 +45,7 @@ export default function useSettingsModal() {
   return { modal, showModal, hideModal };
 }
 
-const currentVersion: string = "1.0.7.6";
+const currentVersion: string = "1.0.7.8";
 
 const updateResultAtom = atom<Updates.UpdateCheckResult | undefined>(undefined);
 const updateErrorAtom = atom<Error | undefined>(undefined);
