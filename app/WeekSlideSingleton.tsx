@@ -1,4 +1,3 @@
-import { isSameDay } from "date-fns";
 import { useEffect, useMemo, useRef } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import BlurContainer, { blurContainerContentOffset } from "./BlurContainer";
@@ -7,53 +6,60 @@ import WeekTableHeader from "./WeekTableHeader";
 import { WeekDisplayedContext } from "./state";
 import { vw } from "./stuff";
 import { State } from "./types-fix";
-import { advanceDateByDays, dateFirstDayOfWeek, dateToShortString } from "./utils";
+import { advanceTimestampByDays, timestampFirstDayOfWeek, dateToShortString } from "./utils";
+import { isSameDay } from "date-fns";
 
-const _thisWeekStart = dateFirstDayOfWeek();
-const sundays = [advanceDateByDays(_thisWeekStart, -7), _thisWeekStart, advanceDateByDays(_thisWeekStart, +7)];
+const _thisWeekStart = timestampFirstDayOfWeek();
+
+const sundays = [
+  advanceTimestampByDays(_thisWeekStart, -7),
+  _thisWeekStart,
+  advanceTimestampByDays(_thisWeekStart, +7),
+];
+
 let index = 1;
 
-function pushWeek() {
-  sundays.push(advanceDateByDays(sundays[sundays.length - 1], +7));
+function keepSundaysPadded() {
+  if (index === 0) {
+    sundays.unshift(advanceTimestampByDays(sundays[0], -7));
+    index = 1;
+    return "index changed from 0 to 1";
+  }
+  if (index === sundays.length - 1) {
+    sundays.push(advanceTimestampByDays(sundays[sundays.length - 1], +7));
+  }
 }
 
-function unshiftWeek() {
-  sundays.unshift(advanceDateByDays(sundays[0], -7));
-}
-
-export default function WeekSlideSingleton({ weekStartState }: { weekStartState: State<Date> }) {
-  const [weekStart, setWeekStart] = weekStartState;
+export default function WeekSlideSingleton({ weekTimestampState }: { weekTimestampState: State<number> }) {
+  const [weekStart, setWeekStart] = weekTimestampState;
   const flatListRef = useRef<FlatList>(null);
 
-  const keepWeeksPadded = () => {
-    console.log("keepWeeksPadded");
-
-    if (index === sundays.length - 1) {
-      pushWeek();
-    }
-    if (index === 0) {
-      unshiftWeek();
-      flatListRef.current?.scrollToIndex({ index: 1, animated: false });
-    }
-  };
-
-  const insideScroller = useRef(false);
+  const firstRender = useRef(true);
+  const scrollingByFinger = useRef(false);
 
   useEffect(() => {
-    if (insideScroller.current) {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
     }
 
-    // const newIndex = sundays.findIndex((w) => isSameDay(w, weekStart));
+    if (!scrollingByFinger.current) {
+      console.log("weekStart changed from outside");
 
-    // if (index !== newIndex) {
-    //   const oldIndex = index;
-    //   keepWeeksPadded();
-    //   index = sundays.findIndex((w) => isSameDay(w, weekStart));
-    //   console.log("scroll from outside | from", oldIndex, "to", index);
+      const oldIndex = index;
 
-    //   flatListRef.current?.scrollToIndex({ index, animated: true });
-    //   console.log({ index, outOf: sundays.length });
-    // }
+      index = sundays.findIndex((w) => isSameDay(w, weekStart));
+      keepSundaysPadded();
+
+      if (oldIndex === 1 && index === 1) {
+        // console.log("scrolled to the leftmost week, using arrow keys");
+        flatListRef.current?.scrollToIndex({ index: 2, animated: false });
+      }
+
+      flatListRef.current?.scrollToIndex({ index, animated: true });
+    }
+
+    scrollingByFinger.current = false;
   }, [weekStart]);
 
   return (
@@ -62,15 +68,21 @@ export default function WeekSlideSingleton({ weekStartState }: { weekStartState:
       data={sundays}
       renderItem={({ item }) => <WeekCard weekStart={item} />}
       horizontal
-      keyExtractor={(date) => date.toISOString()}
+      keyExtractor={(timestamp) => timestamp}
       showsHorizontalScrollIndicator={false}
       pagingEnabled
       initialScrollIndex={index}
       getItemLayout={(_, index) => ({ index, length: 100 * vw, offset: 100 * vw * index })}
-      onScrollBeginDrag={keepWeeksPadded}
+      onScrollBeginDrag={() => {
+        if (keepSundaysPadded() === "index changed from 0 to 1") {
+          flatListRef.current?.scrollToIndex({ index, animated: false });
+        }
+      }}
+      onMomentumScrollBegin={() => {
+        scrollingByFinger.current = true;
+      }}
       onMomentumScrollEnd={(e) => {
         index = Math.floor(e.nativeEvent.contentOffset.x / (100 * vw));
-        insideScroller.current = true;
         setWeekStart(sundays[index]);
       }}
     />

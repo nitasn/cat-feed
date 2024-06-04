@@ -13,7 +13,7 @@ import { WeekDisplayedContext, nameAtom } from "./state";
 import { dropShadow, personToImage, rowLTR, vmin } from "./stuff";
 import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 import { days } from "./types";
-import { advanceDateByDays, arrayWithout, atRoundHour, shortStringToDate } from "./utils";
+import { advanceTimestampByDays, arrayWithout, atRoundHour, shortStringToDate } from "./utils";
 
 // @ts-ignore (no value initialized)
 const RowDateContext = createContext<{ date: Date; isPast: boolean }>();
@@ -77,7 +77,7 @@ function pastTodaysAfternoon(date: Date) {
  * a reason why the meal can't be changed, or null if the meal can be changed.
  */
 function reasonCannotChangeMeal(weekKey: string, dayName: DayName, mealName: MealName) {
-  const mealDateTime = advanceDateByDays(shortStringToDate(weekKey), dayToIndex[dayName]);
+  const mealDateTime = advanceTimestampByDays(shortStringToDate(weekKey), dayToIndex[dayName]);
 
   if (mealDateTime < startOfDay(Date.now())) {
     return "Can't change the past 🐼";
@@ -100,7 +100,7 @@ function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
 
   const { weekKey, dateWeekStarts } = useContext(WeekDisplayedContext);
 
-  const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
+  const date = advanceTimestampByDays(dateWeekStarts, dayToIndex[dayName]);
   const isPast = date < startOfDay(Date.now());
 
   const columnPressed = (event: GestureResponderEvent) => {

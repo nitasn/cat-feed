@@ -1,7 +1,11 @@
 import { format, parse, setHours, startOfDay, startOfHour, startOfWeek } from "date-fns";
 
-export function dateFirstDayOfWeek(inputDate: Date = new Date()): Date {
+function dateFirstDayOfWeek(inputDate: Date): Date {
   return startOfWeek(inputDate, { weekStartsOn: 0 });
+}
+
+export function timestampFirstDayOfWeek(inputDate: Date = new Date()): number {
+  return +dateFirstDayOfWeek(inputDate);
 }
 
 export function dateToShortString(date: Date): string {
@@ -19,14 +23,14 @@ export function atRoundHour(date: Date | number, hour: number) {
   return startOfHour(setHours(date, hour));
 }
 
-export function advanceDateByDays(date: Date, numDaysLater: number): Date {
-  const result = new Date(date);
+export function advanceTimestampByDays(timestamp: number, numDaysLater: number): number {
+  const result = new Date(timestamp);
   result.setDate(result.getDate() + numDaysLater);
-  return result;
+  return +result;
 }
 
 export function relativeWeek(dateInput: Date): string {
-  const startOfThisWeek = dateFirstDayOfWeek();
+  const startOfThisWeek = dateFirstDayOfWeek(new Date());
   const startOfThatWeek = dateFirstDayOfWeek(dateInput);
   const msPerWeek = 7 * 24 * 60 * 60 * 1000;
   const weeksDifference = Math.round((startOfThatWeek.getTime() - startOfThisWeek.getTime()) / msPerWeek);

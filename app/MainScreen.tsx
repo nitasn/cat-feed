@@ -7,15 +7,15 @@ import { useEasterEggClicker } from "./hooks";
 import { weekTitleEasterEggClicked } from "./nitsan-privileges";
 import { rowLTR } from "./stuff";
 import { State } from "./types-fix";
-import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
+import { advanceTimestampByDays, timestampFirstDayOfWeek, relativeWeek } from "./utils";
 
 export default function MainScreen() {
-  const weekStartState = useState<Date>(dateFirstDayOfWeek);
+  const weekTimestampState = useState<number>(timestampFirstDayOfWeek);
 
   return (
     <View style={styles.container}>
-      <WeekChooserHeader weekStartState={weekStartState} />
-      <WeekSlideSingleton weekStartState={weekStartState} />
+      <WeekChooserHeader weekTimestampState={weekTimestampState} />
+      <WeekSlideSingleton weekTimestampState={weekTimestampState} />
     </View>
   );
 }
@@ -36,16 +36,16 @@ function HeaderArrowBtn({ glyph, onPress }: IconButtonProps) {
 /**
  * Looks like `<-- This Week -->` or `<-- Next Week -->` etc.
  */
-function WeekChooserHeader({ weekStartState }: { weekStartState: State<Date> }) {
-  const [weekStart, setWeekStart] = weekStartState;
+function WeekChooserHeader({ weekTimestampState }: { weekTimestampState: State<number> }) {
+  const [weekStart, setWeekStart] = weekTimestampState;
 
   const title = useMemo(() => {
-    return relativeWeek(weekStart);
+    return relativeWeek(new Date(weekStart));
   }, [weekStart]);
 
   const changeWeekBy = (numWeeks: number) => () => {
-    const laterDate = advanceDateByDays(weekStart, 7 * numWeeks);
-    setWeekStart(dateFirstDayOfWeek(laterDate));
+    const timestamp = advanceTimestampByDays(weekStart, 7 * numWeeks);
+    setWeekStart(timestampFirstDayOfWeek(new Date(timestamp)));
   };
 
   const onEasterEggPress = useEasterEggClicker({
