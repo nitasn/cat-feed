@@ -37,6 +37,7 @@ async function _continueWithJson(res: Response) {
 }
 
 export async function fetchWeek(weekKey: string): Promise<WeekData> {
+  return emptyWeeklyData(); // TODO DELETE
   const weekData = await fetchGET(`/api/get-week/?dateWeekStarts=${weekKey}`);
   if (weekData.error) throw Error(weekData.error);
   return weekData === "EMPTY WEEK" ? emptyWeeklyData() : (weekData as WeekData);

@@ -1,24 +1,21 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useAtom } from "jotai";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import BlurContainer from "./BlurContainer";
-import WeekTableHeader from "./WeekTableHeader";
-import WeekContentGuard from "./WeekContentGuard";
+import WeekSlideSingleton from "./WeekSlideSingleton";
+import { withLightHaptics } from "./haptics";
 import { useEasterEggClicker } from "./hooks";
 import { weekTitleEasterEggClicked } from "./nitsan-privileges";
-import { weekDisplayedDateAtom } from "./state";
 import { rowLTR } from "./stuff";
+import { State } from "./types-fix";
 import { advanceDateByDays, dateFirstDayOfWeek, relativeWeek } from "./utils";
-import { withLightHaptics } from "./haptics";
 
 export default function MainScreen() {
+  const weekStartState = useState<Date>(dateFirstDayOfWeek);
+
   return (
     <View style={styles.container}>
-      <Header />
-      <BlurContainer componentAbove={<WeekTableHeader />}>
-        <WeekContentGuard />
-      </BlurContainer>
+      <WeekChooserHeader weekStartState={weekStartState} />
+      <WeekSlideSingleton weekStartState={weekStartState} />
     </View>
   );
 }
@@ -36,16 +33,19 @@ function HeaderArrowBtn({ glyph, onPress }: IconButtonProps) {
   );
 }
 
-function Header() {
-  const [firstDayOfWeek, setFirstDayOfWeek] = useAtom(weekDisplayedDateAtom);
+/**
+ * Looks like `<-- This Week -->` or `<-- Next Week -->` etc.
+ */
+function WeekChooserHeader({ weekStartState }: { weekStartState: State<Date> }) {
+  const [weekStart, setWeekStart] = weekStartState;
 
   const title = useMemo(() => {
-    return relativeWeek(firstDayOfWeek);
-  }, [firstDayOfWeek]);
+    return relativeWeek(weekStart);
+  }, [weekStart]);
 
   const changeWeekBy = (numWeeks: number) => () => {
-    const laterDate = advanceDateByDays(firstDayOfWeek, 7 * numWeeks);
-    setFirstDayOfWeek(dateFirstDayOfWeek(laterDate));
+    const laterDate = advanceDateByDays(weekStart, 7 * numWeeks);
+    setWeekStart(dateFirstDayOfWeek(laterDate));
   };
 
   const onEasterEggPress = useEasterEggClicker({

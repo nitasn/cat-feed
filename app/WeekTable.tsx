@@ -1,27 +1,19 @@
 import { format, startOfDay } from "date-fns";
+import * as Haptics from "expo-haptics";
 import { useAtomValue } from "jotai";
 import { createContext, useContext, useRef } from "react";
 import type { GestureResponderEvent } from "react-native";
-import {
-  ActivityIndicator,
-  ImageBackground,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, ImageBackground, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import Toast from "react-native-root-toast";
 import { blurContainerContentOffset } from "./BlurContainer";
 import FixedColumns from "./FixedColumns";
 import { toggleMyself } from "./fetcher";
+import { lightHaptics } from "./haptics";
 import { WeekDisplayedContext, nameAtom } from "./state";
 import { dropShadow, personToImage, rowLTR, vmin } from "./stuff";
 import type { DayData, DayName, MealName, Name, WeekData } from "./types";
 import { days } from "./types";
 import { advanceDateByDays, arrayWithout, atRoundHour, shortStringToDate } from "./utils";
-import { fwooshWoosh, lightHaptics, warningHaptics } from "./haptics";
-import * as Haptics from "expo-haptics";
 
 // @ts-ignore (no value initialized)
 const RowDateContext = createContext<{ date: Date; isPast: boolean }>();
@@ -65,10 +57,7 @@ const dayNameAbbreviation: Record<DayName, string> = {
   saturday: "Sat",
 };
 
-const dayToIndex = Object.fromEntries(days.map((dayName, index) => [dayName, index])) as Record<
-  DayName,
-  number
->;
+const dayToIndex = Object.fromEntries(days.map((dayName, index) => [dayName, index])) as Record<DayName, number>;
 
 export const mealsColor = {
   morning: "#bc8e56",
@@ -108,9 +97,9 @@ function onMealPress(weekKey: string, dayName: DayName, mealName: MealName) {
 
 function Row({ dayName, dayData }: { dayName: DayName; dayData: DayData }) {
   const widthRef = useRef(0);
-  
+
   const { weekKey, dateWeekStarts } = useContext(WeekDisplayedContext);
-  
+
   const date = advanceDateByDays(dateWeekStarts, dayToIndex[dayName]);
   const isPast = date < startOfDay(Date.now());
 
