@@ -61,6 +61,7 @@ export interface FailureResponse {
 }
 
 export async function postChanges(changes: Change[]) {
+  return []; // TODO DELETE
   const results = await fetchPOST("/api/post-changes", { changes });
   return results as Array<SuccessResponse | FailureResponse>;
 }
