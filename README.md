@@ -1,6 +1,6 @@
 # Cat Feed
 
-An app for my family members, to schedule who feeds our cats.
+A cross platform mobile app, to schedule who feeds the cats.
 
 <img src="assets-for-readme/MainScreen.png" alt="Main Screen" width="350"/>
 
